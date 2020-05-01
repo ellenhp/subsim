@@ -1,0 +1,3 @@
+# Multiplayer Aquatic Simulation System (MASS)
+
+MASS is a piece of software designed to enable players to cooperatively control marine vessels in a semi-realistic way. While focus has been placed on accurate reproduction of a vessel's systems, MASS isn't designed as a training simulator for any particular vessel. Systems shown in this simulation are generic. MASS was written as a part of an entry into the 2020 Sim Jam, and may or may not recieve updates after the conclusion of that game jam.
