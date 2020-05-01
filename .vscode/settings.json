@@ -1,5 +1,8 @@
 {
     "clang-format.fallbackStyle": "Google",
     "licenser.author": "Google LLC",
-    "licenser.license": "AL2"
+    "licenser.license": "AL2",
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "editor.tabSize": 2
 }
