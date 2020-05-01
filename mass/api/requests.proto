@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+import "mass/api/chat.proto";
+
+message MassRequest {
+  // A repeated field containing any requests to the vessel's systems. May be
+  // empty.
+  repeated SystemRequest system_requests = 1;
+
+  // Optional, a chat message to send to other players in the vessel.
+  ChatMessage chat_message = 2;
+}
+
+message SystemRequest {
+  oneof request {
+    // Steering request.
+    SteeringSystemRequest steering_request = 1;
+    // Diving request.
+    DivingSystemRequest diving_request = 2;
+    // Propulsion request.
+    PropulsionSystemRequest propulsion_request = 3;
+    // Map requests.
+    MapSystemRequest map_request = 4;
+  }
+}
+
+message SteeringSystemRequest {
+  // Requested heading.
+  uint32 heading_degrees = 1;
+}
+
+message DivingSystemRequest {
+  // Requested depth.
+  uint32 depth_meters = 1;
+}
+
+message PropulsionSystemRequest {
+  // Requested speed.
+  uint32 speed_knots = 1;
+}
+
+message MapSystemRequest {
+  // Eventually put marking and removing POIs in here.
+}

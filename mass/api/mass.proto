@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+import "mass/api/requests.proto";
+import "mass/api/updates.proto";
+
+service MassBackend {
+  rpc Connect(stream MassRequest) returns (stream MassUpdate);
+}
