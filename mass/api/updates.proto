@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+import "mass/api/chat.proto";
+import "mass/api/spatial.proto";
+
+message MassUpdate {
+  // Repeated field containing updates to various vessel systems.
+  repeated SystemUpdate system_updates = 1;
+
+  // Any new chat messages.
+  repeated ChatMessage chat_updates = 2;
+}
+
+message SystemUpdate {
+  oneof update {
+    // Steering update.
+    SteeringSystemUpdate steering_update = 1;
+    // Diving update.
+    DivingSystemUpdate diving_update = 2;
+    // Propulsion update.
+    PropulsionSystemUpdate propulsion_update = 3;
+    // Map update.
+    MapSystemUpdate map_update = 4;
+  }
+}
+
+message SteeringSystemUpdate {
+  // Requested heading.
+  uint32 requested_heading_degrees = 1;
+
+  // Actual heading.
+  uint32 actual_heading_degrees = 2;
+}
+
+message DivingSystemUpdate {
+  // Requested keel depth in meters.
+  double requested_depth_meters = 1;
+
+  // Actual depth in meters.
+  double actual_depth_meters = 2;
+}
+
+message PropulsionSystemUpdate {
+  // Requested speed.
+  uint32 requested_speed_knots = 1;
+
+  // Actual speed.
+  uint32 actual_speed_knots = 2;
+}
+
+message MapSystemUpdate { Position position = 1; }

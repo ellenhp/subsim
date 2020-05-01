@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+message ChatMessage {
+  // From field. This may be another player or a system on the ship.
+  string from_field = 1;
+  // The string containing the message.
+  string message = 2;
+  // Millis since UTC epoch.
+  uint64 timestamp = 3;
+}
