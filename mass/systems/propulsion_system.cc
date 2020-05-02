@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto3";
-package api;
+#include "propulsion_system.hh"
 
-import "mass/api/requests.proto";
-import "mass/api/updates.proto";
+using namespace mass::systems;
 
-service MassBackend {
-  rpc Connect(stream MassRequest) returns (stream MassUpdate);
+PropulsionSystem::PropulsionSystem(api::PropulsionSystem propulsion_system)
+    : max_speed_knots(propulsion_system.max_speed_knots()) {
+  requested_speed_knots = 0;
+  actual_speed_knots = 0;
+}
+
+void PropulsionSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
+  // Nothing to do here until we can spawn vessels at speed.
 }

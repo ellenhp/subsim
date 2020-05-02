@@ -1,0 +1,115 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto3";
+package api;
+
+import "mass/api/spatial.proto";
+import "mass/api/systems.proto";
+
+message Scenario {
+  // The bounds of the scenario.
+  Bounds scenario_bounds = 1;
+  // The vessel descriptors for this scenario, including IDs.
+  repeated VesselDescriptor vessel_descriptors = 2;
+  // The vessels to spawn.
+  repeated SpawnedVessel vessels = 3;
+  // The conditions under which the game ends.
+  repeated EndCondition end_conditions = 4;
+}
+
+message SpawnedVessel {
+  message SpawnInformation {
+    oneof spawn_point {
+      // Position, if this vessel will always spawn at the same point.
+      Position position = 1;
+      // Bounds, if this vessel should spawn randomly inside these bounds.
+      Bounds bounds = 2;
+    }
+    // Reserved for more ways to describe spawn points (above).
+    reserved 3, 4, 5, 6, 7, 8, 9, 10;
+    oneof spawn_heading {
+      uint32 exact_spawn_heading = 11;
+      HeadingBounds heading_bounds = 12;
+    }
+  }
+  // The vessel to spawn.
+  string vessel_descriptor_id = 1;
+  // The faction alignment of this vessel.
+  Faction faction = 2;
+  // The unique ID for this vessel instance across the entire scenario.
+  string unique_id = 3;
+  // Information about this vessel's spawn point.
+  SpawnInformation spawn_info = 4;
+}
+
+message VesselDescriptor {
+  enum VesselType {
+    VESSEL_TYPE_UNKNOWN = 0;
+    VESSEL_TYPE_SURFACE = 1;
+    VESSEL_TYPE_SUBMARINE = 2;
+  }
+
+  // Unique id given by the scenario creator. Used to spawn instances of this
+  // vessel.
+  string unique_id = 1;
+  // The type of vessel (submarine or surface).
+  VesselType type = 2;
+  // A list of systems this vessel contains.
+  repeated VesselSystem systems = 4;
+}
+
+message Faction {
+  bool player_controlled = 1;
+  string name = 2;
+}
+
+message EndCondition {
+  // The faction that wins in this end condition, or empty.
+  Faction winning_faction = 1;
+  // Reserved for other metadata.
+  reserved 2, 3, 4, 5;
+
+  // This condition should evaluate to true iff:
+  oneof conditions {
+    // The provided faction is eliminated, or...
+    Faction faction_eliminated = 6;
+    // Just kidding, that's the only one for now, but things can get more
+    // complicated later :)
+  }
+}
+
+message Mission {
+  message PlayerMission {
+    // The human-readable name of the mission.
+    string mission_name = 1;
+    // The human-readable message given to the player.
+    string mission_description = 2;
+  }
+  message PatrolMission {
+    // The points to patrol, in order.
+    repeated Position patrol_points = 1;
+    // The keel depth to maintain, or zero if the vessel should always be
+    // surfaced.
+    uint32 keel_depth_feet = 2;
+    // The speed to maintain.
+    uint32 speed_knots = 3;
+  }
+  oneof mission {
+    // If the vessel is player controlled, the player mission.
+    PlayerMission player_mission = 1;
+    // Patrol the given points until the end of time.
+    PatrolMission patrol_mission = 2;
+  }
+}

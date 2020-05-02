@@ -12,12 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto3";
-package api;
+#include "sim.hh"
 
-import "mass/api/requests.proto";
-import "mass/api/updates.proto";
+using namespace mass;
+using std::string;
 
-service MassBackend {
-  rpc Connect(stream MassRequest) returns (stream MassUpdate);
+Sim::Sim(api::Scenario scenario) {
+  for (auto &descriptor : scenario.vessel_descriptors()) {
+    vessel_descriptors[descriptor.unique_id()] = descriptor;
+  }
+  for (auto &spanwed_vessel : scenario.vessels()) {
+    string id = spanwed_vessel.unique_id();
+    vessels[id] = std::make_shared<SimVessel>(
+        vessel_descriptors[spanwed_vessel.vessel_descriptor_id()]);
+  }
 }

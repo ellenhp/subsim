@@ -12,12 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto3";
-package api;
+#pragma once
 
-import "mass/api/requests.proto";
-import "mass/api/updates.proto";
+#include "mass/api/systems.pb.h"
+#include "sim_system.hh"
 
-service MassBackend {
-  rpc Connect(stream MassRequest) returns (stream MassUpdate);
-}
+namespace mass {
+namespace systems {
+class DivingSystem : public SimSystem {
+ public:
+  DivingSystem(api::DivingSystem diving_system);
+
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+
+ private:
+  uint32_t max_depth_feet;
+  double feet_per_second;
+
+  uint32_t requested_depth_feet;
+  double actual_depth_feet;
+};
+}  // namespace systems
+}  // namespace mass

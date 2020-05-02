@@ -14,8 +14,7 @@
 
 #include "server.hh"
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   mass::MassServer server("0.0.0.0:50051");
   server.run_server_forever();
 }

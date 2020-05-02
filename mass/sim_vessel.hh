@@ -12,12 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto3";
-package api;
+#pragma once
 
-import "mass/api/requests.proto";
-import "mass/api/updates.proto";
+#include <memory>
+#include <set>
+#include <vector>
 
-service MassBackend {
-  rpc Connect(stream MassRequest) returns (stream MassUpdate);
-}
+#include "mass/api/scenario.pb.h"
+#include "systems/sim_system.hh"
+
+namespace mass {
+class SimVessel {
+ public:
+  SimVessel(api::VesselDescriptor descriptor);
+
+  template <class T>
+  std::shared_ptr<T> get_system_of_type();
+
+  template <class T>
+  std::vector<std::shared_ptr<T>> get_all_systems_of_type();
+
+ private:
+  std::set<std::shared_ptr<systems::SimSystem>> vessel_systems;
+};
+}  // namespace mass

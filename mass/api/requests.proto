@@ -13,6 +13,7 @@
 // limitations under the License.
 
 syntax = "proto3";
+package api;
 
 import "mass/api/chat.proto";
 
@@ -44,12 +45,12 @@ message SteeringSystemRequest {
 }
 
 message DivingSystemRequest {
-  // Requested depth.
-  uint32 depth_meters = 1;
+  // Requested depth, in feet.
+  uint32 depth_feet = 1;
 }
 
 message PropulsionSystemRequest {
-  // Requested speed.
+  // Requested speed, in knots.
   uint32 speed_knots = 1;
 }
 

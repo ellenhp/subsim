@@ -51,6 +51,20 @@ cc_proto_library(
 )
 
 proto_library(
+    name = "scenario_proto",
+    srcs = ["scenario.proto"],
+    deps = [
+        ":spatial_proto",
+        ":systems_proto",
+    ],
+)
+
+cc_proto_library(
+    name = "cc_scenario_proto",
+    deps = [":scenario_proto"],
+)
+
+proto_library(
     name = "spatial_proto",
     srcs = ["spatial.proto"],
 )
@@ -58,6 +72,16 @@ proto_library(
 cc_proto_library(
     name = "cc_spatial_proto",
     deps = [":spatial_proto"],
+)
+
+proto_library(
+    name = "systems_proto",
+    srcs = ["systems.proto"],
+)
+
+cc_proto_library(
+    name = "cc_systems_proto",
+    deps = [":systems_proto"],
 )
 
 proto_library(
