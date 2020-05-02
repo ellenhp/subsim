@@ -18,24 +18,22 @@ using namespace mass;
 
 grpc::Status MassBackendImpl::Connect(
     ::grpc::ServerContext *context,
-    grpc::ServerReaderWriter<MassUpdate, MassRequest> *stream)
-{
+    grpc::ServerReaderWriter<api::MassUpdate, api::MassRequest> *stream) {
   return grpc::Status::OK;
 }
 
-MassServer::MassServer(std::string server_address_and_port)
-{
+MassServer::MassServer(std::string server_address_and_port) {
   _server_address_and_port = server_address_and_port;
 }
 
-void MassServer::run_server_forever()
-{
+void MassServer::run_server_forever() {
   MassBackendImpl service;
 
   grpc::EnableDefaultHealthCheckService(true);
   grpc::reflection::InitProtoReflectionServerBuilderPlugin();
   grpc::ServerBuilder builder;
-  builder.AddListeningPort(_server_address_and_port, grpc::InsecureServerCredentials());
+  builder.AddListeningPort(_server_address_and_port,
+                           grpc::InsecureServerCredentials());
   builder.RegisterService(&service);
   std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
   server->Wait();

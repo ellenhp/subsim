@@ -13,10 +13,23 @@
 // limitations under the License.
 
 syntax = "proto3";
+package api;
 
 message Position {
   // Latitude.
   double lat = 1;
   // Longitude.
   double lng = 2;
+}
+
+message Bounds {
+  // The southwest bound.
+  Position south_west = 1;
+  // The northeast bound.
+  Position north_east = 2;
+}
+
+message HeadingBounds {
+  uint32 left_bound = 1;
+  uint32 right_bound = 2;
 }

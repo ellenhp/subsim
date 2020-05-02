@@ -13,6 +13,7 @@
 // limitations under the License.
 
 syntax = "proto3";
+package api;
 
 import "mass/api/chat.proto";
 import "mass/api/spatial.proto";
@@ -47,11 +48,11 @@ message SteeringSystemUpdate {
 }
 
 message DivingSystemUpdate {
-  // Requested keel depth in meters.
-  double requested_depth_meters = 1;
+  // Requested keel depth in feet.
+  double requested_depth_feet = 1;
 
-  // Actual depth in meters.
-  double actual_depth_meters = 2;
+  // Actual depth in feet.
+  double actual_depth_feet = 2;
 }
 
 message PropulsionSystemUpdate {

@@ -20,26 +20,23 @@
 
 #include "mass/api/mass.grpc.pb.h"
 
-namespace mass
-{
+namespace mass {
 
-class MassBackendImpl final : public MassBackend::Service
-{
-public:
+class MassBackendImpl final : public api::MassBackend::Service {
+ public:
   grpc::Status Connect(
       grpc::ServerContext *context,
-      grpc::ServerReaderWriter<MassUpdate, MassRequest> *stream);
+      grpc::ServerReaderWriter<api::MassUpdate, api::MassRequest> *stream);
 };
 
-class MassServer
-{
-public:
+class MassServer {
+ public:
   MassServer(std::string server_address_and_port);
 
   void run_server_forever();
 
-private:
+ private:
   std::string _server_address_and_port;
 };
 
-} // namespace mass
+}  // namespace mass

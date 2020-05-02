@@ -12,12 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto3";
-package api;
+#pragma once
 
-import "mass/api/requests.proto";
-import "mass/api/updates.proto";
+#include "mass/api/systems.pb.h"
+#include "sim_system.hh"
 
-service MassBackend {
-  rpc Connect(stream MassRequest) returns (stream MassUpdate);
-}
+namespace mass {
+namespace systems {
+class SteeringSystem : public SimSystem {
+ public:
+  SteeringSystem(api::SteeringSystem steering_system);
+
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+
+ private:
+  uint32_t requested_heading;
+  double actual_heading;
+
+  double degrees_per_second_max;
+};
+}  // namespace systems
+}  // namespace mass

@@ -4,5 +4,6 @@
     "licenser.license": "AL2",
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "C_Cpp.clang_format_style": "Google"
 }
