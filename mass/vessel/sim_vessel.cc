@@ -16,13 +16,13 @@
 
 #include <random>
 
-#include "mass/systems/diving_system.hh"
-#include "mass/systems/map_system.hh"
-#include "mass/systems/propulsion_system.hh"
-#include "mass/systems/sim_system.hh"
-#include "mass/systems/steering_system.hh"
+#include "mass/vessel/diving_system.hh"
+#include "mass/vessel/map_system.hh"
+#include "mass/vessel/propulsion_system.hh"
+#include "mass/vessel/sim_system.hh"
+#include "mass/vessel/steering_system.hh"
 
-using namespace mass::systems;
+using namespace mass::vessel;
 using std::dynamic_pointer_cast;
 using std::make_shared;
 using std::shared_ptr;
@@ -32,19 +32,19 @@ using std::vector;
 SimVessel::SimVessel(api::VesselDescriptor vessel_descriptor,
                      api::SpawnedVessel spawned_vessel) {
   for (auto& system : vessel_descriptor.systems()) {
-    shared_ptr<systems::SimSystem> new_system = nullptr;
+    shared_ptr<SimSystem> new_system = nullptr;
     if (system.has_steering_system()) {
-      new_system = static_pointer_cast<systems::SimSystem>(
-          make_shared<systems::SteeringSystem>(system.steering_system()));
+      new_system = static_pointer_cast<SimSystem>(
+          make_shared<SteeringSystem>(system.steering_system()));
     } else if (system.has_diving_system()) {
-      new_system = static_pointer_cast<systems::SimSystem>(
-          make_shared<systems::DivingSystem>(system.diving_system()));
+      new_system = static_pointer_cast<SimSystem>(
+          make_shared<DivingSystem>(system.diving_system()));
     } else if (system.has_propulsion_system()) {
-      new_system = static_pointer_cast<systems::SimSystem>(
-          make_shared<systems::PropulsionSystem>(system.propulsion_system()));
+      new_system = static_pointer_cast<SimSystem>(
+          make_shared<PropulsionSystem>(system.propulsion_system()));
     } else if (system.has_map_system()) {
-      new_system = static_pointer_cast<systems::SimSystem>(
-          make_shared<systems::MapSystem>(system.map_system()));
+      new_system = static_pointer_cast<SimSystem>(
+          make_shared<MapSystem>(system.map_system()));
     }
     vessel_systems.insert(new_system);
   }
@@ -67,7 +67,7 @@ SimVessel::SimVessel(api::VesselDescriptor vessel_descriptor,
 template <class T>
 vector<shared_ptr<T>> SimVessel::all_systems() {
   vector<shared_ptr<T>> results;
-  for (shared_ptr<systems::SimSystem> system : vessel_systems) {
+  for (shared_ptr<SimSystem> system : vessel_systems) {
     shared_ptr<T> cast_ptr = dynamic_pointer_cast<T>(system);
     if (cast_ptr != nullptr) {
       results.push_back(cast_ptr);
@@ -87,7 +87,7 @@ shared_ptr<T> SimVessel::system() {
 }
 
 void SimVessel::step(float dt) {
-  for (shared_ptr<systems::SimSystem> system : vessel_systems) {
+  for (shared_ptr<SimSystem> system : vessel_systems) {
     system->step(dt, *this);
   }
 }

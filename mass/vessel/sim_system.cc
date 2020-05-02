@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "map_system.hh"
+#include "sim_system.hh"
 
-using namespace mass::systems;
+#include "mass/vessel/sim_vessel.hh"
 
-MapSystem::MapSystem(api::MapSystem) {}
+using namespace mass::vessel;
+
+void SimSystem::step(float dt, SimVessel& parent) {}

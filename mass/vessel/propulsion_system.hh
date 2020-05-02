@@ -14,16 +14,28 @@
 
 #pragma once
 
-#include "mass/api/scenario.pb.h"
-#include "mass/systems/sim_vessel.hh"
+#include "mass/api/systems.pb.h"
+#include "sim_system.hh"
 
 namespace mass {
-namespace systems {
-class SimSystem {
+namespace vessel {
+class PropulsionSystem : public SimSystem {
  public:
-  virtual void setup_spawn_state(api::SpawnedVessel spawned_state) = 0;
+  PropulsionSystem(api::PropulsionSystem propulsion_system);
+
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
 
   virtual void step(float dt, SimVessel& parent);
+
+ private:
+  void update_speed(float dt, SimVessel& parent);
+  void update_position(float dt, SimVessel& parent);
+
+  uint32_t max_speed_knots;
+  double knots_per_second;
+
+  uint32_t requested_speed_knots;
+  double actual_speed_knots;
 };
-}  // namespace systems
+}  // namespace vessel
 }  // namespace mass

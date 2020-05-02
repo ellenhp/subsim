@@ -14,28 +14,36 @@
 
 #pragma once
 
-#include "mass/api/systems.pb.h"
-#include "sim_system.hh"
+#include <memory>
+#include <set>
+#include <vector>
+
+#include "mass/api/scenario.pb.h"
+#include "mass/api/updates.pb.h"
 
 namespace mass {
-namespace systems {
-class PropulsionSystem : public SimSystem {
+namespace vessel {
+class SimSystem;
+class SimVessel {
  public:
-  PropulsionSystem(api::PropulsionSystem propulsion_system);
+  SimVessel(api::VesselDescriptor descriptor, api::SpawnedVessel spawn_info);
 
-  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+  void step(float dt);
 
-  virtual void step(float dt, SimVessel& parent);
+  api::VesselUpdate get_update();
+
+  template <class T>
+  std::shared_ptr<T> system();
+
+  template <class T>
+  std::vector<std::shared_ptr<T>> all_systems();
+
+  api::Position position() const;
+  void set_position(api::Position);
 
  private:
-  void update_speed(float dt, SimVessel& parent);
-  void update_position(float dt, SimVessel& parent);
-
-  uint32_t max_speed_knots;
-  double knots_per_second;
-
-  uint32_t requested_speed_knots;
-  double actual_speed_knots;
+  api::Position position_;
+  std::set<std::shared_ptr<SimSystem>> vessel_systems;
 };
-}  // namespace systems
+}  // namespace vessel
 }  // namespace mass

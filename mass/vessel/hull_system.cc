@@ -14,7 +14,7 @@
 
 #include "hull_system.hh"
 
-using namespace mass::systems;
+using namespace mass::vessel;
 
 HullSystem::HullSystem(api::HullSystem hull_system)
     : draft_surfaced_(hull_system.draft_surfaced()) {}

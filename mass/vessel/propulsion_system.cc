@@ -16,11 +16,11 @@
 
 #include <cmath>
 
-#include "mass/systems/map_system.hh"
-#include "mass/systems/sim_vessel.hh"
-#include "mass/systems/steering_system.hh"
+#include "mass/vessel/map_system.hh"
+#include "mass/vessel/sim_vessel.hh"
+#include "mass/vessel/steering_system.hh"
 
-using namespace mass::systems;
+using namespace mass::vessel;
 
 template <typename T>
 static int signum(T val) {
@@ -38,7 +38,7 @@ void PropulsionSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
   // Nothing to do here until we can spawn vessels at speed.
 }
 
-void PropulsionSystem::step(float dt, mass::systems::SimVessel& parent) {
+void PropulsionSystem::step(float dt, SimVessel& parent) {
   update_speed(dt, parent);
   update_position(dt, parent);
 }

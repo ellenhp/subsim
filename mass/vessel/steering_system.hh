@@ -15,24 +15,23 @@
 #pragma once
 
 #include "mass/api/systems.pb.h"
-#include "mass/systems/sim_system.hh"
-#include "mass/systems/sim_vessel.hh"
+#include "mass/vessel/sim_system.hh"
 
 namespace mass {
-namespace systems {
-class DivingSystem : public SimSystem {
+namespace vessel {
+class SteeringSystem : public SimSystem {
  public:
-  DivingSystem(api::DivingSystem diving_system);
+  SteeringSystem(api::SteeringSystem steering_system);
 
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
 
-  virtual void step(float dt, mass::systems::SimVessel& parent);
+  double heading_degrees();
 
  private:
-  uint32_t max_depth_feet;
-  double feet_per_second;
+  uint32_t requested_heading;
+  double actual_heading;
 
-  uint32_t requested_depth_feet;
+  double degrees_per_second_max;
 };
-}  // namespace systems
+}  // namespace vessel
 }  // namespace mass

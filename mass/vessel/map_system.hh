@@ -15,23 +15,15 @@
 #pragma once
 
 #include "mass/api/systems.pb.h"
-#include "mass/systems/sim_system.hh"
+#include "mass/vessel/sim_system.hh"
 
 namespace mass {
-namespace systems {
-class SteeringSystem : public SimSystem {
+namespace vessel {
+class MapSystem : public SimSystem {
  public:
-  SteeringSystem(api::SteeringSystem steering_system);
+  MapSystem(api::MapSystem map_system);
 
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
-
-  double heading_degrees();
-
- private:
-  uint32_t requested_heading;
-  double actual_heading;
-
-  double degrees_per_second_max;
 };
-}  // namespace systems
+}  // namespace vessel
 }  // namespace mass

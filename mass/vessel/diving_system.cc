@@ -14,10 +14,10 @@
 
 #include "diving_system.hh"
 
-#include "mass/systems/hull_system.hh"
-#include "mass/systems/sim_vessel.hh"
+#include "mass/vessel/hull_system.hh"
+#include "mass/vessel/sim_vessel.hh"
 
-using namespace mass::systems;
+using namespace mass::vessel;
 
 template <typename T>
 static int signum(T val) {
@@ -34,7 +34,7 @@ void DivingSystem::setup_spawn_state(api::SpawnedVessel) {
   // Nothing to do until we get the ability to spawn vessels at depth.
 }
 
-void DivingSystem::step(float dt, mass::systems::SimVessel& parent) {
+void DivingSystem::step(float dt, SimVessel& parent) {
   const double actual_depth_feet = parent.system<HullSystem>()->depth_feet();
   double delta = requested_depth_feet - actual_depth_feet;
   double max_delta_this_step = abs(dt * feet_per_second);

@@ -16,7 +16,7 @@
 
 #include <random>
 
-using namespace mass::systems;
+using namespace mass::vessel;
 
 SteeringSystem::SteeringSystem(api::SteeringSystem steering_system)
     : degrees_per_second_max(steering_system.degrees_per_second()) {

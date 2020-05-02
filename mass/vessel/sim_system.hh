@@ -14,16 +14,16 @@
 
 #pragma once
 
-#include "mass/api/systems.pb.h"
-#include "mass/systems/sim_system.hh"
+#include "mass/api/scenario.pb.h"
+#include "mass/vessel/sim_vessel.hh"
 
 namespace mass {
-namespace systems {
-class MapSystem : public SimSystem {
+namespace vessel {
+class SimSystem {
  public:
-  MapSystem(api::MapSystem map_system);
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state) = 0;
 
-  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+  virtual void step(float dt, SimVessel& parent);
 };
-}  // namespace systems
+}  // namespace vessel
 }  // namespace mass
