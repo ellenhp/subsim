@@ -26,7 +26,7 @@ class MassBackendImpl final : public api::MassBackend::Service {
  public:
   grpc::Status Connect(
       grpc::ServerContext *context,
-      grpc::ServerReaderWriter<api::MassUpdate, api::MassRequest> *stream);
+      grpc::ServerReaderWriter<api::VesselUpdate, api::ConnectRequest> *stream);
 };
 
 class MassServer {

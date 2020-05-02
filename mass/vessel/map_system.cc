@@ -12,24 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "map_system.hh"
 
-#include "mass/api/systems.pb.h"
-#include "sim_system.hh"
+using namespace mass::vessel;
 
-namespace mass {
-namespace systems {
-class PropulsionSystem : public SimSystem {
- public:
-  PropulsionSystem(api::PropulsionSystem propulsion_system);
-
-  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
-
- private:
-  uint32_t max_speed_knots;
-
-  uint32_t requested_speed_knots;
-  double actual_speed_knots;
-};
-}  // namespace systems
-}  // namespace mass
+MapSystem::MapSystem(api::MapSystem) {}

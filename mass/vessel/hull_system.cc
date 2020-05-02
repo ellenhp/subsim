@@ -12,18 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto3";
-package api;
+#include "hull_system.hh"
 
-import "mass/api/actions.proto";
-import "mass/api/updates.proto";
+using namespace mass::vessel;
 
-service MassBackend {
-  rpc Connect(stream ConnectRequest) returns (stream VesselUpdate);
-  rpc DoAction(stream DoActionRequest) returns (DoActionResponse);
-}
+HullSystem::HullSystem(api::HullSystem hull_system)
+    : draft_surfaced_(hull_system.draft_surfaced()) {}
 
-message ConnectRequest {
-  // The unique ID that the user wants to connect to.
-  string vessel_unique_id = 1;
-}
+void HullSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {}
+
+double HullSystem::depth_feet() { return depth_feet_; }
+
+void HullSystem::set_depth_feet(double new_depth) { depth_feet_ = new_depth; }

@@ -12,15 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "sim_system.hh"
 
-#include "mass/api/scenario.pb.h"
+#include "mass/vessel/sim_vessel.hh"
 
-namespace mass {
-namespace systems {
-class SimSystem {
- public:
-  virtual void setup_spawn_state(api::SpawnedVessel spawned_state) = 0;
-};
-}  // namespace systems
-}  // namespace mass
+using namespace mass::vessel;
+
+void SimSystem::step(float dt, SimVessel& parent) {}

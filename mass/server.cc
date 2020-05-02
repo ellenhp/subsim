@@ -18,7 +18,7 @@ using namespace mass;
 
 grpc::Status MassBackendImpl::Connect(
     ::grpc::ServerContext *context,
-    grpc::ServerReaderWriter<api::MassUpdate, api::MassRequest> *stream) {
+    grpc::ServerReaderWriter<api::VesselUpdate, api::ConnectRequest> *stream) {
   return grpc::Status::OK;
 }
 

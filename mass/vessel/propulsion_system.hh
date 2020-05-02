@@ -18,15 +18,24 @@
 #include "sim_system.hh"
 
 namespace mass {
-namespace systems {
-class MapSystem : public SimSystem {
+namespace vessel {
+class PropulsionSystem : public SimSystem {
  public:
-  MapSystem(api::MapSystem map_system);
+  PropulsionSystem(api::PropulsionSystem propulsion_system);
 
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
 
+  virtual void step(float dt, SimVessel& parent);
+
  private:
-  api::Position position;
+  void update_speed(float dt, SimVessel& parent);
+  void update_position(float dt, SimVessel& parent);
+
+  uint32_t max_speed_knots;
+  double knots_per_second;
+
+  uint32_t requested_speed_knots;
+  double actual_speed_knots;
 };
-}  // namespace systems
+}  // namespace vessel
 }  // namespace mass

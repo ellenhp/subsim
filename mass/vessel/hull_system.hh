@@ -12,18 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-syntax = "proto3";
-package api;
+#pragma once
 
-import "mass/api/actions.proto";
-import "mass/api/updates.proto";
+#include "mass/api/systems.pb.h"
+#include "mass/vessel/sim_system.hh"
+#include "mass/vessel/sim_vessel.hh"
 
-service MassBackend {
-  rpc Connect(stream ConnectRequest) returns (stream VesselUpdate);
-  rpc DoAction(stream DoActionRequest) returns (DoActionResponse);
-}
+namespace mass {
+namespace vessel {
+class HullSystem : public SimSystem {
+ public:
+  HullSystem(api::HullSystem hull_system);
 
-message ConnectRequest {
-  // The unique ID that the user wants to connect to.
-  string vessel_unique_id = 1;
-}
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+
+  virtual void step(float dt, SimVessel& parent);
+
+  double depth_feet();
+  void set_depth_feet(double depth);
+
+ private:
+  const uint32_t draft_surfaced_;
+
+  double depth_feet_;
+};
+}  // namespace vessel
+}  // namespace mass

@@ -16,7 +16,7 @@
 
 #include <random>
 
-using namespace mass::systems;
+using namespace mass::vessel;
 
 SteeringSystem::SteeringSystem(api::SteeringSystem steering_system)
     : degrees_per_second_max(steering_system.degrees_per_second()) {
@@ -41,3 +41,5 @@ void SteeringSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
     actual_heading = requested_heading = heading_dist(engine) % 360;
   }
 }
+
+double SteeringSystem::heading_degrees() { return actual_heading; }

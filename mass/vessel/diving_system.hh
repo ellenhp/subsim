@@ -12,16 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "propulsion_system.hh"
+#pragma once
 
-using namespace mass::systems;
+#include "mass/api/systems.pb.h"
+#include "mass/vessel/sim_system.hh"
+#include "mass/vessel/sim_vessel.hh"
 
-PropulsionSystem::PropulsionSystem(api::PropulsionSystem propulsion_system)
-    : max_speed_knots(propulsion_system.max_speed_knots()) {
-  requested_speed_knots = 0;
-  actual_speed_knots = 0;
-}
+namespace mass {
+namespace vessel {
+class DivingSystem : public SimSystem {
+ public:
+  DivingSystem(api::DivingSystem diving_system);
 
-void PropulsionSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
-  // Nothing to do here until we can spawn vessels at speed.
-}
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+
+  virtual void step(float dt, SimVessel& parent);
+
+ private:
+  uint32_t max_depth_feet;
+  double feet_per_second;
+
+  uint32_t requested_depth_feet;
+};
+}  // namespace vessel
+}  // namespace mass

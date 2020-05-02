@@ -12,17 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "diving_system.hh"
+#pragma once
 
-using namespace mass::systems;
+#include "mass/api/systems.pb.h"
+#include "mass/vessel/sim_system.hh"
 
-DivingSystem::DivingSystem(api::DivingSystem diving_system)
-    : max_depth_feet(diving_system.max_depth_feet()),
-      feet_per_second(diving_system.feet_per_second()) {
-  actual_depth_feet = 0;
-  requested_depth_feet = 0;
-}
+namespace mass {
+namespace vessel {
+class MapSystem : public SimSystem {
+ public:
+  MapSystem(api::MapSystem map_system);
 
-void DivingSystem::setup_spawn_state(api::SpawnedVessel) {
-  // Nothing to do until we get the ability to spawn vessels at depth.
-}
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+};
+}  // namespace vessel
+}  // namespace mass
