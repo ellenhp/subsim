@@ -29,10 +29,16 @@ message DivingSystem {
 message PropulsionSystem {
   // The max speed of this vessel, in knots.
   uint32 max_speed_knots = 1;
+  // The acceleration of this vessel, in knots per second.
+  double knots_per_second = 2;
 }
 message MapSystem {
   // There isn't really anything to put here but it'll initialize things on
   // the other end.
+}
+message HullSystem {
+  // The draft of the vessel while surfaced.
+  double draft_surfaced = 1;
 }
 
 message VesselSystem {

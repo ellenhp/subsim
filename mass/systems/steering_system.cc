@@ -41,3 +41,5 @@ void SteeringSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
     actual_heading = requested_heading = heading_dist(engine) % 360;
   }
 }
+
+double SteeringSystem::heading_degrees() { return actual_heading; }

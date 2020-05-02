@@ -15,7 +15,7 @@
 #pragma once
 
 #include "mass/api/systems.pb.h"
-#include "sim_system.hh"
+#include "mass/systems/sim_system.hh"
 
 namespace mass {
 namespace systems {
@@ -24,9 +24,6 @@ class MapSystem : public SimSystem {
   MapSystem(api::MapSystem map_system);
 
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
-
- private:
-  api::Position position;
 };
 }  // namespace systems
 }  // namespace mass

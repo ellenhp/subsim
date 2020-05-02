@@ -14,14 +14,70 @@
 
 #include "propulsion_system.hh"
 
+#include <cmath>
+
+#include "mass/systems/map_system.hh"
+#include "mass/systems/sim_vessel.hh"
+#include "mass/systems/steering_system.hh"
+
 using namespace mass::systems;
 
+template <typename T>
+static int signum(T val) {
+  return (T(0) < val) - (val < T(0));
+}
+
 PropulsionSystem::PropulsionSystem(api::PropulsionSystem propulsion_system)
-    : max_speed_knots(propulsion_system.max_speed_knots()) {
+    : max_speed_knots(propulsion_system.max_speed_knots()),
+      knots_per_second(propulsion_system.knots_per_second()) {
   requested_speed_knots = 0;
   actual_speed_knots = 0;
 }
 
 void PropulsionSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
   // Nothing to do here until we can spawn vessels at speed.
+}
+
+void PropulsionSystem::step(float dt, mass::systems::SimVessel& parent) {
+  update_speed(dt, parent);
+  update_position(dt, parent);
+}
+
+void PropulsionSystem::update_speed(float dt, SimVessel& parent) {
+  double delta = requested_speed_knots - actual_speed_knots;
+  double max_delta_this_step = abs(dt * knots_per_second);
+
+  // If we can get to the requested speed in this step, great.
+  if (abs(delta) <= max_delta_this_step) {
+    actual_speed_knots = requested_speed_knots;
+  } else {
+    actual_speed_knots += signum(delta) * max_delta_this_step;
+  }
+}
+
+void PropulsionSystem::update_position(float dt, SimVessel& parent) {
+  double heading_degrees = parent.system<SteeringSystem>()->heading_degrees();
+  api::Position position = parent.position();
+
+  // We'll need this later, compute it now for clarity :)
+  double absolute_latitude_radians = position.lat() / 180 * M_PI;
+
+  // Determine the components of the velocity in a locally cartesian X-Y
+  // grid, in knots.
+  double heading_radians = heading_degrees / 180 * M_PI;
+  // A heading of zero is due north, so we need to use sin for X and cos for Y.
+  double x_knots = actual_speed_knots * sin(heading_radians);
+  double y_knots = actual_speed_knots * cos(heading_radians);
+
+  // One knot is 1 nmi / hr, which approximates to one minute of latitude / hr.
+  double lat_minutes_per_hour = y_knots;
+  // Longitudinal speed depends on our absolute latitude.
+  double lng_minutes_per_hour = x_knots * cos(absolute_latitude_radians);
+
+  api::Position new_position;
+  // 60 minutes (of angle) per degree, 3600 seconds (of time) per hour.
+  new_position.set_lat(position.lat() + dt * lat_minutes_per_hour / 60 / 3600);
+  new_position.set_lng(position.lng() + dt * lng_minutes_per_hour / 60 / 3600);
+
+  parent.set_position(new_position);
 }

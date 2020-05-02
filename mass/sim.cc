@@ -23,8 +23,9 @@ Sim::Sim(api::Scenario scenario) {
   }
   for (auto &spanwed_vessel : scenario.vessels()) {
     string id = spanwed_vessel.unique_id();
-    vessels[id] = std::make_shared<SimVessel>(
-        vessel_descriptors[spanwed_vessel.vessel_descriptor_id()]);
+    vessels[id] = std::make_shared<systems::SimVessel>(
+        vessel_descriptors[spanwed_vessel.vessel_descriptor_id()],
+        spanwed_vessel);
   }
 }
 

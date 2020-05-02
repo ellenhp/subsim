@@ -14,16 +14,36 @@
 
 #pragma once
 
+#include <memory>
+#include <set>
+#include <vector>
+
 #include "mass/api/scenario.pb.h"
-#include "mass/systems/sim_vessel.hh"
+#include "mass/api/updates.pb.h"
 
 namespace mass {
 namespace systems {
-class SimSystem {
+class SimSystem;
+class SimVessel {
  public:
-  virtual void setup_spawn_state(api::SpawnedVessel spawned_state) = 0;
+  SimVessel(api::VesselDescriptor descriptor, api::SpawnedVessel spawn_info);
 
-  virtual void step(float dt, SimVessel& parent);
+  void step(float dt);
+
+  api::VesselUpdate get_update();
+
+  template <class T>
+  std::shared_ptr<T> system();
+
+  template <class T>
+  std::vector<std::shared_ptr<T>> all_systems();
+
+  api::Position position() const;
+  void set_position(api::Position);
+
+ private:
+  api::Position position_;
+  std::set<std::shared_ptr<SimSystem>> vessel_systems;
 };
 }  // namespace systems
 }  // namespace mass

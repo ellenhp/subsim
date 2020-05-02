@@ -21,7 +21,7 @@
 #include "mass/api/mass.pb.h"
 #include "mass/api/scenario.pb.h"
 #include "mass/api/updates.pb.h"
-#include "sim_vessel.hh"
+#include "mass/systems/sim_vessel.hh"
 
 namespace mass {
 class Sim {
@@ -35,7 +35,7 @@ class Sim {
   api::VesselUpdate get_update_for(std::string vessel_unique_id);
 
  private:
-  std::map<std::string, std::shared_ptr<SimVessel>> vessels;
+  std::map<std::string, std::shared_ptr<systems::SimVessel>> vessels;
   std::map<std::string, api::VesselDescriptor> vessel_descriptors;
 };
 }  // namespace mass

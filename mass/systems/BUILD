@@ -12,5 +12,6 @@ cc_library(
     deps = [
         "//mass/api:cc_scenario_proto",
         "//mass/api:cc_systems_proto",
+        "//mass/api:cc_updates_proto",
     ],
 )

@@ -14,6 +14,8 @@
 
 #include "sim_system.hh"
 
+#include "mass/systems/sim_vessel.hh"
+
 using namespace mass::systems;
 
-void SimSystem::step(float dt) {}
+void SimSystem::step(float dt, SimVessel& parent) {}

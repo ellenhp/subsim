@@ -25,8 +25,14 @@ class PropulsionSystem : public SimSystem {
 
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
 
+  virtual void step(float dt, SimVessel& parent);
+
  private:
+  void update_speed(float dt, SimVessel& parent);
+  void update_position(float dt, SimVessel& parent);
+
   uint32_t max_speed_knots;
+  double knots_per_second;
 
   uint32_t requested_speed_knots;
   double actual_speed_knots;
