@@ -15,9 +15,15 @@
 syntax = "proto3";
 package api;
 
-import "mass/api/requests.proto";
+import "mass/api/actions.proto";
 import "mass/api/updates.proto";
 
 service MassBackend {
-  rpc Connect(stream MassRequest) returns (stream MassUpdate);
+  rpc Connect(stream ConnectRequest) returns (stream VesselUpdate);
+  rpc DoAction(stream DoActionRequest) returns (DoActionResponse);
+}
+
+message ConnectRequest {
+  // The unique ID that the user wants to connect to.
+  string vessel_unique_id = 1;
 }

@@ -27,3 +27,13 @@ Sim::Sim(api::Scenario scenario) {
         vessel_descriptors[spanwed_vessel.vessel_descriptor_id()]);
   }
 }
+
+void Sim::step(float dt) {
+  for (auto &id_and_vessel : vessels) {
+    id_and_vessel.second->step(dt);
+  }
+}
+
+api::VesselUpdate Sim::get_update_for(std::string vessel_unique_id) {
+  return vessels[vessel_unique_id]->get_update();
+}

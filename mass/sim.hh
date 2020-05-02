@@ -17,8 +17,10 @@
 #include <map>
 #include <string>
 
-#include "mass/api/requests.pb.h"
+#include "mass/api/actions.pb.h"
+#include "mass/api/mass.pb.h"
 #include "mass/api/scenario.pb.h"
+#include "mass/api/updates.pb.h"
 #include "sim_vessel.hh"
 
 namespace mass {
@@ -26,11 +28,11 @@ class Sim {
  public:
   Sim(api::Scenario scenario);
 
-  void process_request(api::MassRequest mass_request);
+  void process_request(api::DoActionRequest mass_request);
 
   void step(float dt);
 
-  void get_update_for(std::string vessel_unique_id);
+  api::VesselUpdate get_update_for(std::string vessel_unique_id);
 
  private:
   std::map<std::string, std::shared_ptr<SimVessel>> vessels;

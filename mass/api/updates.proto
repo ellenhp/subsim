@@ -18,7 +18,7 @@ package api;
 import "mass/api/chat.proto";
 import "mass/api/spatial.proto";
 
-message MassUpdate {
+message VesselUpdate {
   // Repeated field containing updates to various vessel systems.
   repeated SystemUpdate system_updates = 1;
 

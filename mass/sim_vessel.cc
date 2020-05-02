@@ -68,3 +68,14 @@ shared_ptr<T> SimVessel::get_system_of_type() {
   }
   return nullptr;
 }
+
+void SimVessel::step(float dt) {
+  for (shared_ptr<systems::SimSystem> system : vessel_systems) {
+    system->step(dt);
+  }
+}
+
+api::VesselUpdate SimVessel::get_update() {
+  api::VesselUpdate update;
+  return update;
+}

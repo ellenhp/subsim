@@ -5,6 +5,19 @@ load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 package(default_visibility = ["//visibility:public"])
 
 proto_library(
+    name = "actions_proto",
+    srcs = ["actions.proto"],
+    deps = [
+        ":chat_proto",
+    ],
+)
+
+cc_proto_library(
+    name = "cc_actions_proto",
+    deps = [":actions_proto"],
+)
+
+proto_library(
     name = "chat_proto",
     srcs = ["chat.proto"],
 )
@@ -18,7 +31,7 @@ proto_library(
     name = "mass_proto",
     srcs = ["mass.proto"],
     deps = [
-        ":requests_proto",
+        ":actions_proto",
         ":updates_proto",
     ],
 )
@@ -35,19 +48,6 @@ cc_grpc_library(
     deps = [
         ":cc_mass_proto",
     ],
-)
-
-proto_library(
-    name = "requests_proto",
-    srcs = ["requests.proto"],
-    deps = [
-        ":chat_proto",
-    ],
-)
-
-cc_proto_library(
-    name = "cc_requests_proto",
-    deps = [":requests_proto"],
 )
 
 proto_library(

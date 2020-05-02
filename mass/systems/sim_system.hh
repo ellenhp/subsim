@@ -21,6 +21,8 @@ namespace systems {
 class SimSystem {
  public:
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state) = 0;
+
+  virtual void step(float dt);
 };
 }  // namespace systems
 }  // namespace mass

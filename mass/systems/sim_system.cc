@@ -12,32 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include "sim_system.hh"
 
-#include <memory>
-#include <set>
-#include <vector>
+using namespace mass::systems;
 
-#include "mass/api/scenario.pb.h"
-#include "mass/api/updates.pb.h"
-#include "systems/sim_system.hh"
-
-namespace mass {
-class SimVessel {
- public:
-  SimVessel(api::VesselDescriptor descriptor);
-
-  void step(float dt);
-
-  api::VesselUpdate get_update();
-
-  template <class T>
-  std::shared_ptr<T> get_system_of_type();
-
-  template <class T>
-  std::vector<std::shared_ptr<T>> get_all_systems_of_type();
-
- private:
-  std::set<std::shared_ptr<systems::SimSystem>> vessel_systems;
-};
-}  // namespace mass
+void SimSystem::step(float dt) {}
