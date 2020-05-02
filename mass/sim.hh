@@ -15,13 +15,14 @@
 #pragma once
 
 #include <map>
+#include <mutex>
 #include <string>
 
 #include "mass/api/actions.pb.h"
 #include "mass/api/mass.pb.h"
 #include "mass/api/scenario.pb.h"
 #include "mass/api/updates.pb.h"
-#include "mass/systems/sim_vessel.hh"
+#include "mass/vessel/sim_vessel.hh"
 
 namespace mass {
 class Sim {
@@ -34,8 +35,12 @@ class Sim {
 
   api::VesselUpdate get_update_for(std::string vessel_unique_id);
 
+  bool is_stale();
+
  private:
-  std::map<std::string, std::shared_ptr<systems::SimVessel>> vessels;
-  std::map<std::string, api::VesselDescriptor> vessel_descriptors;
+  std::mutex sim_mutex_;
+
+  std::map<std::string, std::shared_ptr<vessel::SimVessel>> vessels_;
+  std::map<std::string, api::VesselDescriptor> vessel_descriptors_;
 };
 }  // namespace mass

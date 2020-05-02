@@ -17,6 +17,7 @@ package api;
 
 import "mass/api/actions.proto";
 import "mass/api/updates.proto";
+import "mass/api/scenario.proto";
 
 service MassBackend {
   rpc Connect(stream ConnectRequest) returns (stream VesselUpdate);
@@ -26,4 +27,9 @@ service MassBackend {
 message ConnectRequest {
   // The unique ID that the user wants to connect to.
   string vessel_unique_id = 1;
+  // The scenario to instantiate.
+  Scenario scenario = 2;
+  // The name of the scenario instance. To connect to an existing scenario
+  // instance, populate this field but leave scenario empty.
+  string scenario_id = 3;
 }

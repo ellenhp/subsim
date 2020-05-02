@@ -23,7 +23,7 @@ class SteeringSystem : public SimSystem {
  public:
   SteeringSystem(api::SteeringSystem steering_system);
 
-  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state) override;
 
   double heading_degrees();
 

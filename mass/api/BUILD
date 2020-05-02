@@ -32,6 +32,7 @@ proto_library(
     srcs = ["mass.proto"],
     deps = [
         ":actions_proto",
+        ":scenario_proto",
         ":updates_proto",
     ],
 )

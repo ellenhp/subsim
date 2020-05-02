@@ -23,11 +23,9 @@
 #include "mass/vessel/steering_system.hh"
 
 using namespace mass::vessel;
-using std::dynamic_pointer_cast;
 using std::make_shared;
 using std::shared_ptr;
 using std::static_pointer_cast;
-using std::vector;
 
 SimVessel::SimVessel(api::VesselDescriptor vessel_descriptor,
                      api::SpawnedVessel spawned_vessel) {
@@ -64,28 +62,6 @@ SimVessel::SimVessel(api::VesselDescriptor vessel_descriptor,
   }
 }
 
-template <class T>
-vector<shared_ptr<T>> SimVessel::all_systems() {
-  vector<shared_ptr<T>> results;
-  for (shared_ptr<SimSystem> system : vessel_systems) {
-    shared_ptr<T> cast_ptr = dynamic_pointer_cast<T>(system);
-    if (cast_ptr != nullptr) {
-      results.push_back(cast_ptr);
-    }
-  }
-  return results;
-}
-
-template <class T>
-shared_ptr<T> SimVessel::system() {
-  vector<T> results = all_systems<T>();
-  // We can't return a single system if there are multiple or none.
-  if (results.size() == 1) {
-    return results[0];
-  }
-  return nullptr;
-}
-
 void SimVessel::step(float dt) {
   for (shared_ptr<SimSystem> system : vessel_systems) {
     system->step(dt, *this);
@@ -95,4 +71,10 @@ void SimVessel::step(float dt) {
 api::VesselUpdate SimVessel::get_update() {
   api::VesselUpdate update;
   return update;
+}
+
+api::Position SimVessel::position() const { return position_; }
+
+void SimVessel::set_position(api::Position new_position) {
+  position_ = new_position;
 }

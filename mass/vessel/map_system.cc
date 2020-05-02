@@ -17,3 +17,5 @@
 using namespace mass::vessel;
 
 MapSystem::MapSystem(api::MapSystem) {}
+
+void MapSystem::setup_spawn_state(api::SpawnedVessel spawned_state) {}
