@@ -18,25 +18,41 @@
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
 
+#include <map>
+#include <string>
+
 #include "mass/api/mass.grpc.pb.h"
+#include "sim.hh"
 
 namespace mass {
-
-class MassBackendImpl final : public api::MassBackend::Service {
- public:
-  grpc::Status Connect(
-      grpc::ServerContext *context,
-      grpc::ServerReaderWriter<api::VesselUpdate, api::ConnectRequest> *stream);
-};
 
 class MassServer {
  public:
   MassServer(std::string server_address_and_port);
 
   void run_server_forever();
+  void run_game_loop_nonblocking(std::shared_ptr<Sim> sim,
+                                 std::string unique_id);
 
  private:
-  std::string _server_address_and_port;
+  void run_game_loop_until_stale(std::string unique_id);
+
+  std::string server_address_and_port_;
+  std::map<std::string, std::shared_ptr<Sim>> sims_;
+
+  std::mutex sim_map_modification_mutex_;
+};
+
+class MassBackendImpl final : public api::MassBackend::Service {
+ public:
+  MassBackendImpl(MassServer *server);
+
+  grpc::Status Connect(
+      grpc::ServerContext *context,
+      grpc::ServerReaderWriter<api::VesselUpdate, api::ConnectRequest> *stream);
+
+ private:
+  MassServer *server_;
 };
 
 }  // namespace mass

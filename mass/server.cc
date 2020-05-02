@@ -14,27 +14,84 @@
 
 #include "server.hh"
 
+#include <iostream>
+#include <thread>
+
 using namespace mass;
+
+using std::cout;
+using std::endl;
+using std::make_shared;
+using std::shared_ptr;
+using std::string;
+using std::this_thread::sleep_for;
+
+MassBackendImpl::MassBackendImpl(MassServer *server) : server_(server) {}
 
 grpc::Status MassBackendImpl::Connect(
     ::grpc::ServerContext *context,
     grpc::ServerReaderWriter<api::VesselUpdate, api::ConnectRequest> *stream) {
+  api::ConnectRequest request;
+  if (stream->Read(&request)) {
+  } else {
+  }
+
   return grpc::Status::OK;
 }
 
-MassServer::MassServer(std::string server_address_and_port) {
-  _server_address_and_port = server_address_and_port;
-}
+MassServer::MassServer(std::string server_address_and_port)
+    : server_address_and_port_(server_address_and_port) {}
 
 void MassServer::run_server_forever() {
-  MassBackendImpl service;
+  MassBackendImpl service(this);
 
   grpc::EnableDefaultHealthCheckService(true);
   grpc::reflection::InitProtoReflectionServerBuilderPlugin();
   grpc::ServerBuilder builder;
-  builder.AddListeningPort(_server_address_and_port,
+  builder.AddListeningPort(server_address_and_port_,
                            grpc::InsecureServerCredentials());
   builder.RegisterService(&service);
+  cout << "Starting server." << endl;
   std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
+  cout << "Waiting for server to shut down." << endl;
   server->Wait();
+}
+
+void MassServer::run_game_loop_nonblocking(std::shared_ptr<Sim> sim,
+                                           std::string unique_id) {
+  const std::lock_guard<std::mutex> lock(sim_map_modification_mutex_);
+  if (sims_[unique_id] != nullptr) {
+    // There's already a running game loop with this unique id.
+    return;
+  }
+  sims_[unique_id] = sim;
+  std::thread game_loop(&MassServer::run_game_loop_until_stale, this,
+                        unique_id);
+}
+
+void MassServer::run_game_loop_until_stale(string unique_id) {
+  auto sim = sims_[unique_id];
+  if (sim == nullptr) {
+    cout << "Game loop failed to start. Simulation not populated." << endl;
+    return;
+  }
+
+  cout << "Running game loop." << endl;
+  using clock = std::chrono::high_resolution_clock;
+  auto time_start = clock::now();
+  std::chrono::nanoseconds unsimulated_elapsed(0);
+
+  const int timestep_millis = 250;
+  const std::chrono::milliseconds timestep(timestep_millis);
+
+  while (!sim->is_stale()) {
+    auto delta_time = clock::now() - time_start;
+    unsimulated_elapsed +=
+        std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
+    while (unsimulated_elapsed < timestep) {
+      cout << "Stepping simulation" << endl;
+      sim->step(timestep_millis / 1000.0);
+    }
+    sleep_for(timestep);
+  }
 }

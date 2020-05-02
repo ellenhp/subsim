@@ -23,7 +23,7 @@ class MapSystem : public SimSystem {
  public:
   MapSystem(api::MapSystem map_system);
 
-  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state) override;
 };
 }  // namespace vessel
 }  // namespace mass

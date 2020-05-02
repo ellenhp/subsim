@@ -33,10 +33,26 @@ class SimVessel {
   api::VesselUpdate get_update();
 
   template <class T>
-  std::shared_ptr<T> system();
+  std::shared_ptr<T> system() {
+    auto results = all_systems<T>();
+    // We can't return a single system if there are multiple or none.
+    if (results.size() == 1) {
+      return results[0];
+    }
+    return nullptr;
+  }
 
   template <class T>
-  std::vector<std::shared_ptr<T>> all_systems();
+  std::vector<std::shared_ptr<T>> all_systems() {
+    std::vector<std::shared_ptr<T>> results;
+    for (std::shared_ptr<SimSystem> system : vessel_systems) {
+      std::shared_ptr<T> cast_ptr = std::dynamic_pointer_cast<T>(system);
+      if (cast_ptr != nullptr) {
+        results.push_back(cast_ptr);
+      }
+    }
+    return results;
+  }
 
   api::Position position() const;
   void set_position(api::Position);

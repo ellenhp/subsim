@@ -24,7 +24,7 @@ class DivingSystem : public SimSystem {
  public:
   DivingSystem(api::DivingSystem diving_system);
 
-  virtual void setup_spawn_state(api::SpawnedVessel spawned_state);
+  virtual void setup_spawn_state(api::SpawnedVessel spawned_state) override;
 
   virtual void step(float dt, SimVessel& parent);
 

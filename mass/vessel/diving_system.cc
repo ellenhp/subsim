@@ -30,7 +30,7 @@ DivingSystem::DivingSystem(api::DivingSystem diving_system)
   requested_depth_feet = 0;
 }
 
-void DivingSystem::setup_spawn_state(api::SpawnedVessel) {
+void DivingSystem::setup_spawn_state(api::SpawnedVessel spawn_state) {
   // Nothing to do until we get the ability to spawn vessels at depth.
 }
 

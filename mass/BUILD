@@ -14,7 +14,7 @@ cc_library(
         "//mass/api:cc_scenario_proto",
         "//mass/api:cc_spatial_proto",
         "//mass/api:cc_systems_proto",
-        "//mass/systems",
+        "//mass/vessel",
         "@com_github_grpc_grpc//:grpc++_base",
         "@com_github_grpc_grpc//:grpc++_reflection",
     ],

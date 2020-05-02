@@ -19,22 +19,26 @@ using std::string;
 
 Sim::Sim(api::Scenario scenario) {
   for (auto &descriptor : scenario.vessel_descriptors()) {
-    vessel_descriptors[descriptor.unique_id()] = descriptor;
+    vessel_descriptors_[descriptor.unique_id()] = descriptor;
   }
   for (auto &spanwed_vessel : scenario.vessels()) {
     string id = spanwed_vessel.unique_id();
-    vessels[id] = std::make_shared<systems::SimVessel>(
-        vessel_descriptors[spanwed_vessel.vessel_descriptor_id()],
+    vessels_[id] = std::make_shared<vessel::SimVessel>(
+        vessel_descriptors_[spanwed_vessel.vessel_descriptor_id()],
         spanwed_vessel);
   }
 }
 
 void Sim::step(float dt) {
-  for (auto &id_and_vessel : vessels) {
+  const std::lock_guard<std::mutex> lock(sim_mutex_);
+  for (auto &id_and_vessel : vessels_) {
     id_and_vessel.second->step(dt);
   }
 }
 
 api::VesselUpdate Sim::get_update_for(std::string vessel_unique_id) {
-  return vessels[vessel_unique_id]->get_update();
+  const std::lock_guard<std::mutex> lock(sim_mutex_);
+  return vessels_[vessel_unique_id]->get_update();
 }
+
+bool Sim::is_stale() { return false; }
