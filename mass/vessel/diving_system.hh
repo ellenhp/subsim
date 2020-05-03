@@ -28,7 +28,7 @@ class DivingSystem : public SimSystem {
   virtual void populate_system_update(
       api::SystemUpdate* system_update) override;
 
-  virtual void step(float dt, SimVessel& parent);
+  virtual void step(float dt, SimVessel& parent) override;
 
  private:
   const uint32_t max_depth_feet_;

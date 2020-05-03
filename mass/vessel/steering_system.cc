@@ -42,6 +42,11 @@ void SteeringSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
   }
 }
 
+void SteeringSystem::step(float dt, SimVessel& parent) {
+  // TODO make sure that when we update the heading we take the shortest path to
+  // the new heading.
+}
+
 double SteeringSystem::heading_degrees() { return actual_heading_; }
 
 void SteeringSystem::populate_system_update(api::SystemUpdate* system_update) {

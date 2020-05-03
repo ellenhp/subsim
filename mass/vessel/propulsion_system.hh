@@ -27,7 +27,7 @@ class PropulsionSystem : public SimSystem {
   virtual void populate_system_update(
       api::SystemUpdate* system_update) override;
 
-  virtual void step(float dt, SimVessel& parent);
+  virtual void step(float dt, SimVessel& parent) override;
 
  private:
   void update_speed(float dt, SimVessel& parent);
