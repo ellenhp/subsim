@@ -24,6 +24,8 @@ class SimSystem {
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state) = 0;
 
   virtual void step(float dt, SimVessel& parent);
+
+  virtual void populate_system_update(api::SystemUpdate* system_update) = 0;
 };
 }  // namespace vessel
 }  // namespace mass

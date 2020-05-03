@@ -70,6 +70,11 @@ void SimVessel::step(float dt) {
 
 api::VesselUpdate SimVessel::get_update() {
   api::VesselUpdate update;
+  for (shared_ptr<SimSystem> system : vessel_systems) {
+    api::SystemUpdate* system_update = update.add_system_updates();
+    system->populate_system_update(system_update);
+  }
+  // TODO eventually do chat updates!
   return update;
 }
 

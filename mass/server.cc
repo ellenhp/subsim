@@ -32,10 +32,21 @@ grpc::Status MassBackendImpl::Connect(
     ::grpc::ServerContext *context,
     grpc::ServerReaderWriter<api::VesselUpdate, api::ConnectRequest> *stream) {
   api::ConnectRequest request;
-  if (stream->Read(&request)) {
-  } else {
+  if (!stream->Read(&request)) {
+    return grpc::Status::CANCELLED;
   }
+  string scenario_id = request.scenario_id();
+  server_->run_game_loop_nonblocking(make_shared<Sim>(request.scenario()),
+                                     request.scenario_id());
 
+  api::VesselUpdate update;
+  cout << "Writing update." << endl;
+  while (stream->Write(
+      server_->get_update_for(scenario_id, request.vessel_unique_id()))) {
+    sleep_for(std::chrono::milliseconds(50));
+    cout << "Writing update." << endl;
+  }
+  cout << "Wrote last update." << endl;
   return grpc::Status::OK;
 }
 
@@ -94,4 +105,16 @@ void MassServer::run_game_loop_until_stale(string unique_id) {
     }
     sleep_for(timestep);
   }
+  const std::lock_guard<std::mutex> lock(sim_map_modification_mutex_);
+  // TODO there's a race condition here somewhere a new client connecting and a
+  // world being destroyed for being stale.
+  if (sim->is_stale()) {
+    sims_.erase(unique_id);
+  }
+}
+api::VesselUpdate MassServer::get_update_for(std::string scenario_unique_id,
+                                             std::string vessel_unique_id) {
+  const std::lock_guard<std::mutex> lock(sim_map_modification_mutex_);
+  auto sim = sims_[scenario_unique_id];
+  return sim->get_update_for(vessel_unique_id);
 }

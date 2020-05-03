@@ -24,18 +24,20 @@ class PropulsionSystem : public SimSystem {
   PropulsionSystem(api::PropulsionSystem propulsion_system);
 
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state) override;
+  virtual void populate_system_update(
+      api::SystemUpdate* system_update) override;
 
-  virtual void step(float dt, SimVessel& parent);
+  virtual void step(float dt, SimVessel& parent) override;
 
  private:
   void update_speed(float dt, SimVessel& parent);
   void update_position(float dt, SimVessel& parent);
 
-  uint32_t max_speed_knots;
-  double knots_per_second;
+  const uint32_t max_speed_knots_;
+  const double knots_per_second_;
 
-  uint32_t requested_speed_knots;
-  double actual_speed_knots;
+  uint32_t requested_speed_knots_;
+  double actual_speed_knots_;
 };
 }  // namespace vessel
 }  // namespace mass
