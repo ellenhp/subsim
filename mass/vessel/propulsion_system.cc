@@ -81,3 +81,6 @@ void PropulsionSystem::update_position(float dt, SimVessel& parent) {
 
   parent.set_position(new_position);
 }
+
+void PropulsionSystem::populate_system_update(
+    api::SystemUpdate* system_update) {}

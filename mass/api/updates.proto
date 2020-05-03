@@ -36,6 +36,8 @@ message SystemUpdate {
     PropulsionSystemUpdate propulsion_update = 3;
     // Map update.
     MapSystemUpdate map_update = 4;
+    // Hull system update.
+    HullSystemUpdate hull_update = 5;
   }
 }
 
@@ -50,9 +52,6 @@ message SteeringSystemUpdate {
 message DivingSystemUpdate {
   // Requested keel depth in feet.
   double requested_depth_feet = 1;
-
-  // Actual depth in feet.
-  double actual_depth_feet = 2;
 }
 
 message PropulsionSystemUpdate {
@@ -63,4 +62,12 @@ message PropulsionSystemUpdate {
   uint32 actual_speed_knots = 2;
 }
 
-message MapSystemUpdate { Position position = 1; }
+message MapSystemUpdate {
+  // The current position.
+  Position position = 1;
+}
+
+message HullSystemUpdate {
+  // Actual depth/draft in feet.
+  double actual_depth_feet = 1;
+}

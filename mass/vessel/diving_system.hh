@@ -25,14 +25,16 @@ class DivingSystem : public SimSystem {
   DivingSystem(api::DivingSystem diving_system);
 
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state) override;
+  virtual void populate_system_update(
+      api::SystemUpdate* system_update) override;
 
   virtual void step(float dt, SimVessel& parent);
 
  private:
-  uint32_t max_depth_feet;
-  double feet_per_second;
+  const uint32_t max_depth_feet_;
+  const double feet_per_second_;
 
-  uint32_t requested_depth_feet;
+  uint32_t requested_depth_feet_;
 };
 }  // namespace vessel
 }  // namespace mass
