@@ -22,11 +22,6 @@
 
 using namespace mass::vessel;
 
-template <typename T>
-static int signum(T val) {
-  return (T(0) < val) - (val < T(0));
-}
-
 PropulsionSystem::PropulsionSystem(api::PropulsionSystem propulsion_system)
     : max_speed_knots_(propulsion_system.max_speed_knots()),
       knots_per_second_(propulsion_system.knots_per_second()) {

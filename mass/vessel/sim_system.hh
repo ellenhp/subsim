@@ -26,6 +26,12 @@ class SimSystem {
   virtual void step(float dt, SimVessel& parent);
 
   virtual void populate_system_update(api::SystemUpdate* system_update) = 0;
+
+ protected:
+  template <typename T>
+  static int signum(T val) {
+    return (T(0) < val) - (val < T(0));
+  }
 };
 }  // namespace vessel
 }  // namespace mass
