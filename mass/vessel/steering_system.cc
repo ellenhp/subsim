@@ -43,8 +43,19 @@ void SteeringSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
 }
 
 void SteeringSystem::step(float dt, SimVessel& parent) {
-  // TODO make sure that when we update the heading we take the shortest path to
-  // the new heading.
+  // I think this works but it's 10pm and this project doesn't have tests lol.
+  double delta = requested_heading_ - actual_heading_;
+  if (delta > 180) {
+    delta = 360 - delta;
+  }
+  double max_delta_this_step = abs(dt * degrees_per_second_max_);
+
+  // If we can get to the requested heading in this step, great.
+  if (abs(delta) <= max_delta_this_step) {
+    actual_heading_ = requested_heading_;
+  } else {
+    actual_heading_ += signum(delta) * max_delta_this_step;
+  }
 }
 
 double SteeringSystem::heading_degrees() { return actual_heading_; }

@@ -19,11 +19,6 @@
 
 using namespace mass::vessel;
 
-template <typename T>
-static int signum(T val) {
-  return (T(0) < val) - (val < T(0));
-}
-
 DivingSystem::DivingSystem(api::DivingSystem diving_system)
     : max_depth_feet_(diving_system.max_depth_feet()),
       feet_per_second_(diving_system.feet_per_second()) {
