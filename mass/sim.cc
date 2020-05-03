@@ -41,4 +41,7 @@ api::VesselUpdate Sim::get_update_for(std::string vessel_unique_id) {
   return vessels_[vessel_unique_id]->get_update();
 }
 
-bool Sim::is_stale() { return false; }
+bool Sim::is_stale() {
+  // TODO: return true if we haven't seen a user request in a while.
+  return false;
+}

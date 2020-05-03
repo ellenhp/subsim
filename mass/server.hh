@@ -33,6 +33,8 @@ class MassServer {
   void run_server_forever();
   void run_game_loop_nonblocking(std::shared_ptr<Sim> sim,
                                  std::string unique_id);
+  api::VesselUpdate get_update_for(std::string scenario_unique_id,
+                                   std::string vessel_unique_id);
 
  private:
   void run_game_loop_until_stale(std::string unique_id);
