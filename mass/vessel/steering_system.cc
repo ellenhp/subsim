@@ -19,16 +19,16 @@
 using namespace mass::vessel;
 
 SteeringSystem::SteeringSystem(api::SteeringSystem steering_system)
-    : degrees_per_second_max(steering_system.degrees_per_second()) {
-  actual_heading = 0;
-  requested_heading = 0;
+    : degrees_per_second_max_(steering_system.degrees_per_second()) {
+  actual_heading_ = 0;
+  requested_heading_ = 0;
 }
 
 void SteeringSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
   // Catch all cases where the exact_spawn_heading is set and is non-default. We
   // don't need to catch (and *can't* catch cases where it's set to default).
   if (spawned_vessel.spawn_info().exact_spawn_heading() != 0) {
-    actual_heading = requested_heading =
+    actual_heading_ = requested_heading_ =
         spawned_vessel.spawn_info().exact_spawn_heading();
   } else if (spawned_vessel.spawn_info().has_heading_bounds()) {
     api::HeadingBounds heading_bounds =
@@ -38,10 +38,14 @@ void SteeringSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
     // Add 360 to the right bound in case it wraps around across zero.
     std::uniform_int_distribution<> heading_dist(
         heading_bounds.left_bound(), heading_bounds.right_bound() + 360);
-    actual_heading = requested_heading = heading_dist(engine) % 360;
+    actual_heading_ = requested_heading_ = heading_dist(engine) % 360;
   }
 }
 
-double SteeringSystem::heading_degrees() { return actual_heading; }
+double SteeringSystem::heading_degrees() { return actual_heading_; }
 
-void SteeringSystem::populate_system_update(api::SystemUpdate* system_update) {}
+void SteeringSystem::populate_system_update(api::SystemUpdate* system_update) {
+  api::SteeringSystemUpdate* update = system_update->mutable_steering_update();
+  update->set_actual_heading_degrees(actual_heading_);
+  update->set_requested_heading_degrees(requested_heading_);
+}

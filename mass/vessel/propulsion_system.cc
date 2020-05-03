@@ -28,10 +28,10 @@ static int signum(T val) {
 }
 
 PropulsionSystem::PropulsionSystem(api::PropulsionSystem propulsion_system)
-    : max_speed_knots(propulsion_system.max_speed_knots()),
-      knots_per_second(propulsion_system.knots_per_second()) {
-  requested_speed_knots = 0;
-  actual_speed_knots = 0;
+    : max_speed_knots_(propulsion_system.max_speed_knots()),
+      knots_per_second_(propulsion_system.knots_per_second()) {
+  requested_speed_knots_ = 0;
+  actual_speed_knots_ = 0;
 }
 
 void PropulsionSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {
@@ -44,14 +44,14 @@ void PropulsionSystem::step(float dt, SimVessel& parent) {
 }
 
 void PropulsionSystem::update_speed(float dt, SimVessel& parent) {
-  double delta = requested_speed_knots - actual_speed_knots;
-  double max_delta_this_step = abs(dt * knots_per_second);
+  double delta = requested_speed_knots_ - actual_speed_knots_;
+  double max_delta_this_step = abs(dt * knots_per_second_);
 
   // If we can get to the requested speed in this step, great.
   if (abs(delta) <= max_delta_this_step) {
-    actual_speed_knots = requested_speed_knots;
+    actual_speed_knots_ = requested_speed_knots_;
   } else {
-    actual_speed_knots += signum(delta) * max_delta_this_step;
+    actual_speed_knots_ += signum(delta) * max_delta_this_step;
   }
 }
 
@@ -66,8 +66,8 @@ void PropulsionSystem::update_position(float dt, SimVessel& parent) {
   // grid, in knots.
   double heading_radians = heading_degrees / 180 * M_PI;
   // A heading of zero is due north, so we need to use sin for X and cos for Y.
-  double x_knots = actual_speed_knots * sin(heading_radians);
-  double y_knots = actual_speed_knots * cos(heading_radians);
+  double x_knots = actual_speed_knots_ * sin(heading_radians);
+  double y_knots = actual_speed_knots_ * cos(heading_radians);
 
   // One knot is 1 nmi / hr, which approximates to one minute of latitude / hr.
   double lat_minutes_per_hour = y_knots;
@@ -83,4 +83,8 @@ void PropulsionSystem::update_position(float dt, SimVessel& parent) {
 }
 
 void PropulsionSystem::populate_system_update(
-    api::SystemUpdate* system_update) {}
+    api::SystemUpdate* system_update) {
+  auto update = system_update->mutable_propulsion_update();
+  update->set_actual_speed_knots(actual_speed_knots_);
+  update->set_requested_speed_knots(requested_speed_knots_);
+}

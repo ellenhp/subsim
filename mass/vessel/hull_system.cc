@@ -25,4 +25,6 @@ double HullSystem::depth_feet() { return depth_feet_; }
 
 void HullSystem::set_depth_feet(double new_depth) { depth_feet_ = new_depth; }
 
-void HullSystem::populate_system_update(api::SystemUpdate* system_update) {}
+void HullSystem::populate_system_update(api::SystemUpdate* system_update) {
+  system_update->mutable_hull_update()->set_actual_depth_feet(depth_feet_);
+}

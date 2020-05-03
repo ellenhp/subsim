@@ -20,4 +20,6 @@ MapSystem::MapSystem(api::MapSystem) {}
 
 void MapSystem::setup_spawn_state(api::SpawnedVessel spawned_state) {}
 
-void MapSystem::populate_system_update(api::SystemUpdate* system_update) {}
+void MapSystem::populate_system_update(api::SystemUpdate* system_update) {
+  // Eventually populate markers and stuff.
+}

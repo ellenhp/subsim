@@ -30,10 +30,10 @@ class SteeringSystem : public SimSystem {
   double heading_degrees();
 
  private:
-  uint32_t requested_heading;
-  double actual_heading;
+  uint32_t requested_heading_;
+  double actual_heading_;
 
-  double degrees_per_second_max;
+  const double degrees_per_second_max_;
 };
 }  // namespace vessel
 }  // namespace mass
