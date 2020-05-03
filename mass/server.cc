@@ -106,7 +106,11 @@ void MassServer::run_game_loop_until_stale(string unique_id) {
     sleep_for(timestep);
   }
   const std::lock_guard<std::mutex> lock(sim_map_modification_mutex_);
-  sims_.erase(unique_id);
+  // TODO there's a race condition here somewhere a new client connecting and a
+  // world being destroyed for being stale.
+  if (sim->is_stale()) {
+    sims_.erase(unique_id);
+  }
 }
 api::VesselUpdate MassServer::get_update_for(std::string scenario_unique_id,
                                              std::string vessel_unique_id) {
