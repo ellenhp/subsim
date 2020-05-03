@@ -1,6 +1,6 @@
 {
     "clang-format.fallbackStyle": "Google",
-    "licenser.author": "Google LLC",
+    "licenser.author": "Ellen Poe",
     "licenser.license": "AL2",
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
