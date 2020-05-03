@@ -35,14 +35,14 @@ grpc::Status MassBackendImpl::Connect(
   if (!stream->Read(&request)) {
     return grpc::Status::CANCELLED;
   }
-  string scenario_id = request.scenario_id;
-  server_->run_game_loop_nonblocking(make_shared<Sim>(request.scenario),
-                                     request.scenario_id);
+  string scenario_id = request.scenario_id();
+  server_->run_game_loop_nonblocking(make_shared<Sim>(request.scenario()),
+                                     request.scenario_id());
 
   api::VesselUpdate update;
   cout << "Writing update." << endl;
   while (stream->Write(
-      server_->get_update_for(scenario_id, request.vessel_unique_id))) {
+      server_->get_update_for(scenario_id, request.vessel_unique_id()))) {
     sleep_for(std::chrono::milliseconds(50));
     cout << "Writing update." << endl;
   }
