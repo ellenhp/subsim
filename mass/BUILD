@@ -1,5 +1,17 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
 load("@io_bazel_rules_docker//cc:image.bzl", "cc_image")
+load("@io_bazel_rules_docker//container:container.bzl", "container_push")
+
+package(default_visibility = ["//k8s:__subpackages__"])
+
+container_push(
+   name = "publish",
+   image = ":image",
+   format = "Docker",
+   registry = "gcr.io",
+   repository = "mass-276203/mass",
+   tag = "dev",
+)
 
 cc_image(
     name = "image",

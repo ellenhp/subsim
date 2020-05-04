@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mass
+  labels:
+    app: mass
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mass
+  template:
+    metadata:
+      labels:
+        app: mass
+    spec:
+      containers:
+        - name: mass-be
+          image: "mass-276203/mass:dev"
+          ports:
+            - containerPort: 80
