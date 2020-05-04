@@ -52,13 +52,13 @@ container_pull(
     tag = "3.8",
 )
 
-# container_pull(
-#   name = "java_base",
-#   registry = "gcr.io",
-#   repository = "distroless/java",
-#   # 'tag' is also supported, but digest is encouraged for reproducibility.
-#   digest = "sha256:deadbeef",
-# )
+container_pull(
+  name = "java_base",
+  registry = "gcr.io",
+  repository = "distroless/java",
+  # 'tag' is also supported, but digest is encouraged for reproducibility.
+  digest = "sha256:deadbeef",
+)
 
 load(
     "@io_bazel_rules_docker//repositories:repositories.bzl",
