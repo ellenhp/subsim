@@ -60,4 +60,7 @@ from __main__ import get_stub, make_request, start_server
 stub=get_stub()
 ''', number=times)
 print('RPC time: {}'.format(t/times))
+
+print(stub.Propagate(make_request()))
+
 process.terminate()

@@ -18,7 +18,7 @@ grpc_extra_deps()
 
 http_archive(
     name = "rules_python_external",
-    sha256 = "",
+    sha256 = "5a1d7e6e4bab49dcdd787694f0f5d52ac5debdfc1852981a89cc414e338d60dc",
     strip_prefix = "rules_python_external-3aacabb928a710b10bff13d0bde49ceaade58f15",
     url = "https://github.com/dillon-giacoppo/rules_python_external/archive/3aacabb928a710b10bff13d0bde49ceaade58f15.zip",
 )
