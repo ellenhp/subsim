@@ -1,0 +1,66 @@
+// Copyright (C) 2020 Ellen Poe
+//
+// This file is part of MASS.
+//
+// MASS is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// MASS is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with MASS.  If not, see <http://www.gnu.org/licenses/>.
+
+syntax = "proto3";
+
+service Bloop {
+  // Calculate the propagation with the requested data.
+  rpc Propagate(PropagateRequest) returns (PropagateResponse);
+}
+
+message SoundSpeedProfile {
+  message SoundSpeedPoint {
+    int32 depth_meters = 1;
+    double sound_speed = 2;
+  }
+  repeated SoundSpeedPoint speed_points = 1;
+}
+
+message BathymetricProfile {
+  message BathymetricProfilePoint {
+    double range_meters = 1;
+    double depth_meters = 2;
+  }
+  repeated BathymetricProfilePoint points = 1;
+}
+message PropagateRequest {
+
+  // The ranges to calculate at.
+  repeated float ranges = 1;
+  // The depths to calculate at.
+  repeated float depths = 2;
+  // The frequency to use.
+  int32 frequency = 3;
+  // The sound speed profile to use.
+  SoundSpeedProfile ssp = 4;
+  // The bathymetric profile to use.
+  BathymetricProfile bathymetry = 5;
+}
+
+message PropagationLossGrid {
+  message PropagationLossPoint {
+    float range = 1;
+    float depth = 2;
+    float loss = 3;
+  }
+  repeated PropagationLossPoint points = 1;
+}
+
+message PropagateResponse {
+  // The loss calculated.
+  PropagationLossGrid loss = 1;
+}
