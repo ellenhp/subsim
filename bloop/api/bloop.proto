@@ -53,8 +53,8 @@ message PropagateRequest {
 
 message PropagationLossGrid {
   message PropagationLossPoint {
-    float range = 1;
-    float depth = 2;
+    float range_meters = 1;
+    float depth_meters = 2;
     float loss = 3;
   }
   repeated PropagationLossPoint points = 1;
