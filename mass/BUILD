@@ -1,4 +1,10 @@
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_library")
+load("@io_bazel_rules_docker//cc:image.bzl", "cc_image")
+
+cc_image(
+    name = "image",
+    binary = ":mass",
+)
 
 cc_library(
     name = "server",
