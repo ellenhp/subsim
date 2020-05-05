@@ -93,3 +93,12 @@ k8s_repositories()
 load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
 
 k8s_go_deps()
+
+container_pull(
+  name = "envoy_base",
+  registry = "index.docker.io",
+  repository = "envoyproxy/envoy-dev",
+  # 'tag' is also supported, but digest is encouraged for reproducibility.
+  #digest = "sha256:10125161be0d0a759c3ffb02ddcdf8abc0bc6060",
+  tag = "latest",
+)

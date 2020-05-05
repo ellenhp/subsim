@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mass-envoy
+  labels:
+    app: mass-envoy
+spec:
+  replicas: 1
+  type: LoadBalancer
+  selector:
+    matchLabels:
+      app: mass-envoy
+  template:
+    metadata:
+      labels:
+        app: mass-envoy
+    spec:
+      containers:
+        - name: envoy
+          image: "gcr.io/mass-276203/envoy:dev"
+          ports:
+          - containerPort: 8080

@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: mass-be
-          image: "mass-276203/mass:dev"
+          image: "gcr.io/mass-276203/mass:dev"
           ports:
-            - containerPort: 80
+            - containerPort: 8080

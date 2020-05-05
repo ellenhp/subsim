@@ -1,16 +1,19 @@
 load("@io_bazel_rules_k8s//k8s:object.bzl", "k8s_object")
+load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
 
 k8s_object(
-  name = "prod",
-  kind = "deployment",
-
+  name = "ingress-prod",
+  kind = "service",
+  cluster = "gke_mass-276203_us-central1-c_milky",
   # A template of a Kubernetes Deployment object yaml.
-  template = ":deployment.yaml",
+  template = ":service.yaml",
+)
 
-  # An optional collection of docker_build images to publish
-  # when this target is bazel run.  The digest of the published
-  # image is substituted as a part of the resolution process.
-  images = {
-    "gcr.io/mass-276203/mass:dev": "//mass:image"
-  },
+k8s_objects(
+  name = "prod",
+  objects = [
+    "//envoy:prod",
+    "//mass:prod",
+    #":ingress-prod"
+  ]
 )
