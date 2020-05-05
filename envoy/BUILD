@@ -1,12 +1,20 @@
 load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 load("@io_bazel_rules_docker//container:container.bzl", "container_push")
 load("@io_bazel_rules_k8s//k8s:object.bzl", "k8s_object")
-
+load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
 
 package(default_visibility = ["//k8s:__subpackages__"])
 
-k8s_object(
+k8s_objects(
   name = "prod",
+  objects = [
+    ":prod-deployment",
+    ":prod-service",
+  ]
+)
+
+k8s_object(
+  name = "prod-deployment",
   kind = "deployment",
   cluster = "gke_mass-276203_us-central1-c_milky",
   # A template of a Kubernetes Deployment object yaml.
@@ -18,6 +26,13 @@ k8s_object(
   images = {
     "gcr.io/mass-276203/envoy:dev": "//envoy:image",
   },
+)
+
+k8s_object(
+  name = "prod-service",
+  kind = "service",
+  cluster = "gke_mass-276203_us-central1-c_milky",
+  template = ":service.yaml",
 )
 
 container_push(

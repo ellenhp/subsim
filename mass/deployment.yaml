@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mass
+  name: mass-be
   labels:
-    app: mass
+    app: mass-be
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mass
+      app: mass-be
   template:
     metadata:
       labels:
-        app: mass
+        app: mass-be
     spec:
       containers:
         - name: mass-be

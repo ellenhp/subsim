@@ -98,7 +98,12 @@ container_pull(
   name = "envoy_base",
   registry = "index.docker.io",
   repository = "envoyproxy/envoy-dev",
-  # 'tag' is also supported, but digest is encouraged for reproducibility.
-  #digest = "sha256:10125161be0d0a759c3ffb02ddcdf8abc0bc6060",
+  tag = "latest",
+)
+
+container_pull(
+  name = "nginx",
+  registry = "index.docker.io",
+  repository = "nginx",
   tag = "latest",
 )

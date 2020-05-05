@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: mass-envoy
@@ -6,7 +6,6 @@ metadata:
     app: mass-envoy
 spec:
   replicas: 1
-  type: LoadBalancer
   selector:
     matchLabels:
       app: mass-envoy
@@ -16,7 +15,12 @@ spec:
         app: mass-envoy
     spec:
       containers:
-        - name: envoy
-          image: "gcr.io/mass-276203/envoy:dev"
-          ports:
-          - containerPort: 8080
+      - name: mass-envoy
+        image: "gcr.io/mass-276203/envoy:dev"
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 80
+        - name: envoy-admin
+          containerPort: 9901
+

@@ -7,7 +7,7 @@ static_resources:
   listeners:
   - name: listener_0
     address:
-      socket_address: { address: 0.0.0.0, port_value: 8080 }
+      socket_address: { address: 0.0.0.0, port_value: 80 }
     filter_chains:
     - filters:
       - name: envoy.http_connection_manager
@@ -17,7 +17,7 @@ static_resources:
           route_config:
             name: local_route
             virtual_hosts:
-            - name: local_service
+            - name: mass_service
               domains: ["*"]
               routes:
               - match: { prefix: "/" }
@@ -38,7 +38,9 @@ static_resources:
   clusters:
   - name: mass_service
     connect_timeout: 0.25s
-    type: logical_dns
+    type: STRICT_DNS
     http2_protocol_options: {}
     lb_policy: round_robin
-    hosts: [{ socket_address: { address: node-server, port_value: 9090 }}]
+    dns_lookup_family: V4_ONLY
+    lb_policy: ROUND_ROBIN
+    hosts: [{ socket_address: { address: mass-be, port_value: 50051 }}]
