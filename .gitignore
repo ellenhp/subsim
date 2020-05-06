@@ -1,2 +1,7 @@
 /bazel-*
 *__pycache__*
+*.o
+*.mod
+*.prt
+*.DS_Store
+*.log
