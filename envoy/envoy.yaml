@@ -13,17 +13,20 @@ static_resources:
       - name: envoy.http_connection_manager
         config:
           codec_type: auto
-          stat_prefix: ingress_http
+          stat_prefix: ingress_grpc
           route_config:
             name: local_route
             virtual_hosts:
-            - name: mass_service
+            - name: main
               domains: ["*"]
               routes:
+              - match: { prefix: "/", grpc: {} }
+                route:
+                  cluster: mass_be
+                  max_grpc_timeout: 0s
               - match: { prefix: "/" }
                 route:
-                  cluster: mass_backend
-                  max_grpc_timeout: 0s
+                  cluster: mass_static
               cors:
                 allow_origin_string_match:
                 - prefix: "*"
@@ -36,11 +39,18 @@ static_resources:
           - name: envoy.cors
           - name: envoy.router
   clusters:
-  - name: mass_service
+  - name: mass_be
     connect_timeout: 0.25s
-    type: STRICT_DNS
+    type: LOGICAL_DNS
     http2_protocol_options: {}
     lb_policy: round_robin
     dns_lookup_family: V4_ONLY
     lb_policy: ROUND_ROBIN
     hosts: [{ socket_address: { address: mass-be, port_value: 50051 }}]
+  - name: mass_static
+    connect_timeout: 0.25s
+    type: LOGICAL_DNS
+    lb_policy: round_robin
+    dns_lookup_family: V4_ONLY
+    lb_policy: ROUND_ROBIN
+    hosts: [{ socket_address: { address: mass-static, port_value: 80 }}]

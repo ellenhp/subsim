@@ -102,8 +102,8 @@ container_pull(
 )
 
 container_pull(
-  name = "nginx",
-  registry = "index.docker.io",
-  repository = "nginx",
-  tag = "latest",
+    name = "nginx",
+    registry = "index.docker.io",
+    repository = "library/nginx",
+    tag = "latest",
 )

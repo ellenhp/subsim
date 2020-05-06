@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mass-static
+  labels:
+    app: mass-static
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mass-static
+  template:
+    metadata:
+      labels:
+        app: mass-static
+    spec:
+      containers:
+      - name: mass-static
+        image: "gcr.io/mass-276203/static:dev"
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 80

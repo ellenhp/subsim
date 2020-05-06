@@ -24,7 +24,7 @@ k8s_object(
   # when this target is bazel run.  The digest of the published
   # image is substituted as a part of the resolution process.
   images = {
-    "gcr.io/mass-276203/envoy:dev": "//envoy:image",
+    "gcr.io/mass-276203/static:dev": "//static:image",
   },
 )
 
@@ -40,13 +40,13 @@ container_push(
    image = ":image",
    format = "Docker",
    registry = "gcr.io",
-   repository = "mass-276203/envoy",
+   repository = "mass-276203/static",
    tag = "dev",
 )
 
 container_image(
   name = "image",
-  base = "@envoy_base//image",
-  directory= "/etc/envoy",
-  files = [":envoy.yaml"],
+  base = "@nginx//image",
+  directory = "/usr/share/nginx/html",
+  files = [":index.html"],
 )
