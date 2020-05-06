@@ -20,7 +20,7 @@
 def f90_library(name, srcs = [], deps = [], mods = []):
     rename_commands = ["cp $(location :" + f + ") $(RULEDIR)/" + f.rstrip("f90") + "cpp ;" for f in srcs]
 
-    compile_one_template = "gfortran -c -funroll-all-loops -fomit-frame-pointer -static -ffast-math"
+    compile_one_template = "gfortran -c -static-libgfortran -funroll-all-loops -fomit-frame-pointer -static -ffast-math"
     compile_commands = [compile_one_template + " $(location :" + f + ")" for f in srcs]
 
     copy_deps = ["find bazel-out/ -mindepth 2 -type l -exec mv -i '{}' . ';'"]
@@ -39,7 +39,7 @@ def f90_binary(name, out, srcs = [], deps = []):
     rename_commands = ["cp $(location :" + f + ") $(RULEDIR)/" + f.rstrip("f90") + "cpp ;" for f in srcs]
 
     fflags = " "
-    compile = "gfortran -o " + out + fflags + " ".join(["$(location " + f + ")" for f in deps])
+    compile = "gfortran -static-libgfortran -o " + out + fflags + " ".join(["$(location " + f + ")" for f in deps])
     copy_out = "cp " + out + " " + "$(RULEDIR)"
 
     # copy_deps = ["find bazel-out/ -mindepth 2 -type l -exec mv -i '{}' . ';'"]
