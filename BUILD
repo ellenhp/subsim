@@ -14,3 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with MASS.  If not, see <http://www.gnu.org/licenses/>.
+
+alias(
+    name = "tsconfig.json",
+    actual = "//grossclient:tsconfig.json",
+)

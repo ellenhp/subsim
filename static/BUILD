@@ -47,6 +47,5 @@ container_push(
 container_image(
   name = "image",
   base = "@nginx//image",
-  directory = "/usr/share/nginx/html",
-  files = [":index.html"],
+  tars = ["//grossclient:tar"],
 )
