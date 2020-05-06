@@ -75,7 +75,7 @@ py_binary(
 )
 
 download_pkgs(
-    name = "python3_packages",
+    name = "python3_ubuntu2004_packages",
     image_tar = "@ubuntu2004//image",
     packages = [
         "libgfortran5",
@@ -85,15 +85,15 @@ download_pkgs(
 )
 
 install_pkgs(
-    name = "python3_packages_install",
+    name = "python3_ubuntu2004",
     image_tar = "@ubuntu2004//image",
-    installables_tar = ":python3_packages.tar",
-    output_image_name = "python3_alpine_linux",
+    installables_tar = ":python3_ubuntu2004_packages.tar",
+    output_image_name = "python3_ubuntu2004",
 )
 
 container_image(
-    name = "python3_packages_install_wrapper",
-    base = ":python3_packages_install.tar",
+    name = "python3_ubuntu2004_wrapper",
+    base = ":python3_ubuntu2004.tar",
     files = [
         "//acoustics/bellhop:bellhop.exe",
     ],
@@ -108,7 +108,7 @@ py3_image(
         "bloop_service.py",
         "bloop_service_test.py",
     ],
-    base = ":python3_packages_install_wrapper",
+    base = ":python3_ubuntu2004_wrapper",
     layers = [
         requirement("arlpy"),
         requirement("bokeh"),
