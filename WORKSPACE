@@ -50,9 +50,9 @@ load(
 
 container_repositories()
 
-load("@io_bazel_rules_docker//python3:image.bzl", "repositories")
+load("@io_bazel_rules_docker//python3:image.bzl", _py3_image_repositories = "repositories")
 
-repositories()
+_py3_image_repositories()
 
 # This is NOT needed when going through the language lang_image
 # "repositories" function(s).
