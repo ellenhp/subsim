@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mass-be
+  labels:
+    app: mass-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mass-be
+  template:
+    metadata:
+      labels:
+        app: mass-be
+    spec:
+      containers:
+        - name: mass-be
+          image: "gcr.io/mass-276203/mass:dev"
+          ports:
+            - containerPort: 8080
