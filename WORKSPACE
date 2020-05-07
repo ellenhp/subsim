@@ -118,12 +118,3 @@ container_pull(
     repository = "library/nginx",
     tag = "latest",
 )
-
-http_archive(
-    name = "bazel_toolchains",
-    sha256 = "144290c4166bd67e76a54f96cd504ed86416ca3ca82030282760f0823c10be48",
-    strip_prefix = "bazel-toolchains-1c93ecd9a3a31dff03066f9264a7e90b3d228e18",
-    urls = [
-        "https://github.com/bazelbuild/bazel-toolchains/archive/1c93ecd9a3a31dff03066f9264a7e90b3d228e18.tar.gz",
-    ],
-)
