@@ -32,20 +32,16 @@ using std::this_thread::sleep_for;
 MassBackendImpl::MassBackendImpl(MassServer *server) : server_(server) {}
 
 grpc::Status MassBackendImpl::Connect(
-    ::grpc::ServerContext *context,
-    grpc::ServerReaderWriter<api::VesselUpdate, api::ConnectRequest> *stream) {
-  api::ConnectRequest request;
-  if (!stream->Read(&request)) {
-    return grpc::Status::CANCELLED;
-  }
-  string scenario_id = request.scenario_id();
-  server_->run_game_loop_nonblocking(make_shared<Sim>(request.scenario()),
-                                     request.scenario_id());
+    grpc::ServerContext *context, api::ConnectRequest *request,
+    grpc::ServerWriter<api::VesselUpdate> *stream) {
+  string scenario_id = request->scenario_id();
+  server_->run_game_loop_nonblocking(make_shared<Sim>(request->scenario()),
+                                     request->scenario_id());
 
   api::VesselUpdate update;
   cout << "Writing update." << endl;
   while (stream->Write(
-      server_->get_update_for(scenario_id, request.vessel_unique_id()))) {
+      server_->get_update_for(scenario_id, request->vessel_unique_id()))) {
     sleep_for(std::chrono::milliseconds(50));
     cout << "Writing update." << endl;
   }
