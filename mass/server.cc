@@ -32,7 +32,7 @@ using std::this_thread::sleep_for;
 MassBackendImpl::MassBackendImpl(MassServer *server) : server_(server) {}
 
 grpc::Status MassBackendImpl::Connect(
-    grpc::ServerContext *context, api::ConnectRequest *request,
+    grpc::ServerContext *context, const ::api::ConnectRequest *request,
     grpc::ServerWriter<api::VesselUpdate> *stream) {
   string scenario_id = request->scenario_id();
   server_->run_game_loop_nonblocking(make_shared<Sim>(request->scenario()),
@@ -65,6 +65,7 @@ void MassServer::run_server_forever() {
   std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
   cout << "Waiting for server to shut down." << endl;
   server->Wait();
+  cout << "Server shutting down." << endl;
 }
 
 void MassServer::run_game_loop_nonblocking(std::shared_ptr<Sim> sim,
