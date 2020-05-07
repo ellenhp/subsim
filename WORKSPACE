@@ -7,6 +7,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "com_github_grpc_grpc",
+    sha256 = "a4539cd7cb811c5d01e33ee447ce8a87b4d62e8860dce4f8fc1dfdeabfd80194",
     strip_prefix = "grpc-cb81fe0dfaa424eb50de26fb7c904a27a78c3f76",
     urls = [
         "https://github.com/grpc/grpc/archive/cb81fe0dfaa424eb50de26fb7c904a27a78c3f76.tar.gz",
@@ -55,6 +56,10 @@ load(
 
 container_repositories()
 
+load("@io_bazel_rules_docker//python3:image.bzl", _py3_image_repositories = "repositories")
+
+_py3_image_repositories()
+
 # This is NOT needed when going through the language lang_image
 # "repositories" function(s).
 load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
@@ -75,6 +80,13 @@ container_pull(
 )
 
 container_pull(
+    name = "ubuntu2004",
+    registry = "index.docker.io",
+    repository = "library/ubuntu",
+    tag = "focal",
+)
+
+container_pull(
     name = "java_base",
     # 'tag' is also supported, but digest is encouraged for reproducibility.
     digest = "sha256:deadbeef",
@@ -90,8 +102,6 @@ load(
 )
 
 _cc_image_repos()
-
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 # This requires rules_docker to be fully instantiated before
 # it is pulled in.
@@ -112,10 +122,10 @@ load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
 k8s_go_deps()
 
 container_pull(
-  name = "envoy_base",
-  registry = "index.docker.io",
-  repository = "envoyproxy/envoy-dev",
-  tag = "latest",
+    name = "envoy_base",
+    registry = "index.docker.io",
+    repository = "envoyproxy/envoy-dev",
+    tag = "latest",
 )
 
 container_pull(

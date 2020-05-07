@@ -23,8 +23,8 @@ import "mass/api/updates.proto";
 import "mass/api/scenario.proto";
 
 service MassBackend {
-  rpc Connect(stream ConnectRequest) returns (stream VesselUpdate);
-  rpc DoAction(stream DoActionRequest) returns (DoActionResponse);
+  rpc Connect(ConnectRequest) returns (stream VesselUpdate);
+  rpc DoAction(DoActionRequest) returns (DoActionResponse);
 }
 
 message ConnectRequest {
