@@ -2,6 +2,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "com_github_grpc_grpc",
+    sha256 = "a4539cd7cb811c5d01e33ee447ce8a87b4d62e8860dce4f8fc1dfdeabfd80194",
     strip_prefix = "grpc-cb81fe0dfaa424eb50de26fb7c904a27a78c3f76",
     urls = [
         "https://github.com/grpc/grpc/archive/cb81fe0dfaa424eb50de26fb7c904a27a78c3f76.tar.gz",
@@ -86,8 +87,6 @@ load(
 
 _cc_image_repos()
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
-
 # This requires rules_docker to be fully instantiated before
 # it is pulled in.
 # Download the rules_k8s repository at release v0.4
@@ -107,10 +106,10 @@ load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
 k8s_go_deps()
 
 container_pull(
-  name = "envoy_base",
-  registry = "index.docker.io",
-  repository = "envoyproxy/envoy-dev",
-  tag = "latest",
+    name = "envoy_base",
+    registry = "index.docker.io",
+    repository = "envoyproxy/envoy-dev",
+    tag = "latest",
 )
 
 container_pull(
@@ -118,4 +117,13 @@ container_pull(
     registry = "index.docker.io",
     repository = "library/nginx",
     tag = "latest",
+)
+
+http_archive(
+    name = "bazel_toolchains",
+    sha256 = "144290c4166bd67e76a54f96cd504ed86416ca3ca82030282760f0823c10be48",
+    strip_prefix = "bazel-toolchains-1c93ecd9a3a31dff03066f9264a7e90b3d228e18",
+    urls = [
+        "https://github.com/bazelbuild/bazel-toolchains/archive/1c93ecd9a3a31dff03066f9264a7e90b3d228e18.tar.gz",
+    ],
 )
