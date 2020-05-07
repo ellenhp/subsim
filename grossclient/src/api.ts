@@ -4,4 +4,7 @@ import { MASS_BACKEND_URL } from "./constants";
 
 const massClient = new MassBackendClient(MASS_BACKEND_URL);
 
-massClient.connect(new ConnectRequest());
+const connectionReq = new ConnectRequest();
+connectionReq.setScenarioId("blahblah");
+
+massClient.connect(connectionReq);
