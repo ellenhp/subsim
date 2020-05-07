@@ -20,7 +20,7 @@ static_resources:
             - name: main
               domains: ["*"]
               routes:
-              - match: { prefix: "/", grpc: {} }
+              - match: { prefix: "/api.MassBackend" }
                 route:
                   cluster: mass_be
                   max_grpc_timeout: 0s
