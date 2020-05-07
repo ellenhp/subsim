@@ -53,7 +53,7 @@ class MassBackendImpl final : public api::MassBackend::Service {
   MassBackendImpl(MassServer *server);
 
   grpc::Status Connect(grpc::ServerContext *context,
-                       api::ConnectRequest *request,
+                       const ::api::ConnectRequest *request,
                        grpc::ServerWriter<api::VesselUpdate> *stream);
 
  private:
