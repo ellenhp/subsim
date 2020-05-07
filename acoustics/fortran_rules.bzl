@@ -18,35 +18,34 @@
 """ Fortran rules to compile bellhop. """
 
 def f90_library(name, srcs = [], deps = [], mods = []):
-    rename_commands = ["cp $(location :" + f + ") $(RULEDIR)/" + f.rstrip("f90") + "cpp ;" for f in srcs]
-
-    compile_one_template = "gfortran -c -static-libgfortran -funroll-all-loops -fomit-frame-pointer -static -ffast-math"
+    compile_one_template = "gfortran -c -funroll-all-loops -static-libgfortran  -fomit-frame-pointer -static -ffast-math"
     compile_commands = [compile_one_template + " $(location :" + f + ")" for f in srcs]
 
-    copy_deps = ["find bazel-out/ -mindepth 2 -type l -exec mv -i '{}' . ';'"]
-    copy_outs = ["cp " + f.rstrip("f90") + "o " + "$(RULEDIR)" for f in srcs]
-    copy_mods = ["cp " + mod + " $(RULEDIR)" for mod in mods]
+    copy_deps = [
+        "/usr/bin/find bazel-out/ -type f -exec /bin/mv -i '{}' . ';'",
+        "/usr/bin/find bazel-out/ -type l -exec /bin/mv -i '{}' . ';'",
+    ]
+    copy_outs = ["/bin/cp " + f.rstrip("f90") + "o " + "$(RULEDIR)" for f in srcs]
+    copy_mods = ["/bin/cp " + mod + " $(RULEDIR)" for mod in mods]
 
     outs = [f.rstrip("f90") + "o" for f in srcs] + mods
     native.genrule(
         name = name,
         srcs = srcs + deps,
         outs = outs,
-        cmd = "; ".join(copy_deps + compile_commands + copy_outs + copy_mods),
+        cmd_bash = "; ".join(copy_deps + compile_commands + copy_outs + copy_mods),
     )
 
 def f90_binary(name, out, srcs = [], deps = []):
-    rename_commands = ["cp $(location :" + f + ") $(RULEDIR)/" + f.rstrip("f90") + "cpp ;" for f in srcs]
+    rename_commands = ["/bin/cp $(location :" + f + ") $(RULEDIR)/" + f.rstrip("f90") + "cpp ;" for f in srcs]
 
     fflags = " "
     compile = "gfortran -static-libgfortran -o " + out + fflags + " ".join(["$(location " + f + ")" for f in deps])
-    copy_out = "cp " + out + " " + "$(RULEDIR)"
-
-    # copy_deps = ["find bazel-out/ -mindepth 2 -type l -exec mv -i '{}' . ';'"]
+    copy_out = "/bin/cp " + out + " " + "$(RULEDIR)"
 
     native.genrule(
         name = name,
         srcs = srcs + deps,
         outs = [out],
-        cmd = "; ".join([compile, copy_out]),
+        cmd_bash = "; ".join([compile, copy_out]),
     )
