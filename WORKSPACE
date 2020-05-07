@@ -51,6 +51,10 @@ load(
 
 container_repositories()
 
+load("@io_bazel_rules_docker//python3:image.bzl", _py3_image_repositories = "repositories")
+
+_py3_image_repositories()
+
 # This is NOT needed when going through the language lang_image
 # "repositories" function(s).
 load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
@@ -68,6 +72,13 @@ container_pull(
     registry = "index.docker.io",
     repository = "library/alpine",
     tag = "3.8",
+)
+
+container_pull(
+    name = "ubuntu2004",
+    registry = "index.docker.io",
+    repository = "library/ubuntu",
+    tag = "focal",
 )
 
 container_pull(
