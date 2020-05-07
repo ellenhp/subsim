@@ -27,7 +27,17 @@
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "overrides": [
+      {
+        "files": [
+          "**/__protogen__/**"
+        ],
+        "rules": {
+          "no-undef": "off"
+        }
+      }
+    ]
   },
   "browserslist": {
     "production": [
