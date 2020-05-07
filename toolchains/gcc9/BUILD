@@ -1,0 +1,138 @@
+# Copyright 2016 The Bazel Authors. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This becomes the BUILD file for @local_config_cc// under non-BSD unixes.
+
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_toolchain", "cc_toolchain_suite")
+load(":cc_toolchain_config.bzl", "cc_toolchain_config")
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])  # Apache 2.0
+
+cc_library(
+    name = "malloc",
+)
+
+filegroup(
+    name = "empty",
+    srcs = [],
+)
+
+filegroup(
+    name = "cc_wrapper",
+    srcs = ["cc_wrapper.sh"],
+)
+
+filegroup(
+    name = "compiler_deps",
+    srcs = glob(
+        ["extra_tools/**"],
+        allow_empty = True,
+    ) + [":builtin_include_directory_paths"],
+)
+
+# This is the entry point for --crosstool_top.  Toolchains are found
+# by lopping off the name of --crosstool_top and searching for
+# the "${CPU}" entry in the toolchains attribute.
+cc_toolchain_suite(
+    name = "toolchain",
+    toolchains = {
+        "k8": ":cc-compiler-k8",
+        "k8|gcc": ":cc-compiler-k8",
+    },
+)
+
+cc_toolchain(
+    name = "cc-compiler-k8",
+    all_files = ":compiler_deps",
+    ar_files = ":compiler_deps",
+    as_files = ":compiler_deps",
+    compiler_files = ":compiler_deps",
+    dwp_files = ":empty",
+    linker_files = ":compiler_deps",
+    objcopy_files = ":empty",
+    strip_files = ":empty",
+    supports_param_files = 1,
+    toolchain_config = ":linux_gnu_x86",
+    toolchain_identifier = "linux_gnu_x86",
+)
+
+cc_toolchain_config(
+    name = "linux_gnu_x86",
+    abi_libc_version = "glibc_2.19",
+    abi_version = "gcc",
+    compile_flags = [
+        "-U_FORTIFY_SOURCE",
+        "-fstack-protector",
+        "-Wall",
+        "-fno-omit-frame-pointer",
+    ],
+    compiler = "gcc",
+    coverage_compile_flags = ["--coverage"],
+    coverage_link_flags = ["--coverage"],
+    cpu = "k8",
+    cxx_builtin_include_directories = [
+        "/usr/local/include",
+        "/usr/lib/gcc",
+        "/usr/include/x86_64-linux-gnu",
+        "/usr/include",
+        "/usr/include/c++/5.4.0",
+        "/usr/include/x86_64-linux-gnu/c++/5.4.0",
+        "/usr/include/c++/5.4.0/backward",
+    ],
+    cxx_flags = ["-std=c++17"],
+    dbg_compile_flags = ["-g"],
+    host_system_name = "i686-unknown-linux-gnu",
+    link_flags = [
+        "-Wl,-no-as-needed",
+        # "-Wl,-z,relro,-z,now",
+        "-B/usr/local/bin",
+        "-lstdc++",
+        "-lm",
+    ],
+    link_libs = [],
+    opt_compile_flags = [
+        "-g0",
+        "-O2",
+        "-D_FORTIFY_SOURCE=1",
+        "-DNDEBUG",
+        "-ffunction-sections",
+        "-fdata-sections",
+    ],
+    opt_link_flags = ["-Wl,--gc-sections"],
+    supports_start_end_lib = False,
+    target_libc = "glibc_2.19",
+    target_system_name = "x86_64-unknown-linux-gnu",
+    tool_paths = {
+        "ar": "/usr/bin/ar",
+        "cpp": "/usr/bin/cpp",
+        "dwp": "/usr/bin/dwp",
+        "gcc": "/usr/bin/gcc",
+        "gcov": "/dev/null",
+        "ld": "/usr/bin/ld",
+        "nm": "/usr/bin/nm",
+        "objcopy": "/usr/bin/objcopy",
+        "objdump": "/usr/bin/objdump",
+        "strip": "/usr/bin/strip",
+    },
+    toolchain_identifier = "linux_gnu_x86",
+    unfiltered_compile_flags = [
+        "-no-canonical-prefixes",
+        "-Wno-builtin-macro-redefined",
+        "-D__DATE__=\"redacted\"",
+        "-D__TIMESTAMP__=\"redacted\"",
+        "-D__TIME__=\"redacted\"",
+    ],
+)
