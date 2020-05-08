@@ -18,7 +18,6 @@
 #pragma once
 
 #include <memory>
-#include <set>
 #include <vector>
 
 #include "mass/api/scenario.pb.h"
@@ -62,7 +61,7 @@ class SimVessel {
 
  private:
   api::Position position_;
-  std::set<std::shared_ptr<SimSystem>> vessel_systems;
+  std::vector<std::shared_ptr<SimSystem>> vessel_systems;
 };
 }  // namespace vessel
 }  // namespace mass

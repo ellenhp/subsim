@@ -35,9 +35,10 @@ grpc::Status MassBackendImpl::Connect(
     grpc::ServerContext *context, const ::api::ConnectRequest *request,
     grpc::ServerWriter<api::VesselUpdate> *stream) {
   string scenario_id = request->scenario_id();
+  cout << "Maybe starting game loop." << endl;
   server_->run_game_loop_nonblocking(make_shared<Sim>(request->scenario()),
                                      request->scenario_id());
-
+  server_->get_update_for(scenario_id, request->vessel_unique_id());
   api::VesselUpdate update;
   cout << "Writing update." << endl;
   while (stream->Write(
@@ -66,25 +67,34 @@ void MassServer::run_server_forever() {
   cout << "Waiting for server to shut down." << endl;
   server->Wait();
   cout << "Server shutting down." << endl;
+  shutting_down_ = true;
 }
 
 void MassServer::run_game_loop_nonblocking(std::shared_ptr<Sim> sim,
                                            std::string unique_id) {
   const std::lock_guard<std::mutex> lock(sim_map_modification_mutex_);
-  if (sims_[unique_id] != nullptr) {
+  if (sims_.find(unique_id) != sims_.end()) {
     // There's already a running game loop with this unique id.
     return;
   }
   sims_[unique_id] = sim;
-  std::thread game_loop(&MassServer::run_game_loop_until_stale, this,
-                        unique_id);
+  cout << "Starting game loop thread." << endl;
+  the_place_where_threads_go_to_die_.push_back(
+      std::thread(&MassServer::run_game_loop_until_stale, this, unique_id));
+  cout << "Started thread." << endl;
 }
 
 void MassServer::run_game_loop_until_stale(string unique_id) {
-  auto sim = sims_[unique_id];
-  if (sim == nullptr) {
-    cout << "Game loop failed to start. Simulation not populated." << endl;
-    return;
+  cout << "Running game loop until stale." << endl;
+  std::shared_ptr<Sim> sim = nullptr;
+  {
+    const std::lock_guard<std::mutex> lock(sim_map_modification_mutex_);
+    if (sims_.find(unique_id) == sims_.end()) {
+      cout << "Game loop failed to start. Simulation not populated." << endl;
+      return;
+    }
+    cout << "Found simulation to run." << endl;
+    sim = sims_[unique_id];
   }
 
   cout << "Running game loop." << endl;
@@ -95,14 +105,16 @@ void MassServer::run_game_loop_until_stale(string unique_id) {
   const int timestep_millis = 250;
   const std::chrono::milliseconds timestep(timestep_millis);
 
-  while (!sim->is_stale()) {
+  while (!shutting_down_ && !sim->is_stale()) {
     auto delta_time = clock::now() - time_start;
     unsimulated_elapsed +=
         std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
     while (unsimulated_elapsed < timestep) {
       cout << "Stepping simulation" << endl;
       sim->step(timestep_millis / 1000.0);
+      unsimulated_elapsed -= timestep;
     }
+    cout << "Sleeping in game loop" << endl;
     sleep_for(timestep);
   }
   const std::lock_guard<std::mutex> lock(sim_map_modification_mutex_);
@@ -115,6 +127,8 @@ void MassServer::run_game_loop_until_stale(string unique_id) {
 api::VesselUpdate MassServer::get_update_for(std::string scenario_unique_id,
                                              std::string vessel_unique_id) {
   const std::lock_guard<std::mutex> lock(sim_map_modification_mutex_);
-  auto sim = sims_[scenario_unique_id];
-  return sim->get_update_for(vessel_unique_id);
+  if (sims_.find(scenario_unique_id) != sims_.end()) {
+    return sims_[scenario_unique_id]->get_update_for(vessel_unique_id);
+  }
+  return api::VesselUpdate();
 }

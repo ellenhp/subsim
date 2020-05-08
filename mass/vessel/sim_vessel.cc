@@ -1,22 +1,23 @@
 // Copyright (C) 2020 Ellen Poe
-// 
+//
 // This file is part of MASS.
-// 
+//
 // MASS is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // MASS is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with MASS.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "sim_vessel.hh"
 
+#include <iostream>
 #include <random>
 
 #include "mass/vessel/diving_system.hh"
@@ -28,26 +29,21 @@
 using namespace mass::vessel;
 using std::make_shared;
 using std::shared_ptr;
-using std::static_pointer_cast;
 
 SimVessel::SimVessel(api::VesselDescriptor vessel_descriptor,
                      api::SpawnedVessel spawned_vessel) {
-  for (auto& system : vessel_descriptor.systems()) {
+  for (auto system : vessel_descriptor.systems()) {
     shared_ptr<SimSystem> new_system = nullptr;
     if (system.has_steering_system()) {
-      new_system = static_pointer_cast<SimSystem>(
-          make_shared<SteeringSystem>(system.steering_system()));
+      new_system = make_shared<SteeringSystem>(system.steering_system());
     } else if (system.has_diving_system()) {
-      new_system = static_pointer_cast<SimSystem>(
-          make_shared<DivingSystem>(system.diving_system()));
+      new_system = make_shared<DivingSystem>(system.diving_system());
     } else if (system.has_propulsion_system()) {
-      new_system = static_pointer_cast<SimSystem>(
-          make_shared<PropulsionSystem>(system.propulsion_system()));
+      new_system = make_shared<PropulsionSystem>(system.propulsion_system());
     } else if (system.has_map_system()) {
-      new_system = static_pointer_cast<SimSystem>(
-          make_shared<MapSystem>(system.map_system()));
+      new_system = make_shared<MapSystem>(system.map_system());
     }
-    vessel_systems.insert(new_system);
+    vessel_systems.push_back(new_system);
   }
 
   if (spawned_vessel.spawn_info().has_position()) {
@@ -63,17 +59,20 @@ SimVessel::SimVessel(api::VesselDescriptor vessel_descriptor,
     position_.set_lat(lat_dist(engine));
     position_.set_lng(lng_dist(engine));
   }
+
+  vessel_systems.size();
 }
 
 void SimVessel::step(float dt) {
   for (shared_ptr<SimSystem> system : vessel_systems) {
-    system->step(dt, *this);
+    // system->step(dt, *this);
   }
 }
 
 api::VesselUpdate SimVessel::get_update() {
   api::VesselUpdate update;
-  for (shared_ptr<SimSystem> system : vessel_systems) {
+
+  for (auto& system : vessel_systems) {
     api::SystemUpdate* system_update = update.add_system_updates();
     system->populate_system_update(system_update);
   }

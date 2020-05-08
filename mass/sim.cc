@@ -41,6 +41,10 @@ void Sim::step(float dt) {
 
 api::VesselUpdate Sim::get_update_for(std::string vessel_unique_id) {
   const std::lock_guard<std::mutex> lock(sim_mutex_);
+  if (vessels_.find(vessel_unique_id) == vessels_.end()) {
+    std::cout << "No vessel!" << std::endl;
+    return api::VesselUpdate();
+  }
   return vessels_[vessel_unique_id]->get_update();
 }
 

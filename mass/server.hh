@@ -23,6 +23,7 @@
 
 #include <map>
 #include <string>
+#include <thread>
 
 #include "mass/api/mass.grpc.pb.h"
 #include "sim.hh"
@@ -46,6 +47,10 @@ class MassServer {
   std::map<std::string, std::shared_ptr<Sim>> sims_;
 
   std::mutex sim_map_modification_mutex_;
+
+  bool shutting_down_;
+
+  std::vector<std::thread> the_place_where_threads_go_to_die_;
 };
 
 class MassBackendImpl final : public api::MassBackend::Service {
