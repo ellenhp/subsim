@@ -15,12 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with MASS.  If not, see <http://www.gnu.org/licenses/>.
 
+load("@io_bazel_rules_docker//container:container.bzl", "container_image", "container_push")
+load("@io_bazel_rules_k8s//k8s:object.bzl", "k8s_object")
+load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("@bloop_deps//:requirements.bzl", "requirement")
 load("@io_bazel_rules_docker//python3:image.bzl", "py3_image")
 load("@io_bazel_rules_docker//docker/package_managers:download_pkgs.bzl", "download_pkgs")
 load("@io_bazel_rules_docker//docker/package_managers:install_pkgs.bzl", "install_pkgs")
-load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 
 py_binary(
     name = "bloop_service",
@@ -92,7 +94,7 @@ install_pkgs(
 )
 
 container_image(
-    name = "python3_ubuntu2004_wrapper",
+    name = "python3_ubuntu2004_wrapper_with_bellhop",
     base = ":python3_ubuntu2004.tar",
     files = [
         "//acoustics/bellhop:bellhop.exe",
@@ -103,12 +105,11 @@ container_image(
 )
 
 py3_image(
-    name = "bloop_service_test_image",
+    name = "image",
     srcs = [
         "bloop_service.py",
-        "bloop_service_test.py",
     ],
-    base = ":python3_ubuntu2004_wrapper",
+    base = ":python3_ubuntu2004_wrapper_with_bellhop",
     layers = [
         requirement("arlpy"),
         requirement("bokeh"),
@@ -127,27 +128,45 @@ py3_image(
         requirement("MarkupSafe"),
         requirement("Jinja2"),
     ],
-    main = "bloop_service_test.py",
-    # entrypoint = [
-    #     "python3",
-    #     "/bloop_service_test.py",
-    # ],
-    # files = [
-    #     ":bloop_service",
-    #     ":bloop_service_test",
-    #     "//acoustics/bellhop:bellhop.exe",
-    #     "//bloop/api:py_bloop_grpc",
-    #     "//bloop/api:py_bloop_proto",
-    # ],
+    main = "bloop_service.py",
     deps = [
         ":bloop_service",
-        ":bloop_service_test",
         "//bloop/api:py_bloop_grpc",
         "//bloop/api:py_bloop_proto",
     ],
-    # symlinks = {
-    #     "/bin/bellhop.exe": "/bellhop.exe",
-    #     "/bloop/api/bloop_pb2_grpc.py": "/bloop_pb2_grpc.py",
-    #     "/bloop/api/bloop_pb2.py": "/bloop_pb2.py",
-    # },
+)
+
+k8s_objects(
+    name = "prod",
+    objects = [
+        ":prod-deployment",
+        ":prod-service",
+    ],
+    visibility = ["//k8s:__subpackages__"],
+)
+
+k8s_object(
+    name = "prod-deployment",
+    cluster = "gke_mass-276203_us-central1-c_milky",
+    images = {
+        "gcr.io/mass-276203/bloop:dev": "//bloop:image",
+    },
+    kind = "deployment",
+    template = ":deployment.yaml",
+)
+
+k8s_object(
+    name = "prod-service",
+    cluster = "gke_mass-276203_us-central1-c_milky",
+    kind = "service",
+    template = ":service.yaml",
+)
+
+container_push(
+    name = "publish",
+    format = "Docker",
+    image = ":image",
+    registry = "gcr.io",
+    repository = "mass-276203/bloop",
+    tag = "dev",
 )

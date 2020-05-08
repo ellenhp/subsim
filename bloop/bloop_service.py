@@ -48,7 +48,7 @@ class BloopServicer(bloop_pb2_grpc.BloopServicer):
 def start(should_wait = True):
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=30))
   bloop_pb2_grpc.add_BloopServicer_to_server(BloopServicer(), server)
-  server.add_insecure_port('0.0.0.0:50051')
+  server.add_insecure_port('0.0.0.0:50052')
   server.start()
   if (should_wait):
     server.wait_for_termination()
