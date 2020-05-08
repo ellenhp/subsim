@@ -134,3 +134,26 @@ container_pull(
     repository = "library/nginx",
     tag = "latest",
 )
+
+http_archive(
+    name = "io_bazel_grpc_web",
+    strip_prefix = "grpc-web-c7dedab92c0f3e77ec6f30d5268ee1cdb12ab11b",
+    urls = [
+        "https://github.com/grpc/grpc-web/archive/c7dedab92c0f3e77ec6f30d5268ee1cdb12ab11b.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "io_bazel_rules_closure",
+    sha256 = "7d206c2383811f378a5ef03f4aacbcf5f47fd8650f6abbc3fa89f3a27dd8b176",
+    strip_prefix = "rules_closure-0.10.0",
+    urls = [
+        "https://github.com/bazelbuild/rules_closure/archive/0.10.0.tar.gz",
+    ],
+)
+
+load("@io_bazel_rules_closure//closure:repositories.bzl", "rules_closure_dependencies", "rules_closure_toolchains")
+
+rules_closure_dependencies()
+
+rules_closure_toolchains()
