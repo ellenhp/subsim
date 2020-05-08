@@ -17,5 +17,6 @@
 
 alias(
     name = "tsconfig.json",
-    actual = "//grossclient:tsconfig.json",
+    actual = "//horrificlient:tsconfig.json",
+    visibility = ["//visibility:public"]
 )
