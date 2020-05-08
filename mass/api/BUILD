@@ -3,6 +3,7 @@ load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 load("@io_bazel_grpc_web//bazel:closure_grpc_web_library.bzl", "closure_grpc_web_library")
 load("@npm_bazel_typescript//:index.bzl", "ts_library")
+load("//workarounds:garbage_rules.bzl", "faked_node_module_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -83,7 +84,7 @@ genrule(
     cmd = "protoc --proto_path=. --js_out=import_style=commonjs,binary:\"$(RULEDIR)/../../\" --grpc-web_out=import_style=typescript,mode=grpcwebtext:\"$(RULEDIR)/../../\" $(locations :all_protos) && echo $(locations :all_protos)"
 )
 
-ts_library(
+faked_node_module_library(
     name = "ts_mass_proto",
     srcs = [
         ":MassServiceClientPb.ts",
