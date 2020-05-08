@@ -27,6 +27,14 @@ message DoActionRequest {
 
   // Optional, a chat message to send to other players in the vessel.
   ChatMessage chat_message = 2;
+
+  // The unique id of the scenario we're playing, provided by the client upon
+  // connection.
+  string scenario_id = 3;
+
+  // The unique id of the vessel that this request belongs to. Eventually
+  // replace this with auth :)
+  string vessel_id = 4;
 }
 
 message DoActionResponse {}

@@ -30,6 +30,8 @@ class HullSystem : public SimSystem {
   virtual void setup_spawn_state(api::SpawnedVessel spawned_state) override;
   virtual void populate_system_update(
       api::SystemUpdate* system_update) override;
+  virtual void process_system_request(
+      api::SystemRequest system_request) override;
 
   double depth_feet();
   void set_depth_feet(double depth);

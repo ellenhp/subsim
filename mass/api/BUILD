@@ -1,6 +1,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
+load("@io_bazel_grpc_web//bazel:closure_grpc_web_library.bzl", "closure_grpc_web_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -49,6 +50,11 @@ cc_grpc_library(
     deps = [
         ":cc_mass_proto",
     ],
+)
+
+closure_grpc_web_library(
+    name = "ts_mass_grpc",
+    deps = ["//mass/api:mass_proto"],
 )
 
 proto_library(

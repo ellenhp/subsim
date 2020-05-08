@@ -23,6 +23,7 @@
 
 #include <map>
 #include <string>
+#include <thread>
 
 #include "mass/api/mass.grpc.pb.h"
 #include "sim.hh"
@@ -38,6 +39,7 @@ class MassServer {
                                  std::string unique_id);
   api::VesselUpdate get_update_for(std::string scenario_unique_id,
                                    std::string vessel_unique_id);
+  void push_request(api::DoActionRequest request);
 
  private:
   void run_game_loop_until_stale(std::string unique_id);
@@ -46,6 +48,10 @@ class MassServer {
   std::map<std::string, std::shared_ptr<Sim>> sims_;
 
   std::mutex sim_map_modification_mutex_;
+
+  bool shutting_down_;
+
+  std::vector<std::thread> the_place_where_threads_go_to_die_;
 };
 
 class MassBackendImpl final : public api::MassBackend::Service {
@@ -54,7 +60,11 @@ class MassBackendImpl final : public api::MassBackend::Service {
 
   grpc::Status Connect(grpc::ServerContext *context,
                        const ::api::ConnectRequest *request,
-                       grpc::ServerWriter<api::VesselUpdate> *stream);
+                       grpc::ServerWriter<api::VesselUpdate> *stream) override;
+
+  grpc::Status DoAction(grpc::ServerContext *context,
+                        const ::api::DoActionRequest *request,
+                        api::DoActionResponse *response) override;
 
  private:
   MassServer *server_;
