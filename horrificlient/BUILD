@@ -18,9 +18,7 @@ rollup_bundle(
 
 ts_devserver(
     name = "devserver",
-    # We'll collect all the devmode JS sources from these TypeScript libraries
-    deps = [":lib"],
-    # This is the path we'll request from the browser, see index.html
+    deps = [":app"],
     serving_path = "/bundle.js",
-    # The devserver can serve our static files too
+    static_files = ["index.html"],
 )
