@@ -86,3 +86,8 @@ void PropulsionSystem::populate_system_update(
   update->set_actual_speed_knots(actual_speed_knots_);
   update->set_requested_speed_knots(requested_speed_knots_);
 }
+
+void PropulsionSystem::process_system_request(
+    api::SystemRequest system_request) {
+  requested_speed_knots_ = system_request.propulsion_request().speed_knots();
+}

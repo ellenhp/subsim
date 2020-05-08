@@ -27,6 +27,9 @@ message VesselUpdate {
 
   // Any new chat messages.
   repeated ChatMessage chat_updates = 2;
+
+  // The position of the vessel as of when the update was created.
+  Position position = 3;
 }
 
 message SystemUpdate {
@@ -66,8 +69,7 @@ message PropulsionSystemUpdate {
 }
 
 message MapSystemUpdate {
-  // The current position.
-  Position position = 1;
+  // This will eventually include map markers.
 }
 
 message HullSystemUpdate {

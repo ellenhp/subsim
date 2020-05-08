@@ -68,3 +68,7 @@ void SteeringSystem::populate_system_update(api::SystemUpdate* system_update) {
   update->set_actual_heading_degrees(actual_heading_);
   update->set_requested_heading_degrees(requested_heading_);
 }
+
+void SteeringSystem::process_system_request(api::SystemRequest system_request) {
+  requested_heading_ = system_request.steering_request().heading_degrees();
+}

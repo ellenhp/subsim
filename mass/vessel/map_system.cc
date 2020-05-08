@@ -26,3 +26,7 @@ void MapSystem::setup_spawn_state(api::SpawnedVessel spawned_state) {}
 void MapSystem::populate_system_update(api::SystemUpdate* system_update) {
   // Eventually populate markers and stuff.
 }
+
+void MapSystem::process_system_request(api::SystemRequest system_request) {
+  // No-op for now.
+}

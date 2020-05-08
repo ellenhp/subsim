@@ -20,7 +20,8 @@
 using namespace mass::vessel;
 
 HullSystem::HullSystem(api::HullSystem hull_system)
-    : draft_surfaced_(hull_system.draft_surfaced()) {}
+    : draft_surfaced_(hull_system.draft_surfaced()),
+      depth_feet_(hull_system.draft_surfaced()) {}
 
 void HullSystem::setup_spawn_state(api::SpawnedVessel spawned_vessel) {}
 
@@ -30,4 +31,8 @@ void HullSystem::set_depth_feet(double new_depth) { depth_feet_ = new_depth; }
 
 void HullSystem::populate_system_update(api::SystemUpdate* system_update) {
   system_update->mutable_hull_update()->set_actual_depth_feet(depth_feet_);
+}
+
+void HullSystem::process_system_request(api::SystemRequest system_request) {
+  // No-op for now.
 }

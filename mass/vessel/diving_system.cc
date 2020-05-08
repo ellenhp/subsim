@@ -50,3 +50,8 @@ void DivingSystem::populate_system_update(api::SystemUpdate* system_update) {
   api::DivingSystemUpdate* update = system_update->mutable_diving_update();
   update->set_requested_depth_feet(requested_depth_feet_);
 }
+
+void DivingSystem::process_system_request(api::SystemRequest system_request) {
+  requested_depth_feet_ = system_request.diving_request().depth_feet();
+  // No-op for now.
+}

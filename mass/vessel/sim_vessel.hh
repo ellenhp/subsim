@@ -18,9 +18,9 @@
 #pragma once
 
 #include <memory>
-#include <set>
 #include <vector>
 
+#include "mass/api/actions.pb.h"
 #include "mass/api/scenario.pb.h"
 #include "mass/api/updates.pb.h"
 
@@ -34,6 +34,7 @@ class SimVessel {
   void step(float dt);
 
   api::VesselUpdate get_update();
+  void process_request(api::DoActionRequest request);
 
   template <class T>
   std::shared_ptr<T> system() {
@@ -62,7 +63,7 @@ class SimVessel {
 
  private:
   api::Position position_;
-  std::set<std::shared_ptr<SimSystem>> vessel_systems;
+  std::vector<std::shared_ptr<SimSystem>> vessel_systems;
 };
 }  // namespace vessel
 }  // namespace mass
