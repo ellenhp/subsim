@@ -137,13 +137,12 @@ container_pull(
 
 http_archive(
     name = "build_bazel_rules_nodejs",
+    sha256 = "d14076339deb08e5460c221fae5c5e9605d2ef4848eee1f0c81c9ffdc1ab31c1",
     urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/1.6.1/rules_nodejs-1.6.1.tar.gz"],
-    sha256 = "d14076339deb08e5460c221fae5c5e9605d2ef4848eee1f0c81c9ffdc1ab31c1"
 )
 
-load("@build_bazel_rules_nodejs//:index.bzl", "node_repositories")
-
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
+
 npm_install(
     # Name this npm so that Bazel Label references look like @npm//package
     name = "npm",
@@ -153,10 +152,12 @@ npm_install(
 
 # Install any Bazel rules which were extracted earlier by the npm_install rule.
 load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")
+
 install_bazel_dependencies()
 
 # Set up TypeScript toolchain
 load("@npm_bazel_typescript//:index.bzl", "ts_setup_workspace")
+
 ts_setup_workspace()
 
 http_archive(
@@ -181,3 +182,9 @@ load("@io_bazel_rules_closure//closure:repositories.bzl", "rules_closure_depende
 rules_closure_dependencies()
 
 rules_closure_toolchains()
+
+http_archive(
+    name = "grpc-web",
+    strip_prefix = "grpc-web-c73f5f40b9cd99d0238936b1809f52ada0b5c0b3",
+    urls = ["https://github.com/grpc/grpc-web/archive/c73f5f40b9cd99d0238936b1809f52ada0b5c0b3.tar.gz"],
+)

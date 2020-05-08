@@ -12,79 +12,170 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Contains the node_module_library which is used by yarn_install & npm_install.
-"""
+"""Starlark rules for using gRPC-Web with Bazel and `rules_closure`."""
 
-load("@build_bazel_rules_nodejs//:providers.bzl", "DeclarationInfo", "js_named_module_info")
+load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 
-def _node_module_library_impl(ctx):
-    workspace_name = ctx.label.workspace_name if ctx.label.workspace_name else ctx.workspace_name
+# This was borrowed from Rules Go, licensed under Apache 2.
+# https://github.com/bazelbuild/rules_go/blob/67f44035d84a352cffb9465159e199066ecb814c/proto/compiler.bzl#L72
+def _proto_path(proto):
+    path = proto.path
+    root = proto.root.path
+    ws = proto.owner.workspace_root
+    if path.startswith(root):
+        path = path[len(root):]
+    if path.startswith("/"):
+        path = path[1:]
+    if path.startswith(ws):
+        path = path[len(ws):]
+    if path.startswith("/"):
+        path = path[1:]
+    return path
 
-    direct_sources = depset(ctx.files.srcs)
-    sources_depsets = [direct_sources]
+def _proto_include_path(proto):
+    path = proto.path[:-len(_proto_path(proto))]
+    if not path:
+        return "."
+    if path.endswith("/"):
+        path = path[:-1]
+    return path
 
-    declarations = depset([
-        f
-        for f in ctx.files.srcs
-        if f.path.endswith(".d.ts") and
-           # exclude eg. external/npm/node_modules/protobufjs/node_modules/@types/node/index.d.ts
-           # these would be duplicates of the typings provided directly in another dependency.
-           # also exclude all /node_modules/typescript/lib/lib.*.d.ts files as these are determined by
-           # the tsconfig "lib" attribute
-           len(f.path.split("/node_modules/")) < 3 and f.path.find("/node_modules/typescript/lib/lib.") == -1
+def _proto_include_paths(protos):
+    return [_proto_include_path(proto) for proto in protos]
+
+def _generate_closure_grpc_web_src_progress_message(name):
+    # TODO(yannic): Add a better message?
+    return "Generating GRPC Web %s" % name
+
+def _generate_closure_grpc_web_srcs(
+        actions,
+        protoc,
+        protoc_gen_grpc_web,
+        import_style,
+        mode,
+        sources,
+        transitive_sources):
+    all_sources = [src for src in sources] + [src for src in transitive_sources.to_list()]
+    proto_include_paths = [
+        "-I%s" % p
+        for p in _proto_include_paths(
+            [f for f in all_sources],
+        )
+    ]
+
+    grpc_web_out_common_options = ",".join([
+        "import_style={}".format(import_style),
+        "mode={}".format(mode),
     ])
 
-    transitive_declarations_depsets = [declarations]
+    files = []
+    for src in sources:
+        name = "{}.grpc.ts".format(
+            ".".join(src.path.split("/")[-1].split(".")[:-1]),
+        )
+        js = actions.declare_file(name)
+        files.append(js)
 
-    for dep in ctx.attr.deps:
-        if DeclarationInfo in dep:
-            transitive_declarations_depsets.append(dep[DeclarationInfo].transitive_declarations)
+        args = proto_include_paths + [
+            "--plugin=protoc-gen-grpc-web={}".format(protoc_gen_grpc_web.path),
+            "--grpc-web_out={options},out={out_file}:{path}".format(
+                options = grpc_web_out_common_options,
+                out_file = name,
+                path = js.path[:js.path.rfind("/")],
+            ),
+            src.path,
+        ]
 
-    transitive_declarations = depset(transitive = transitive_declarations_depsets)
+        actions.run(
+            tools = [protoc_gen_grpc_web],
+            inputs = all_sources,
+            outputs = [js],
+            executable = protoc,
+            arguments = args,
+            progress_message =
+                _generate_closure_grpc_web_src_progress_message(name),
+        )
 
-    return struct(
-        typescript = struct(
-            declarations = declarations,
-            devmode_manifest = None,
-            es5_sources = depset(),
-            es6_sources = depset(),
-            replay_params = None,
-            transitive_declarations = transitive_declarations,
-            transitive_es5_sources = depset(),
-            transitive_es6_sources = depset(),
-            tsickle_externs = [],
-            type_blacklisted_declarations = depset(),
-        ),
-        providers = [
-            DefaultInfo(
-                files = direct_sources,
-            ),
-            DeclarationInfo(
-                declarations = declarations,
-                transitive_declarations = transitive_declarations,
-                type_blacklisted_declarations = depset([]),
-            ),
-            js_named_module_info(
-                sources = depset(ctx.files.named_module_srcs),
-                deps = ctx.attr.deps,
-            ),
-        ],
+    return files
+
+_error_multiple_deps = "".join([
+    "'deps' attribute must contain exactly one label ",
+    "(we didn't name it 'dep' for consistency). ",
+    "We may revisit this restriction later.",
+])
+
+def _closure_grpc_web_library_impl(ctx):
+    if len(ctx.attr.deps) > 1:
+        # TODO(yannic): Revisit this restriction.
+        fail(_error_multiple_deps, "deps")
+
+    proto_info = ctx.attr.deps[0][ProtoInfo]
+    srcs = _generate_closure_grpc_web_srcs(
+        actions = ctx.actions,
+        protoc = ctx.executable._protoc,
+        protoc_gen_grpc_web = ctx.executable._protoc_gen_grpc_web,
+        import_style = ctx.attr.import_style,
+        mode = ctx.attr.mode,
+        sources = proto_info.direct_sources,
+        transitive_sources = proto_info.transitive_imports,
     )
 
-faked_node_module_library = rule(
-    implementation = _node_module_library_impl,
-    attrs = {
-        "srcs": attr.label_list(
-            doc = "The list of files that comprise the package",
-            allow_files = True,
-        ),
-        "named_module_srcs": attr.label_list(
-            doc = "A subset of srcs that are javascript named-UMD or named-AMD for use in rules such as ts_devserver",
-            allow_files = True,
-        ),
+    # deps = unfurl(ctx.attr.deps, provider = "closure_js_library")
+    # deps.append(ctx.attr._runtime)
+    # library = ts_library(
+    #     ctx = ctx,
+    #     srcs = srcs,
+    #     deps = deps,
+    #     suppress = [
+    #         "misplacedTypeAnnotation",
+    #         "unusedPrivateMembers",
+    #         "reportUnknownTypes",
+    #         "strictDependencies",
+    #         "extraRequire",
+    #     ],
+    #     lenient = False,
+    # )
+
+    # `rules_closure` still uses the legacy provider syntax.
+    # buildifier: disable=rule-impl-return
+    return struct(
+        files = depset(srcs),
+    )
+
+closure_grpc_web_library = rule(
+    implementation = _closure_grpc_web_library_impl,
+    attrs = dict({
         "deps": attr.label_list(
-            doc = "Transitive dependencies of the package",
+            mandatory = True,
+            providers = [ProtoInfo],
         ),
-    },
-    doc = "Defines an npm package under node_modules",
+        "import_style": attr.string(
+            default = "commonjs",
+            values = ["commonjs"],
+        ),
+        "mode": attr.string(
+            default = "grpcwebtext",
+            values = ["grpcwebtext", "grpcweb"],
+        ),
+
+        # Internal only.
+
+        # TODO(yannic): Switch to using `proto_toolchain` after
+        # https://github.com/bazelbuild/rules_proto/pull/25 lands.
+        "_protoc": attr.label(
+            default = Label("@com_google_protobuf//:protoc"),
+            executable = True,
+            cfg = "host",
+        ),
+
+        # TODO(yannic): Create `grpc_web_toolchain`.
+        "_protoc_gen_grpc_web": attr.label(
+            default = Label("@grpc-web//javascript/net/grpc/web:protoc-gen-grpc-web"),
+            executable = True,
+            cfg = "host",
+        ),
+        "_runtime": attr.label(
+            default = Label("@grpc-web//javascript/net/grpc/web:closure_grpcweb_runtime"),
+        ),
+    }),
 )
