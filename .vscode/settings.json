@@ -76,7 +76,8 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "complex": "cpp"
+        "complex": "cpp",
+        "*.inc": "cpp"
     },
     "licenser.projectName": "MASS"
 }

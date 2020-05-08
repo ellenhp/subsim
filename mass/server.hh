@@ -39,6 +39,7 @@ class MassServer {
                                  std::string unique_id);
   api::VesselUpdate get_update_for(std::string scenario_unique_id,
                                    std::string vessel_unique_id);
+  void push_request(api::DoActionRequest request);
 
  private:
   void run_game_loop_until_stale(std::string unique_id);
@@ -59,7 +60,11 @@ class MassBackendImpl final : public api::MassBackend::Service {
 
   grpc::Status Connect(grpc::ServerContext *context,
                        const ::api::ConnectRequest *request,
-                       grpc::ServerWriter<api::VesselUpdate> *stream);
+                       grpc::ServerWriter<api::VesselUpdate> *stream) override;
+
+  grpc::Status DoAction(grpc::ServerContext *context,
+                        const ::api::DoActionRequest *request,
+                        api::DoActionResponse *response) override;
 
  private:
   MassServer *server_;

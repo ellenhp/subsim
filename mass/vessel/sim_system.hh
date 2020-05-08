@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "mass/api/actions.pb.h"
 #include "mass/api/scenario.pb.h"
 #include "mass/vessel/sim_vessel.hh"
 
@@ -29,6 +30,7 @@ class SimSystem {
   virtual void step(float dt, SimVessel& parent);
 
   virtual void populate_system_update(api::SystemUpdate* system_update) = 0;
+  virtual void process_system_request(api::SystemRequest system_request) = 0;
 
  protected:
   template <typename T>

@@ -43,15 +43,23 @@ grpc::Status MassBackendImpl::Connect(
   cout << "Writing update." << endl;
   while (stream->Write(
       server_->get_update_for(scenario_id, request->vessel_unique_id()))) {
-    sleep_for(std::chrono::milliseconds(50));
+    sleep_for(std::chrono::milliseconds(1000));
     cout << "Writing update." << endl;
   }
   cout << "Wrote last update." << endl;
   return grpc::Status::OK;
 }
 
+grpc::Status MassBackendImpl::DoAction(grpc::ServerContext *context,
+                                       const ::api::DoActionRequest *request,
+                                       api::DoActionResponse *response) {
+  server_->push_request(*request);
+  return grpc::Status::OK;
+}
+
 MassServer::MassServer(std::string server_address_and_port)
-    : server_address_and_port_(server_address_and_port) {}
+    : server_address_and_port_(server_address_and_port),
+      shutting_down_(false) {}
 
 void MassServer::run_server_forever() {
   MassBackendImpl service(this);
@@ -100,17 +108,16 @@ void MassServer::run_game_loop_until_stale(string unique_id) {
   cout << "Running game loop." << endl;
   using clock = std::chrono::high_resolution_clock;
   auto time_start = clock::now();
-  std::chrono::nanoseconds unsimulated_elapsed(0);
+  std::chrono::milliseconds unsimulated_elapsed(0);
 
-  const int timestep_millis = 250;
+  const int timestep_millis = 1000;
   const std::chrono::milliseconds timestep(timestep_millis);
 
   while (!shutting_down_ && !sim->is_stale()) {
     auto delta_time = clock::now() - time_start;
     unsimulated_elapsed +=
-        std::chrono::duration_cast<std::chrono::nanoseconds>(delta_time);
-    while (unsimulated_elapsed < timestep) {
-      cout << "Stepping simulation" << endl;
+        std::chrono::duration_cast<std::chrono::milliseconds>(delta_time);
+    while (unsimulated_elapsed > timestep) {
       sim->step(timestep_millis / 1000.0);
       unsimulated_elapsed -= timestep;
     }
@@ -131,4 +138,12 @@ api::VesselUpdate MassServer::get_update_for(std::string scenario_unique_id,
     return sims_[scenario_unique_id]->get_update_for(vessel_unique_id);
   }
   return api::VesselUpdate();
+}
+
+void MassServer::push_request(api::DoActionRequest request) {
+  const std::lock_guard<std::mutex> lock(sim_map_modification_mutex_);
+  if (sims_.find(request.scenario_id()) == sims_.end()) {
+    return;
+  }
+  sims_[request.scenario_id()]->process_request(request);
 }

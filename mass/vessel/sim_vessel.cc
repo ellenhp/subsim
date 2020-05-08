@@ -21,12 +21,15 @@
 #include <random>
 
 #include "mass/vessel/diving_system.hh"
+#include "mass/vessel/hull_system.hh"
 #include "mass/vessel/map_system.hh"
 #include "mass/vessel/propulsion_system.hh"
 #include "mass/vessel/sim_system.hh"
 #include "mass/vessel/steering_system.hh"
 
 using namespace mass::vessel;
+using std::cout;
+using std::endl;
 using std::make_shared;
 using std::shared_ptr;
 
@@ -42,6 +45,11 @@ SimVessel::SimVessel(api::VesselDescriptor vessel_descriptor,
       new_system = make_shared<PropulsionSystem>(system.propulsion_system());
     } else if (system.has_map_system()) {
       new_system = make_shared<MapSystem>(system.map_system());
+    } else if (system.has_hull_system()) {
+      new_system = make_shared<HullSystem>(system.hull_system());
+    } else {
+      cout << "Unrecognizd system!!!" << endl;
+      continue;
     }
     vessel_systems.push_back(new_system);
   }
@@ -65,7 +73,7 @@ SimVessel::SimVessel(api::VesselDescriptor vessel_descriptor,
 
 void SimVessel::step(float dt) {
   for (shared_ptr<SimSystem> system : vessel_systems) {
-    // system->step(dt, *this);
+    system->step(dt, *this);
   }
 }
 
@@ -76,6 +84,9 @@ api::VesselUpdate SimVessel::get_update() {
     api::SystemUpdate* system_update = update.add_system_updates();
     system->populate_system_update(system_update);
   }
+
+  *update.mutable_position() = position_;
+
   // TODO eventually do chat updates!
   return update;
 }
@@ -84,4 +95,18 @@ api::Position SimVessel::position() const { return position_; }
 
 void SimVessel::set_position(api::Position new_position) {
   position_ = new_position;
+}
+
+void SimVessel::process_request(api::DoActionRequest request) {
+  for (auto system_request : request.system_requests()) {
+    if (system_request.has_steering_request()) {
+      system<SteeringSystem>()->process_system_request(system_request);
+    } else if (system_request.has_diving_request()) {
+      system<DivingSystem>()->process_system_request(system_request);
+    } else if (system_request.has_propulsion_request()) {
+      system<PropulsionSystem>()->process_system_request(system_request);
+    } else if (system_request.has_map_request()) {
+      system<MapSystem>()->process_system_request(system_request);
+    }
+  }
 }

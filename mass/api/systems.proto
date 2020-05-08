@@ -50,5 +50,6 @@ message VesselSystem {
     DivingSystem diving_system = 2;
     PropulsionSystem propulsion_system = 3;
     MapSystem map_system = 4;
+    HullSystem hull_system = 5;
   }
 }

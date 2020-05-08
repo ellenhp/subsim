@@ -18,6 +18,8 @@
 #include "sim.hh"
 
 using namespace mass;
+using std::cout;
+using std::endl;
 using std::string;
 
 Sim::Sim(api::Scenario scenario) {
@@ -42,7 +44,7 @@ void Sim::step(float dt) {
 api::VesselUpdate Sim::get_update_for(std::string vessel_unique_id) {
   const std::lock_guard<std::mutex> lock(sim_mutex_);
   if (vessels_.find(vessel_unique_id) == vessels_.end()) {
-    std::cout << "No vessel!" << std::endl;
+    cout << "No vessel matching connection!" << endl;
     return api::VesselUpdate();
   }
   return vessels_[vessel_unique_id]->get_update();
@@ -51,4 +53,12 @@ api::VesselUpdate Sim::get_update_for(std::string vessel_unique_id) {
 bool Sim::is_stale() {
   // TODO: return true if we haven't seen a user request in a while.
   return false;
+}
+
+void Sim::process_request(api::DoActionRequest mass_request) {
+  if (vessels_.find(mass_request.vessel_id()) == vessels_.end()) {
+    cout << "No vessel matching request!" << endl;
+    return;
+  }
+  vessels_[mass_request.vessel_id()]->process_request(mass_request);
 }

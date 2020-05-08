@@ -20,6 +20,7 @@
 #include <memory>
 #include <vector>
 
+#include "mass/api/actions.pb.h"
 #include "mass/api/scenario.pb.h"
 #include "mass/api/updates.pb.h"
 
@@ -33,6 +34,7 @@ class SimVessel {
   void step(float dt);
 
   api::VesselUpdate get_update();
+  void process_request(api::DoActionRequest request);
 
   template <class T>
   std::shared_ptr<T> system() {
