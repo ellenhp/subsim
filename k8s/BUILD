@@ -6,6 +6,7 @@ k8s_objects(
     "//envoy:prod",
     "//mass:prod",
     "//static:prod",
+    "//bloop:prod",
     ":ingress"
   ]
 )

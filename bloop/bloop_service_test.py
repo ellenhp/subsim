@@ -36,7 +36,7 @@ def make_request():
   request.depths.append(10)
 
   bathymetry = bloop_pb2.BathymetricProfile()
-  for i in [-1, 20000]: # For some reason there has to be a point with negative range.
+  for i in [0, 20000]: # For some reason there has to be a point with negative range.
     point = bloop_pb2.BathymetricProfile.BathymetricProfilePoint()
     point.depth_meters = 25
     point.range_meters = i
@@ -46,7 +46,7 @@ def make_request():
   return request
 
 def get_stub():
-  channel = grpc.insecure_channel('0.0.0.0:50051')
+  channel = grpc.insecure_channel('0.0.0.0:50052')
   stub = bloop_pb2_grpc.BloopStub(channel)
   return stub
 
