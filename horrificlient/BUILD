@@ -47,13 +47,6 @@ ts_library(
     ],
 )
 
-rollup_bundle(
-    name = "bundle",
-    deps = [":app"],
-    entry_point = "main.js",
-    config_file = "rollup.config.js",
-)
-
 ts_devserver(
     name = "devserver",
     entry_module = "mass/horrificlient/main",
@@ -65,6 +58,15 @@ ts_devserver(
         "@npm//grpc-web:grpc-web__umd",
         "@npm//uuid:uuid__umd",
     ],
+)
+
+rollup_bundle(	
+    name = "bundle",	
+    deps = [	
+        ":app",	
+    ],	
+    entry_point = "main.ts",	
+    format = "umd",	
 )
 
 pkg_tar(
