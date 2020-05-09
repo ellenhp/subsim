@@ -1,6 +1,7 @@
 /bazel-*
 *__pycache__*
 *.o
+*.a
 *.mod
 *.prt
 *.DS_Store
