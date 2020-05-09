@@ -45,9 +45,13 @@ rollup_bundle(
     name = "bundle",	
     deps = [	
         ":app",	
-    ],	
-    entry_point = "main.ts",	
-    format = "umd",	
+        "@npm//@rollup/plugin-node-resolve",
+        "@npm//google-protobuf:google-protobuf__umd",
+        "@npm//grpc-web:grpc-web__umd",
+        "@npm//uuid:uuid__umd",
+    ],
+    config_file = ":rollup.config.js",
+    entry_point = "main.ts",
 )
 
 pkg_tar(
