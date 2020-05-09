@@ -1,6 +1,6 @@
 workspace(
     name = "mass",
-    managed_directories = {"@npm": ["grossclient/node_modules"]},
+    managed_directories = {"@npm": ["horrificlient/node_modules"]},
 )
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -133,4 +133,62 @@ container_pull(
     registry = "index.docker.io",
     repository = "library/nginx",
     tag = "latest",
+)
+
+http_archive(
+    name = "build_bazel_rules_nodejs",
+    sha256 = "d14076339deb08e5460c221fae5c5e9605d2ef4848eee1f0c81c9ffdc1ab31c1",
+    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/1.6.1/rules_nodejs-1.6.1.tar.gz"],
+)
+
+load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
+
+npm_install(
+    # Name this npm so that Bazel Label references look like @npm//package
+    name = "npm",
+    package_json = "//horrificlient:package.json",
+    package_lock_json = "//horrificlient:package-lock.json",
+)
+
+# Install any Bazel rules which were extracted earlier by the npm_install rule.
+load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")
+
+install_bazel_dependencies()
+
+# Set up TypeScript toolchain
+load("@npm_bazel_typescript//:index.bzl", "ts_setup_workspace")
+
+ts_setup_workspace()
+
+load("@npm_bazel_labs//:package.bzl", "npm_bazel_labs_dependencies")
+
+npm_bazel_labs_dependencies()
+
+http_archive(
+    name = "io_bazel_grpc_web",
+    strip_prefix = "grpc-web-c7dedab92c0f3e77ec6f30d5268ee1cdb12ab11b",
+    urls = [
+        "https://github.com/grpc/grpc-web/archive/c7dedab92c0f3e77ec6f30d5268ee1cdb12ab11b.tar.gz",
+    ],
+)
+
+http_archive(
+    name = "io_bazel_rules_closure",
+    sha256 = "7d206c2383811f378a5ef03f4aacbcf5f47fd8650f6abbc3fa89f3a27dd8b176",
+    strip_prefix = "rules_closure-0.10.0",
+    urls = [
+        "https://github.com/bazelbuild/rules_closure/archive/0.10.0.tar.gz",
+    ],
+)
+
+load("@io_bazel_rules_closure//closure:repositories.bzl", "rules_closure_dependencies", "rules_closure_toolchains")
+
+rules_closure_dependencies()
+
+rules_closure_toolchains()
+
+http_archive(
+    name = "grpc-web",
+    strip_prefix = "grpc-web-c73f5f40b9cd99d0238936b1809f52ada0b5c0b3",
+    urls = ["https://github.com/grpc/grpc-web/archive/c73f5f40b9cd99d0238936b1809f52ada0b5c0b3.tar.gz"],
 )

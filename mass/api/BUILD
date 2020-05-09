@@ -1,6 +1,7 @@
 load("@rules_cc//cc:defs.bzl", "cc_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
+load("@npm_bazel_labs//:index.bzl", "ts_proto_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -17,6 +18,11 @@ cc_proto_library(
     deps = [":actions_proto"],
 )
 
+ts_proto_library(
+    name = "ts_actions_proto",
+    proto = ":actions_proto",
+)
+
 proto_library(
     name = "chat_proto",
     srcs = ["chat.proto"],
@@ -25,6 +31,11 @@ proto_library(
 cc_proto_library(
     name = "cc_chat_proto",
     deps = [":chat_proto"],
+)
+
+ts_proto_library(
+    name = "ts_chat_proto",
+    proto = ":chat_proto",
 )
 
 proto_library(
@@ -51,6 +62,11 @@ cc_grpc_library(
     ],
 )
 
+ts_proto_library(
+    name = "ts_mass_proto",
+    proto = ":mass_proto",
+)
+
 proto_library(
     name = "scenario_proto",
     srcs = ["scenario.proto"],
@@ -65,6 +81,11 @@ cc_proto_library(
     deps = [":scenario_proto"],
 )
 
+ts_proto_library(
+    name = "ts_scenario_proto",
+    proto = ":scenario_proto",
+)
+
 proto_library(
     name = "spatial_proto",
     srcs = ["spatial.proto"],
@@ -75,6 +96,11 @@ cc_proto_library(
     deps = [":spatial_proto"],
 )
 
+ts_proto_library(
+    name = "ts_spatial_proto",
+    proto = ":spatial_proto",
+)
+
 proto_library(
     name = "systems_proto",
     srcs = ["systems.proto"],
@@ -83,6 +109,11 @@ proto_library(
 cc_proto_library(
     name = "cc_systems_proto",
     deps = [":systems_proto"],
+)
+
+ts_proto_library(
+    name = "ts_systems_proto",
+    proto = ":systems_proto",
 )
 
 proto_library(
@@ -97,4 +128,9 @@ proto_library(
 cc_proto_library(
     name = "cc_updates_proto",
     deps = [":updates_proto"],
+)
+
+ts_proto_library(
+    name = "ts_updates_proto",
+    proto = ":updates_proto",
 )

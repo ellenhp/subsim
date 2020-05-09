@@ -8,3 +8,6 @@
 
 # Ellen is a bad programmer so she needs valgrind core dumps to be gitignored, lol
 vgcore.*
+
+
+*node_modules*
