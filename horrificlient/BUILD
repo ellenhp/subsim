@@ -46,6 +46,7 @@ rollup_bundle(
     deps = [	
         ":app",	
         "@npm//@rollup/plugin-node-resolve",
+        "@npm//@rollup/plugin-commonjs",
         "@npm//google-protobuf:google-protobuf__umd",
         "@npm//grpc-web:grpc-web__umd",
         "@npm//uuid:uuid__umd",
