@@ -53,5 +53,5 @@ def start(should_wait = True):
   if (should_wait):
     server.wait_for_termination()
 
-if __name__ == "main": 
+if __name__ == "__main__": 
   start()
