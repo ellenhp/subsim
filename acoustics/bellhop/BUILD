@@ -1,10 +1,3 @@
-filegroup(
-    name = "all",
-    srcs = glob([
-        "*.f90",
-    ]) + ["Makefile"],
-)
-
 genrule(
     name = "bellhop",
     srcs = glob([
