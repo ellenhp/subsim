@@ -12,12 +12,20 @@
     "@bazel/rollup": "^1.6.1",
     "@bazel/typescript": "^1.6.1",
     "@bazel/labs": "^1.6.1",
-    "google-protobuf": "3.12.0-rc.1"
-  },
-  "dependencies": {
+    "@types/uuid": "^7.0.3",
+    "google-protobuf": "3.12.0-rc.1",
     "grpc-web": "^1.0.7",
     "typescript": "^3.8.3",
+    "uuid": "^8.0.0"
+  },
+  "dependencies": {
+    "@bazel/rollup": "^1.6.1",
+    "@bazel/typescript": "^1.6.1",
     "@bazel/labs": "^1.6.1",
-    "google-protobuf": "3.12.0-rc.1"
+    "@types/uuid": "^7.0.3",
+    "google-protobuf": "3.12.0-rc.1",
+    "grpc-web": "^1.0.7",
+    "typescript": "^3.8.3",
+    "uuid": "^8.0.0"
   }
 }

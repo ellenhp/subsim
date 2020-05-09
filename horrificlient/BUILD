@@ -1,4 +1,5 @@
 load("@npm_bazel_typescript//:index.bzl", "ts_devserver", "ts_library")
+load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -31,8 +32,9 @@ filegroup(
 
 ts_library(
     name = "app",
-    srcs = glob(["*.ts"]),
+    srcs = glob(["*.ts", "src/**/*.ts"]),
     deps = [
+        "@npm//uuid",
         "//mass/api:ts_actions_proto",
         "//mass/api:ts_chat_proto",
         "//mass/api:ts_mass_proto",
@@ -41,6 +43,13 @@ ts_library(
         "//mass/api:ts_systems_proto",
         "//mass/api:ts_updates_proto",
     ],
+)
+
+rollup_bundle(
+    name = "bundle",
+    deps = [":app"],
+    entry_point = "main.js",
+    config_file = "rollup.config.js",
 )
 
 ts_devserver(
@@ -52,5 +61,6 @@ ts_devserver(
         ":app",
         "@npm//google-protobuf:google-protobuf__umd",
         "@npm//grpc-web:grpc-web__umd",
+        "@npm//uuid:uuid__umd",
     ],
 )
