@@ -3,6 +3,7 @@ load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 load("//workarounds:garbage_rules.bzl", "closure_grpc_web_library")
 load("@npm_bazel_typescript//:index.bzl", "ts_library")
+load("@npm_bazel_labs//:index.bzl", "ts_proto_library")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -19,6 +20,11 @@ cc_proto_library(
     deps = [":actions_proto"],
 )
 
+ts_proto_library(
+    name = "ts_actions_proto",
+    proto = ":actions_proto",
+)
+
 proto_library(
     name = "chat_proto",
     srcs = ["chat.proto"],
@@ -27,6 +33,11 @@ proto_library(
 cc_proto_library(
     name = "cc_chat_proto",
     deps = [":chat_proto"],
+)
+
+ts_proto_library(
+    name = "ts_chat_proto",
+    proto = ":chat_proto",
 )
 
 proto_library(
@@ -53,44 +64,31 @@ cc_grpc_library(
     ],
 )
 
-filegroup(
-    name = "all_protos",
-    srcs = glob(["*.proto"]),
+ts_proto_library(
+    name = "ts_mass_proto",
+    proto = ":mass_proto",
 )
 
 closure_grpc_web_library(
-    name = "ts_all_protos",
+    name = "ts_mass_grpc_src",
     deps = [
         ":mass_proto",
     ],
 )
 
 ts_library(
-    name = "ts_mass_proto",
-    srcs = [":ts_all_protos"],
+    name = "ts_mass_grpc",
+    srcs = [":ts_mass_grpc_src"],
+    deps = [
+        ":ts_actions_proto",
+        ":ts_chat_proto",
+        ":ts_mass_proto",
+        ":ts_scenario_proto",
+        ":ts_spatial_proto",
+        ":ts_systems_proto",
+        ":ts_updates_proto",
+    ],
 )
-
-# faked_node_module_library(
-#     name = "ts_mass_proto",
-#     srcs = [
-#         ":MassServiceClientPb.ts",
-#         ":actions_pb.d.ts",
-#         ":actions_pb.js",
-#         ":chat_pb.d.ts",
-#         ":chat_pb.js",
-#         ":mass_pb.d.ts",
-#         ":mass_pb.js",
-#         ":scenario_pb.d.ts",
-#         ":scenario_pb.js",
-#         ":spatial_pb.d.ts",
-#         ":spatial_pb.js",
-#         ":systems_pb.d.ts",
-#         ":systems_pb.js",
-#         ":updates_pb.d.ts",
-#         ":updates_pb.js",
-#     ],
-#     deps = ["@npm//grpc-web"],
-# )
 
 proto_library(
     name = "scenario_proto",
@@ -106,6 +104,11 @@ cc_proto_library(
     deps = [":scenario_proto"],
 )
 
+ts_proto_library(
+    name = "ts_scenario_proto",
+    proto = ":scenario_proto",
+)
+
 proto_library(
     name = "spatial_proto",
     srcs = ["spatial.proto"],
@@ -116,6 +119,11 @@ cc_proto_library(
     deps = [":spatial_proto"],
 )
 
+ts_proto_library(
+    name = "ts_spatial_proto",
+    proto = ":spatial_proto",
+)
+
 proto_library(
     name = "systems_proto",
     srcs = ["systems.proto"],
@@ -124,6 +132,11 @@ proto_library(
 cc_proto_library(
     name = "cc_systems_proto",
     deps = [":systems_proto"],
+)
+
+ts_proto_library(
+    name = "ts_systems_proto",
+    proto = ":systems_proto",
 )
 
 proto_library(
@@ -138,4 +151,9 @@ proto_library(
 cc_proto_library(
     name = "cc_updates_proto",
     deps = [":updates_proto"],
+)
+
+ts_proto_library(
+    name = "ts_updates_proto",
+    proto = ":updates_proto",
 )

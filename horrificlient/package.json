@@ -10,7 +10,8 @@
   "license": "GPL-2.0-only",
   "devDependencies": {
     "@bazel/rollup": "^1.6.1",
-    "@bazel/typescript": "^1.6.1"
+    "@bazel/typescript": "^1.6.1",
+    "@bazel/labs": "^1.6.1"
   },
   "dependencies": {
     "grpc-web": "^1.0.7",

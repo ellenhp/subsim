@@ -160,6 +160,10 @@ load("@npm_bazel_typescript//:index.bzl", "ts_setup_workspace")
 
 ts_setup_workspace()
 
+load("@npm_bazel_labs//:package.bzl", "npm_bazel_labs_dependencies")
+
+npm_bazel_labs_dependencies()
+
 http_archive(
     name = "io_bazel_grpc_web",
     strip_prefix = "grpc-web-c7dedab92c0f3e77ec6f30d5268ee1cdb12ab11b",
