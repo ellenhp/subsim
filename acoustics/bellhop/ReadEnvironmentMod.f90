@@ -2,7 +2,7 @@ MODULE ReadEnvironmentMod
 
   ! mbp 12/2018, based on much older subroutine
 
-  USE miscSspMod
+  USE sspMod
   IMPLICIT NONE
 
 CONTAINS

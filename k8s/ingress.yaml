@@ -1,0 +1,11 @@
+apiVersion: "extensions/v1beta1"
+kind: "Ingress"
+metadata:
+  name: "entry"
+  namespace: "default"
+  annotations:
+    networking.gke.io/managed-certificates: "subsimcert"
+spec:
+  backend:
+    serviceName: "mass-envoy"
+    servicePort: 80

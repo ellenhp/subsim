@@ -1,5 +1,7 @@
 load("@npm_bazel_typescript//:index.bzl", "ts_devserver", "ts_library")
 load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
+
 
 package(default_visibility = ["//visibility:public"])
 
@@ -63,4 +65,12 @@ ts_devserver(
         "@npm//grpc-web:grpc-web__umd",
         "@npm//uuid:uuid__umd",
     ],
+)
+
+pkg_tar(
+    name = "tar",
+    strip_prefix = "/horrificlient",
+    package_dir="/usr/share/nginx/html",
+    srcs = [":index.html", ":bundle"],
+    visibility = ["//static:__subpackages__"]
 )
