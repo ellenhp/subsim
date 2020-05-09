@@ -54,6 +54,7 @@ rollup_bundle(
 
 ts_devserver(
     name = "devserver",
+    entry_module = "mass/horrificlient/main",
     serving_path = "/bundle.js",
     static_files = ["index.html"],
     deps = [":app"],
