@@ -29,7 +29,9 @@ class BloopServicer(bloop_pb2_grpc.BloopServicer):
     env = pm.create_env2d(rx_range=np.asarray(request.ranges),
                           rx_depth=np.asarray(request.depths),
                           depth=np.asarray(bathymetry),
+                          tx_directionality=[(0, -1000), (5, 2), (175, 2), (180, -1000)],
                           frequency=request.frequency,
+                          nbeams=50,
                           soundspeed=np.asarray(ssp))
     loss = pm.compute_transmission_loss(env, mode=pm.incoherent).to_numpy()
     response = bloop_pb2.PropagateResponse()
