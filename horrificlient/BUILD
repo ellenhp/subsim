@@ -34,7 +34,13 @@ ts_library(
     name = "app",
     srcs = glob(["*.ts"]),
     deps = [
+        "//mass/api:ts_actions_proto",
+        "//mass/api:ts_chat_proto",
         "//mass/api:ts_mass_proto",
+        "//mass/api:ts_scenario_proto",
+        "//mass/api:ts_spatial_proto",
+        "//mass/api:ts_systems_proto",
+        "//mass/api:ts_updates_proto",
     ],
 )
 

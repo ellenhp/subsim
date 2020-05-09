@@ -15,6 +15,7 @@
 """Starlark rules for using gRPC-Web with Bazel and `rules_closure`."""
 
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
+load("@npm_bazel_typescript//:index.bzl", "ts_library")
 
 # This was borrowed from Rules Go, licensed under Apache 2.
 # https://github.com/bazelbuild/rules_go/blob/67f44035d84a352cffb9465159e199066ecb814c/proto/compiler.bzl#L72
@@ -179,3 +180,23 @@ closure_grpc_web_library = rule(
         ),
     }),
 )
+
+def flat_ts_library(name, srcs, deps, deps_to_flatten, flat_files):
+    flatten = [
+        "/usr/bin/find bazel-out/ -type f -exec /bin/mv -i '{}' . ';'",
+        "/usr/bin/find bazel-out/ -type l -exec /bin/mv -i '{}' . ';'",
+        "ls -1a",
+    ] + ["cp " + f + " $(RULEDIR)" for f in flat_files]
+
+    native.genrule(
+        name = name + "_flatten",
+        outs = flat_files,
+        srcs = deps_to_flatten,
+        cmd_bash = " && ".join(flatten),
+    )
+
+    ts_library(
+        name = name,
+        srcs = srcs + [f for f in flat_files if f.endswith("ts")],
+        deps = deps,
+    )
