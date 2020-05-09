@@ -1,4 +1,4 @@
-MODULE miscsspmod
+MODULE sspmod
 
   ! holds SSP input by user and associated variables
 
@@ -409,4 +409,4 @@ CONTAINS
     END DO
   END SUBROUTINE UpdateSSPLoss
 
-END MODULE miscsspmod
+END MODULE sspmod
