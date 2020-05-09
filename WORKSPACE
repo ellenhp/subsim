@@ -114,11 +114,9 @@ http_archive(
 )
 
 load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
-
 k8s_repositories()
 
 load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
-
 k8s_go_deps()
 
 container_pull(
@@ -142,7 +140,6 @@ http_archive(
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
-
 npm_install(
     # Name this npm so that Bazel Label references look like @npm//package
     name = "npm",
@@ -160,17 +157,3 @@ ts_setup_workspace()
 
 load("@npm_bazel_labs//:package.bzl", "npm_bazel_labs_dependencies")
 npm_bazel_labs_dependencies()
-
-http_archive(
-    name = "io_bazel_grpc_web",
-    strip_prefix = "grpc-web-c7dedab92c0f3e77ec6f30d5268ee1cdb12ab11b",
-    urls = [
-        "https://github.com/grpc/grpc-web/archive/c7dedab92c0f3e77ec6f30d5268ee1cdb12ab11b.tar.gz",
-    ],
-)
-
-http_archive(
-    name = "grpc-web",
-    strip_prefix = "grpc-web-c73f5f40b9cd99d0238936b1809f52ada0b5c0b3",
-    urls = ["https://github.com/grpc/grpc-web/archive/c73f5f40b9cd99d0238936b1809f52ada0b5c0b3.tar.gz"],
-)
