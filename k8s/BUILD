@@ -5,5 +5,13 @@ k8s_objects(
   objects = [
     "//envoy:prod",
     "//mass:prod",
+    "//static:prod",
+    ":ingress"
   ]
+)
+
+k8s_object(
+  name = "entrypoint",
+  kind = "ingress",
+  template = ":ingress.yaml",
 )
