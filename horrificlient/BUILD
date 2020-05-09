@@ -1,5 +1,4 @@
 load("@npm_bazel_typescript//:index.bzl", "ts_devserver", "ts_library")
-load("@npm_bazel_rollup//:index.bzl", "rollup_bundle")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -44,18 +43,14 @@ ts_library(
     ],
 )
 
-rollup_bundle(
-    name = "bundle",
-    entry_point = "main.js",
-    deps = [
-        ":app",
-    ],
-)
-
 ts_devserver(
     name = "devserver",
     entry_module = "mass/horrificlient/main",
     serving_path = "/bundle.js",
     static_files = ["index.html"],
-    deps = [":app"],
+    deps = [
+        ":app",
+        "@npm//google-protobuf:google-protobuf__umd",
+        "@npm//grpc-web:grpc-web__umd",
+    ],
 )
