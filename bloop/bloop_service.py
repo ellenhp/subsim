@@ -24,10 +24,13 @@ import numpy as np
 class BloopServicer(bloop_pb2_grpc.BloopServicer):
   def Propagate(self, request, context):
     bathymetry = [[point.range_meters, point.depth_meters] for point in request.bathymetry.points]
+    ssp = [[point.depth_meters, point.sound_speed] for point in request.ssp.speed_points]
+
     env = pm.create_env2d(rx_range=np.asarray(request.ranges),
                           rx_depth=np.asarray(request.depths),
-                          depth=bathymetry,
-                          frequency=request.frequency)
+                          depth=np.asarray(bathymetry),
+                          frequency=request.frequency,
+                          soundspeed=np.asarray(ssp))
     loss = pm.compute_transmission_loss(env, mode=pm.incoherent).to_numpy()
     response = bloop_pb2.PropagateResponse()
     depth_index = 0
@@ -48,7 +51,7 @@ class BloopServicer(bloop_pb2_grpc.BloopServicer):
 def start(should_wait = True):
   server = grpc.server(futures.ThreadPoolExecutor(max_workers=30))
   bloop_pb2_grpc.add_BloopServicer_to_server(BloopServicer(), server)
-  server.add_insecure_port('0.0.0.0:50051')
+  server.add_insecure_port('0.0.0.0:50052')
   server.start()
   if (should_wait):
     server.wait_for_termination()

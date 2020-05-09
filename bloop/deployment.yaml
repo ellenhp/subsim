@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bloop-be
+  labels:
+    app: bloop-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bloop-be
+  template:
+    metadata:
+      labels:
+        app: bloop-be
+    spec:
+      containers:
+        - name: bloop-be
+          image: "gcr.io/mass-276203/bloop:dev"
+          ports:
+            - containerPort: 8080

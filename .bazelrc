@@ -1,3 +1,2 @@
 build:gcc --crosstool_top=//toolchains/gcc9:toolchain
 build:remote_gcc --crosstool_top=//toolchains/gcc9:toolchain
-build:remote_gcc --strategy=Genrule=local
