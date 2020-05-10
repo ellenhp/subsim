@@ -70,5 +70,6 @@ export function requestSpeed(game: Game, speed: number) {
   speedRequest.setVesselId(game.vesselId);
   speedRequest.setSystemRequestsList([systemsRequest]);
 
-  client.doAction(speedRequest, {}, console.log);
+  console.log(JSON.stringify(speedRequest.toObject()));
+  false && client.doAction(speedRequest, {}, (response) => {});
 }
