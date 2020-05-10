@@ -1,5 +1,5 @@
 import React from "react";
-import { StationComponent } from ".";
+import { StationComponent } from "..";
 
 const Map: StationComponent = () => <h1>Map</h1>;
 

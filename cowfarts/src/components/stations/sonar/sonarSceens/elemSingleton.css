@@ -1,0 +1,7 @@
+.elem-singleton {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-100%, -100%);
+  z-index: 100; /* Singleton Layer */
+}

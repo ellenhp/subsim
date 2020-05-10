@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { StationComponent } from ".";
-import { requestSpeed } from "../../game";
+import { StationComponent } from "..";
+import { requestSpeed } from "../../../game";
 
 const Helm: StationComponent = ({ game }) => {
   const [speed, setSpeed] = useState(0);

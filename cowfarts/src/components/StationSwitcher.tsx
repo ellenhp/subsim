@@ -91,5 +91,5 @@ export default provideKeys(
   debounce((props, _, newKeys) => {
     const station = keysToSelectedStation(newKeys);
     station && props.switchTo(station);
-  }, 100) as any // Ugh... it's hard to type throttle in TS apparently :((
+  }, 50) as any // Ugh... it's hard to type throttle in TS apparently :((
 );
