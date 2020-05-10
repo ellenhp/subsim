@@ -13,6 +13,7 @@ class App extends React.Component {
   }
   state: { latestUpdate?: VesselUpdate.AsObject };
   game: Game;
+
   render() {
     return (
       <div>

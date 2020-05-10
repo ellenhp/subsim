@@ -54,6 +54,8 @@ function buildNewFeasibleScenario(vesselId: string): Scenario {
   vesselSystem.setPropulsionSystem(propulsion);
   vesselSystem.setMapSystem(map);
 
+  
+
   player.addSystems(vesselSystem);
   return scenario;
 }
