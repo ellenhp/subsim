@@ -9,6 +9,6 @@ pkg_tar(
     name = "tar",
     strip_prefix = "/cowfarts/dist",
     package_dir="/usr/share/nginx/html",
-    srcs = [":buildfiles"],
+    srcs = [":distfiles"],
     visibility = ["//static:__subpackages__"]
 )
