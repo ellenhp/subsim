@@ -1,0 +1,63 @@
+.stationswitcher-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(200, 200, 200, 0.60);
+  backdrop-filter: blur(3px);
+}
+
+.stationswitcher-overlay-station {
+  text-transform: uppercase;
+  position: absolute;
+  left: calc(50vw - 80px);
+  bottom: 40vh;
+  height: 300px;
+  width: 160px;
+  /*background-color: black;*/
+  text-align: center;
+  font-size: 20px;
+  transform-origin: bottom center;
+}
+
+.stationswitcher-overlay-station svg {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  height: 100%;
+}
+
+.stationswitcher-overlay-station .label {
+  position: relative;
+  z-index: 1;
+}
+
+.stationswitcher-overlay-station svg>path {
+  fill: gray;
+  transition: fill 0.2s;
+}
+
+.stationswitcher-overlay-station.selected svg>path {
+  fill: wheat;
+}
+
+.stationswitcher-overlay-station.pos-0 {
+  transform: rotate(-60deg);
+}
+
+.stationswitcher-overlay-station.pos-1 {
+  transform: rotate(-30deg);
+}
+
+.stationswitcher-overlay-station.pos-2 {
+  transform: rotate(0deg);
+}
+
+.stationswitcher-overlay-station.pos-3 {
+  transform: rotate(30deg);
+}
+
+.stationswitcher-overlay-station.pos-4 {
+  transform: rotate(60deg);
+}

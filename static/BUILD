@@ -47,5 +47,5 @@ container_push(
 container_image(
   name = "image",
   base = "@nginx//image",
-  tars = ["//horrificlient:tar"],
+  tars = ["//cowfarts:tar"],
 )
