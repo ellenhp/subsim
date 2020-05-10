@@ -1,10 +1,10 @@
-import { MassBackendPromiseClient } from "../../mass/api/mass_grpc_web_pb";
-import { ConnectRequest } from "../../mass/api/mass_pb";
+import * as mass_grpc_web from "../../mass/api/mass_grpc_web_pb";
+import * as mass_pb from "../../mass/api/mass_pb";
 import { Pipe } from "./util";
 import { v4 } from "uuid";
 
-const client = new MassBackendPromiseClient("http://subsim.io");
-const request = new ConnectRequest();
+const client = new mass_grpc_web.MassBackendPromiseClient("http://subsim.io");
+const request = new mass_pb.ConnectRequest();
 client.connect(request);
 
 interface Game {

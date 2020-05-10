@@ -33,6 +33,7 @@ ts_devserver(
     entry_module = "mass/horrificlient/main",
     serving_path = "/bundle.js",
     static_files = ["index.html"],
+    bootstrap = ["@npm_bazel_labs//grpc_web:bootstrap_scripts"],
     deps = [
         ":app",
         "@npm//google-protobuf:google-protobuf__umd",
@@ -42,7 +43,7 @@ ts_devserver(
 )
 
 rollup_bundle(	
-    name = "bundle",	
+    name = "bundle",
     deps = [	
         ":app",	
         "@npm//@rollup/plugin-node-resolve",
