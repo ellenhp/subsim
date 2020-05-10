@@ -4,8 +4,14 @@
 // SO SINGLETON THEN
 
 import { ElemSingleton, show, hide } from "./elemSingleton";
+import noise from "noisejs";
 
 let canvasElement: HTMLCanvasElement | undefined = undefined;
+
+const H_RES = 1000;
+const V_RES = 1000;
+const BUFFER_SIZE_SEC = 20;
+const NOISE_MULT = 20;
 
 const createNarrowbandWaterfall = () => {
   canvasElement = document.createElement("canvas");
@@ -15,24 +21,34 @@ const createNarrowbandWaterfall = () => {
 
   var backBuffer = document.createElement("canvas"),
     backBufferCtx = backBuffer.getContext("2d");
-  backBuffer.width = 32;
-  backBuffer.height = 100;
-  const timer = setInterval(drawWaterfall, 100);
+  backBuffer.width = H_RES;
+  backBuffer.height = V_RES;
+  const timer = setInterval(drawWaterfall, (BUFFER_SIZE_SEC * 1000) / V_RES);
 
+  const noiseSource = new noise.Noise(Math.random());
+  let counter = 0;
   function drawWaterfall() {
     // Move the old backbuffer data down by one pixel.
     backBufferCtx.drawImage(backBuffer, 0, 1);
 
     backBufferCtx.fillStyle = "black";
-    backBufferCtx.fillRect(0, 0, 32, 1);
+    backBufferCtx.fillRect(0, 0, 1000, 1);
 
     // Fill in the new shit.
     backBufferCtx.fillStyle = "green";
-    for (var i = 0; i < 32; i++) {
-      backBufferCtx.globalAlpha = Math.random() * 0.7;
+    for (var i = 0; i < H_RES; i++) {
+      const noiseVal =
+        (1 +
+          noiseSource.perlin2(
+            (counter * NOISE_MULT) / V_RES,
+            (i * NOISE_MULT) / H_RES
+          )) /
+        2;
+      backBufferCtx.globalAlpha = noiseVal * 0.6;
       backBufferCtx.fillRect(i, 0, 1, 1);
     }
     backBufferCtx.globalAlpha = 1;
+    counter++;
 
     // Copy the backbuffer to the canvas.
     ctx.drawImage(backBuffer, 0, 0, canvasElement.width, canvasElement.height);

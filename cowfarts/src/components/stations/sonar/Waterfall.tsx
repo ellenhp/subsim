@@ -1,5 +1,6 @@
 import React from "react";
 import getNarrowbandedWaterfall from "./sonarSceens/narrowbandWaterfall";
+import "./Waterfall.css";
 
 export default class Waterfall extends React.Component {
   constructor(props) {
@@ -10,9 +11,8 @@ export default class Waterfall extends React.Component {
   posElement: React.RefObject<HTMLElement>;
 
   componentDidMount() {
-    const { top, left } = this.posElement.current.getBoundingClientRect();
-    console.log(top, left);
-    getNarrowbandedWaterfall().show({ top, left });
+    const bounds = this.posElement.current.getBoundingClientRect();
+    getNarrowbandedWaterfall().show(bounds);
   }
 
   componentWillUnmount() {
