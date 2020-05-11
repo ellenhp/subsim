@@ -1,25 +1,47 @@
 import React from "react";
-import getNarrowbandedWaterfall from "./sonarSceens/narrowbandWaterfall";
+import {
+  broadbandShort,
+  broadbandMedium,
+  broadbandLong,
+} from "./sonarSceens/narrowbandWaterfall";
 import "./Waterfall.css";
 
 export default class Waterfall extends React.Component {
   constructor(props) {
     super(props);
-    this.posElement = React.createRef();
+    this.shortElem = React.createRef();
+    this.mediumElem = React.createRef();
+    this.longElem = React.createRef();
   }
 
-  posElement: React.RefObject<HTMLElement>;
+  shortElem: React.RefObject<HTMLDivElement>;
+  mediumElem: React.RefObject<HTMLDivElement>;
+  longElem: React.RefObject<HTMLDivElement>;
 
   componentDidMount() {
-    const bounds = this.posElement.current.getBoundingClientRect();
-    getNarrowbandedWaterfall().show(bounds);
+    const shortBounds = this.shortElem.current.getBoundingClientRect();
+    broadbandShort.show(shortBounds);
+
+    const mediumBounds = this.mediumElem.current.getBoundingClientRect();
+    broadbandMedium.show(mediumBounds);
+
+    const longBounds = this.longElem.current.getBoundingClientRect();
+    broadbandLong.show(longBounds);
   }
 
   componentWillUnmount() {
-    getNarrowbandedWaterfall().hide();
+    broadbandShort.hide();
+    broadbandMedium.hide();
+    broadbandLong.hide();
   }
 
   render() {
-    return <div className="waterfall-pos" ref={this.posElement}></div>;
+    return (
+      <div className="waterfalls">
+        <div className="waterfall-pos" ref={this.shortElem}></div>
+        <div className="waterfall-pos" ref={this.mediumElem}></div>
+        <div className="waterfall-pos" ref={this.longElem}></div>
+      </div>
+    );
   }
 }

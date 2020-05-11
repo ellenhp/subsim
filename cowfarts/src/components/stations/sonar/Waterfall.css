@@ -2,3 +2,7 @@
   height: 400px;
   width: 400px;
 }
+
+.waterfalls {
+  display: flex;
+}
