@@ -27,11 +27,11 @@ class App extends React.Component {
     return (
       <div>
         <h1>Sub Sub Sub Sub</h1>
-        {JSON.stringify(this.state.latestUpdate)}
-        <CurrentStation game={this.game} />
         <StationSwitcher
           switchTo={(station) => this.setState({ currentStation: station })}
         />
+        {JSON.stringify(this.state.latestUpdate)}
+        <CurrentStation game={this.game} />
       </div>
     );
   }

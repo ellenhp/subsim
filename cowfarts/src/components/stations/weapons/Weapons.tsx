@@ -1,5 +1,5 @@
 import React from "react";
-import { StationComponent } from ".";
+import { StationComponent } from "..";
 
 const Weapons: StationComponent = () => <h1>Weapons</h1>;
 

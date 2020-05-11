@@ -1,10 +1,12 @@
 .stationswitcher-overlay {
+  z-index: 300;
+  /* Overlay layer */
   position: absolute;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(200, 200, 200, 0.60);
+  background-color: rgba(200, 200, 200, 0.6);
   backdrop-filter: blur(3px);
 }
 
@@ -33,12 +35,12 @@
   z-index: 1;
 }
 
-.stationswitcher-overlay-station svg>path {
+.stationswitcher-overlay-station svg > path {
   fill: gray;
   transition: fill 0.2s;
 }
 
-.stationswitcher-overlay-station.selected svg>path {
+.stationswitcher-overlay-station.selected svg > path {
   fill: wheat;
 }
 

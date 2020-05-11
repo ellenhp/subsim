@@ -1,8 +1,8 @@
-import Helm from "./Helm";
-import Map from "./Map";
-import Radar from "./Radar";
-import Sonar from "./Sonar";
-import Weapons from "./Weapons";
+import Helm from "./helm/Helm";
+import Map from "./map/Map";
+import Radar from "./radar/Radar";
+import Sonar from "./sonar/Sonar";
+import Weapons from "./weapons/Weapons";
 
 import { Game } from "../../game";
 
