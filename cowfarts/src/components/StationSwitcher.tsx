@@ -14,9 +14,9 @@ const WASD = {
 const { w, a, d } = WASD;
 
 const order: Station[] = [
-  Station.SONAR,
-  Station.RADAR,
   Station.HELM,
+  Station.RADAR,
+  Station.SONAR,
   Station.WEAPONS,
   Station.MAP,
 ];
@@ -36,20 +36,30 @@ const keysToSelectedStation = (heldKeys: number[]): Station | undefined => {
 
 const StationSwitcher = ({
   switchTo,
+  currentStation,
   heldKeys,
 }: {
   switchTo: (k: Station) => unknown;
+  currentStation: Station;
   heldKeys: number[];
 }) => {
-  const entries = Object.keys(stationMapping).map((key: Station) => (
-    <div>
-      <button onClick={() => switchTo(key)}>{key}</button>
-    </div>
-  ));
+  const entries = order.map((station: Station) => {
+    const active = currentStation === station;
+    return (
+      <div>
+        <button
+          className={active ? "selected" : ""}
+          disabled={active}
+          onClick={() => switchTo(station)}
+        >
+          {station}
+        </button>
+      </div>
+    );
+  });
   const keySelectedStation = keysToSelectedStation(heldKeys);
   let overlay: ReactElement | undefined;
   if (keySelectedStation) {
-    console.log("YEEE");
     overlay = (
       <div className="stationswitcher-overlay">
         {order.map((station, idx) => {
@@ -78,8 +88,8 @@ const StationSwitcher = ({
     );
   }
   return (
-    <div>
-      {entries}
+    <div className="station-switcher">
+      <div className="switcher-nav-buttons">{entries}</div>
       {overlay}
     </div>
   );

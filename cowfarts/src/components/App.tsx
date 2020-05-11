@@ -1,40 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { Game, createNewGame } from "../game";
-import { VesselUpdate } from "../__protogen__/mass/api/updates_pb";
-import { Station, stationMapping } from "./stations";
-import StationSwitcher from "./StationSwitcher";
+import InGame from "./InGame";
+import TitleScreen from "./TitleScreen";
+import "./App.css";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.game = createNewGame();
-    this.state = {
-      currentStation: Station.HELM,
+type AppState =
+  | {
+      status: "titleScreen";
+    }
+  | {
+      status: "joiningGame";
+      scenarioId: string;
+      vesselId: "user";
+    }
+  | {
+      status: "inGame";
+      activeGame: Game;
     };
-    this.game.worldEvents.listen((update) => {
-      this.setState({ latestUpdate: update });
+
+const App = () => {
+  const [appState, setAppState] = useState<AppState>({
+    status: "titleScreen",
+  });
+
+  const createGame = () => {
+    // Todo, promisify this.
+    const game = createNewGame();
+    setAppState({
+      status: "inGame",
+      activeGame: game,
     });
-  }
-  state: {
-    latestUpdate?: VesselUpdate.AsObject;
-    currentStation: Station;
   };
-  game: Game;
 
-  render() {
-    const CurrentStation = stationMapping[this.state.currentStation];
-
-    return (
-      <div>
-        <h1>Sub Sub Sub Sub</h1>
-        <StationSwitcher
-          switchTo={(station) => this.setState({ currentStation: station })}
-        />
-        {JSON.stringify(this.state.latestUpdate)}
-        <CurrentStation game={this.game} />
-      </div>
-    );
+  switch (appState.status) {
+    case "inGame":
+      return <InGame game={appState.activeGame} />;
+    case "titleScreen":
+      return <TitleScreen createGame={createGame} />;
+    default:
+      return <div>Joining...</div>;
   }
-}
+};
 
 export default App;

@@ -1,10 +1,25 @@
 import React from "react";
 import { StationComponent } from "..";
-import Waterfall from "./Waterfall";
+import Waterfall from "./ElemSingletonMount";
+import "./Sonar.css";
 
-const Sonar: StationComponent = () => (
+const Sonar: StationComponent = ({ sonarEngine }) => (
   <h1>
-    Sonar<Waterfall></Waterfall>
+    Sonar
+    <div className="waterfalls">
+      <Waterfall
+        className="waterfall"
+        elem={sonarEngine.waterfalls.broadbandShort}
+      />
+      <Waterfall
+        className="waterfall"
+        elem={sonarEngine.waterfalls.broadbandMedium}
+      />
+      <Waterfall
+        className="waterfall"
+        elem={sonarEngine.waterfalls.broadbandLong}
+      />
+    </div>
   </h1>
 );
 

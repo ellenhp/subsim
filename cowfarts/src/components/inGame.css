@@ -1,0 +1,12 @@
+.in-game {
+  display: flex;
+}
+
+.in-game .switcher-wrapper {
+  min-width: 100px;
+}
+
+.in-game .station-wrapper {
+  flex-grow: 1;
+  margin-left: 16px;
+}
