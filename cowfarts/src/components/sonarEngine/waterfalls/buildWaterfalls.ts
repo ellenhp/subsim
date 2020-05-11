@@ -16,6 +16,7 @@ const createBroadbandWaterfall = (
 ): ElemSingleton<HTMLCanvasElement> => {
   const canvasElement = document.createElement("canvas");
   canvasElement.className = "elem-singleton";
+  canvasElement.style.backgroundColor = "#001300";
   document.body.appendChild(canvasElement);
   const ctx = canvasElement.getContext("2d");
 
