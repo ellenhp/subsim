@@ -5,15 +5,16 @@ import api.ScenarioOuterClass
 import api.ScenarioOuterClass.VesselDescriptor
 import api.Spatial
 import api.Updates
+import java.time.Duration
 import java.time.temporal.TemporalAmount
 
 class Vessel(val uniqueId: String, val vesselDescriptor: VesselDescriptor, val spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation) {
 
     val systems : List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
     var position: Spatial.Position = if (spawnInfo.hasPosition()) spawnInfo.position else randomPositionWithinBounds(spawnInfo.bounds)
-    val heading: Double = if (spawnInfo.hasHeadingBounds()) randomHeadingWithinBounds(spawnInfo.headingBounds) else spawnInfo.exactSpawnHeading.toDouble()
+    var heading: Double = if (spawnInfo.hasHeadingBounds()) randomHeadingWithinBounds(spawnInfo.headingBounds) else spawnInfo.exactSpawnHeading.toDouble()
 
-    fun step(dt: TemporalAmount) {
+    fun step(dt: Duration) {
         systems.forEach { it.step(dt) }
     }
 

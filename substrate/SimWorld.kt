@@ -5,6 +5,7 @@ import api.ScenarioOuterClass
 import api.Updates
 import substrate.vessel.Vessel
 import substrate.vessel.VesselInstantiationException
+import java.time.Duration
 import java.time.temporal.TemporalAmount
 
 class SimWorld(val scenario: ScenarioOuterClass.Scenario) {
@@ -21,7 +22,7 @@ class SimWorld(val scenario: ScenarioOuterClass.Scenario) {
         }.toMutableList()
     }
 
-    fun step(dt: TemporalAmount) {
+    fun step(dt: Duration) {
         vessels.forEach { it.step(dt) }
     }
 

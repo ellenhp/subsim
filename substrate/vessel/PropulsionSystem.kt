@@ -1,9 +1,7 @@
 package substrate.vessel
 
-import api.ScenarioOuterClass
-import api.Spatial
-import api.Systems
-import api.Updates
+import api.*
+import java.time.Duration
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAmount
 import kotlin.math.*
@@ -18,14 +16,18 @@ class PropulsionSystem(vessel: Vessel, val descriptor: Systems.PropulsionSystem)
                 .setRequestedSpeedKnots(requestedSpeedKnots.roundToInt())).build()
     }
 
-    override fun step(dt: TemporalAmount) {
+    override fun processRequest(request: Actions.SystemRequest) {
+        requestedSpeedKnots = request.propulsionRequest.speedKnots.toDouble()
+    }
+    override fun step(dt: Duration) {
         updateSpeed(dt)
         updatePosition(dt)
     }
 
-    private fun updateSpeed(dt: TemporalAmount) {
+    private fun updateSpeed(dt: Duration) {
         val delta = requestedSpeedKnots - actualSpeedKnots
-        val maxDeltaThisStepKnots = abs(dt.get(ChronoUnit.SECONDS) * descriptor.knotsPerSecond)
+        val dtSeconds = dt.toNanos().toDouble() / Duration.ofSeconds(1).toNanos()
+        val maxDeltaThisStepKnots = abs(dtSeconds * descriptor.knotsPerSecond)
 
         // If we can get to the requested speed in this step, great.
         if (abs(delta) <= maxDeltaThisStepKnots) {
@@ -35,7 +37,7 @@ class PropulsionSystem(vessel: Vessel, val descriptor: Systems.PropulsionSystem)
         }
     }
 
-    private fun updatePosition(dt: TemporalAmount) {
+    private fun updatePosition(dt: Duration) {
         val position = vessel.position
         // We'll need this later, compute it now for clarity :)
         val absoluteLatitudeRadians = position.lat / 180 * Math.PI
@@ -53,9 +55,10 @@ class PropulsionSystem(vessel: Vessel, val descriptor: Systems.PropulsionSystem)
         // Longitudinal speed depends on our absolute latitude.
         val lngMinutesPerHour = xKnots / cos(absoluteLatitudeRadians)
 
+        val dtHours = dt.toNanos().toDouble() / Duration.ofHours(1).toNanos()
         val newPosition = Spatial.Position.newBuilder()
-                .setLat(position.lat + dt.get(ChronoUnit.HOURS) * latMinutesPerHour)
-                .setLng(position.lng + dt.get(ChronoUnit.HOURS) * lngMinutesPerHour)
+                .setLat(position.lat + dtHours * latMinutesPerHour / 60)
+                .setLng(position.lng + dtHours * lngMinutesPerHour / 60)
                 .build()
 
         vessel.position = newPosition

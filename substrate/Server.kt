@@ -7,7 +7,7 @@ import api.Updates
 import io.grpc.stub.StreamObserver
 
 
-class Server(val worldManager: WorldManager) : MassBackendImplBase() {
+class Server(private val worldManager: WorldManager) : MassBackendImplBase() {
     override fun connect(request: Mass.ConnectRequest, responseObserver: StreamObserver<Updates.VesselUpdate>) {
         worldManager.maybeAdd(request.scenarioId, request.scenario)
         while (true) {

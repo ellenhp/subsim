@@ -19,9 +19,12 @@ class WorldManager {
     }
 
     fun processAction(action: Actions.DoActionRequest) {
-        worlds[action.scenarioId]?.let {
+        val world = worlds[action.scenarioId]
+        if (world !== null) {
             lastAccessTimes[action.scenarioId] = Instant.now()
-            it.processAction(action)
+            world.processAction(action)
+        } else {
+            throw NoSuchWorldException("World with id ${action.scenarioId} does not exist")
         }
     }
 
@@ -33,7 +36,7 @@ class WorldManager {
         return world.getUpdateForVessel(vesselId)
     }
 
-    fun stepAll(dt: TemporalAmount) {
+    fun stepAll(dt: Duration) {
         val cutoffTime = Instant.now().minus(Duration.ofHours(6))
         worlds.keys.filter { lastAccessTimes[it]?.isBefore(cutoffTime) == true }.forEach { worlds.remove(it) }
         worlds.values.forEach { it.step(dt) }
