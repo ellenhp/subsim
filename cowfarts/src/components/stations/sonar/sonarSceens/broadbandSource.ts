@@ -15,7 +15,7 @@ type SoundSnapshot = {
 const NOISE_SCALE_HORIZONTAL = 20;
 const NOISE_SCALE_VERTICAL = 1;
 const POINT_DISTORTION_SCALE = 20;
-const POINT_DISTORTION_MULTIPLIER = 5;
+const POINT_DISTORTION_MULTIPLIER = 10;
 const POINT_DISTORTION_SPREAD = 10;
 
 export default class BroadbandSource {
@@ -24,6 +24,9 @@ export default class BroadbandSource {
     this.noiseSource = new noise.Noise(Math.random());
     this.pointDistortion = new noise.Noise(Math.random());
     this.explosionSource = new noise.Noise(Math.random());
+    setInterval(() => {
+      this.currentSnapshot.pointSources[1].bearing += 1;
+    }, 2000);
   }
 
   interval: NodeJS.Timeout;
@@ -41,7 +44,7 @@ export default class BroadbandSource {
       },
       {
         bearing: 120,
-        volume: 0.01,
+        volume: 0.1,
       },
     ],
     noiseLevel: 0.5,
