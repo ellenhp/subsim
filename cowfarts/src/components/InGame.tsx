@@ -3,7 +3,9 @@ import { Game, createNewGame } from "../game";
 import { VesselUpdate } from "../__protogen__/mass/api/updates_pb";
 import { Station, stationMapping } from "./stations";
 import StationSwitcher from "./StationSwitcher";
+import BroadbandSource from "./sonarEngine/BroadbandSource";
 import "./inGame.css";
+import { buildSonarEngine, SonarEngine } from "./sonarEngine/sonarEngine";
 
 interface InGameProps {
   game: Game;
@@ -20,13 +22,14 @@ class InGame extends React.Component<InGameProps> {
       this.setState({ latestUpdate: update });
     });
 
+    this.sonarEngine = buildSonarEngine(this.game.worldEvents);
   }
   state: {
     latestUpdate?: VesselUpdate.AsObject;
     currentStation: Station;
   };
   game: Game;
-  sonarEngine
+  sonarEngine: SonarEngine;
 
   render() {
     const CurrentStation = stationMapping[this.state.currentStation];
@@ -40,7 +43,7 @@ class InGame extends React.Component<InGameProps> {
           />
         </div>
         <div className="station-wrapper">
-          <CurrentStation game={this.game} />
+          <CurrentStation game={this.game} sonarEngine={this.sonarEngine} />
           {JSON.stringify(this.state.latestUpdate)}
         </div>
       </div>

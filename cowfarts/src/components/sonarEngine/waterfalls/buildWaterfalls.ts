@@ -3,8 +3,8 @@
 // In a certain sense, historical sonar data is captured solely in this interface.
 // SO SINGLETON THEN
 
-import { ElemSingleton, show, hide } from "./elemSingleton";
-import BroadbandSource from "../../../sonarEngine/broadbandSource";
+import { ElemSingleton, show, hide } from "../../../util/elemSingleton";
+import BroadbandSource from "../broadbandSource";
 
 const H_RES = 1000;
 const V_RES = 300;
@@ -13,7 +13,7 @@ const SCOPE_IN_SECONDS = 10;
 const createBroadbandWaterfall = (
   source: BroadbandSource,
   multiplier: number = 1
-) => {
+): ElemSingleton<HTMLCanvasElement> => {
   const canvasElement = document.createElement("canvas");
   canvasElement.className = "elem-singleton";
   document.body.appendChild(canvasElement);
@@ -49,7 +49,6 @@ const createBroadbandWaterfall = (
     // Fill in the new shit.
     backBufferCtx.fillStyle = "green";
     for (var i = 0; i < samples.length; i++) {
-      const bearing = (i * 360) / H_RES;
       backBufferCtx.globalAlpha = samples[i];
       backBufferCtx.fillRect(i, 0, 1, 1);
     }
@@ -65,9 +64,10 @@ const createBroadbandWaterfall = (
   };
 };
 
-const broadbandSource = new BroadbandSource();
-const broadbandShort = createBroadbandWaterfall(broadbandSource, 2);
-const broadbandMedium = createBroadbandWaterfall(broadbandSource, 8);
-const broadbandLong = createBroadbandWaterfall(broadbandSource, 32);
+const buildWaterfalls = (broadbandSource: BroadbandSource) => ({
+  broadbandShort: createBroadbandWaterfall(broadbandSource, 2),
+  broadbandMedium: createBroadbandWaterfall(broadbandSource, 8),
+  broadbandLong: createBroadbandWaterfall(broadbandSource, 32),
+});
 
-export { broadbandShort, broadbandMedium, broadbandLong };
+export default buildWaterfalls;

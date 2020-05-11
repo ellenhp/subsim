@@ -9,7 +9,7 @@ import {
   SystemRequest,
   PropulsionSystemRequest,
 } from "./__protogen__/mass/api/actions_pb";
-import { Pipe } from "./util";
+import { Pipe } from "./util/pipe";
 
 import buildNewFeasibleScenario from "./builders/feasibleScenario";
 
