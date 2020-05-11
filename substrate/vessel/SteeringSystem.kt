@@ -32,7 +32,7 @@ class SteeringSystem(vessel: Vessel, val descriptor: Systems.SteeringSystem) : V
         if (abs(delta) <= maxDeltaThisStep) {
             actualHeadingDegrees = requestedHeadingDegrees.toDouble()
         } else {
-            actualHeadingDegrees += sign(delta) * maltaThisStep
+            actualHeadingDegrees += sign(delta) * maxDeltaThisStep
         }
     }
 }
