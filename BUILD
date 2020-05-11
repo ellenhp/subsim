@@ -18,5 +18,20 @@
 alias(
     name = "tsconfig.json",
     actual = "//horrificlient:tsconfig.json",
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
+)
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "define_kt_toolchain")
+
+KOTLIN_LANGUAGE_LEVEL = "1.3"
+
+JAVA_LANGUAGE_LEVEL = "11"
+
+KOTLIN_LANGUAGE_LEVEL = "1.3"
+
+define_kt_toolchain(
+    name = "kotlin_toolchain",
+    api_version = KOTLIN_LANGUAGE_LEVEL,
+    jvm_target = JAVA_LANGUAGE_LEVEL,
+    language_version = KOTLIN_LANGUAGE_LEVEL,
 )

@@ -23,6 +23,18 @@ load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
 grpc_extra_deps()
 
 http_archive(
+    name = "grpc_java",
+    strip_prefix = "grpc-java-1.29.0",
+    urls = [
+        "https://github.com/grpc/grpc-java/archive/v1.29.0.zip",
+    ],
+)
+
+load("@grpc_java//:repositories.bzl", "grpc_java_repositories")
+
+grpc_java_repositories()
+
+http_archive(
     name = "rules_python_external",
     sha256 = "5a1d7e6e4bab49dcdd787694f0f5d52ac5debdfc1852981a89cc414e338d60dc",
     strip_prefix = "rules_python_external-3aacabb928a710b10bff13d0bde49ceaade58f15",
@@ -114,9 +126,11 @@ http_archive(
 )
 
 load("@io_bazel_rules_k8s//k8s:k8s.bzl", "k8s_repositories")
+
 k8s_repositories()
 
 load("@io_bazel_rules_k8s//k8s:k8s_go_deps.bzl", k8s_go_deps = "deps")
+
 k8s_go_deps()
 
 container_pull(
@@ -140,6 +154,7 @@ http_archive(
 )
 
 load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
+
 npm_install(
     # Name this npm so that Bazel Label references look like @npm//package
     name = "npm",
@@ -149,11 +164,34 @@ npm_install(
 
 # Install any Bazel rules which were extracted earlier by the npm_install rule.
 load("@npm//:install_bazel_dependencies.bzl", "install_bazel_dependencies")
+
 install_bazel_dependencies()
 
 # Set up TypeScript toolchain
 load("@npm_bazel_typescript//:index.bzl", "ts_setup_workspace")
+
 ts_setup_workspace()
 
 load("@npm_bazel_labs//:package.bzl", "npm_bazel_labs_dependencies")
+
 npm_bazel_labs_dependencies()
+
+# Kotlin stuff <3
+
+rules_kotlin_version = "legacy-1.3.0"
+
+rules_kotlin_sha = "4fd769fb0db5d3c6240df8a9500515775101964eebdf85a3f9f0511130885fde"
+
+http_archive(
+    name = "io_bazel_rules_kotlin",
+    sha256 = rules_kotlin_sha,
+    strip_prefix = "rules_kotlin-%s" % rules_kotlin_version,
+    type = "zip",
+    urls = ["https://github.com/bazelbuild/rules_kotlin/archive/%s.zip" % rules_kotlin_version],
+)
+
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories")
+
+kotlin_repositories()  # if you want the default. Otherwise see custom kotlinc distribution below
+
+register_toolchains("//:kotlin_toolchain")
