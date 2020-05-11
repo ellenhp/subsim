@@ -25,7 +25,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "define_kt_toolchain")
 
 KOTLIN_LANGUAGE_LEVEL = "1.3"
 
-JAVA_LANGUAGE_LEVEL = "11"
+JAVA_LANGUAGE_LEVEL = "1.8"
 
 KOTLIN_LANGUAGE_LEVEL = "1.3"
 

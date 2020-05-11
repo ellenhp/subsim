@@ -72,6 +72,13 @@ load("@io_bazel_rules_docker//python3:image.bzl", _py3_image_repositories = "rep
 
 _py3_image_repositories()
 
+load(
+    "@io_bazel_rules_docker//java:image.bzl",
+    _java_image_repos = "repositories",
+)
+
+_java_image_repos()
+
 # This is NOT needed when going through the language lang_image
 # "repositories" function(s).
 load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
