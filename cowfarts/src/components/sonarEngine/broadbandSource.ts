@@ -3,14 +3,19 @@ import noise from "noisejs";
 import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
 
 type PointSource = {
-  volume: number;
   bearing: number;
+  freqs: Array<{
+    freq: number;
+    volume: number;
+  }>;
 };
 
 type SoundSnapshot = {
   pointSources: Array<PointSource>;
   noiseLevel: number;
   explosionLevel: number;
+  bearing: number;
+  timestamp: number;
 };
 
 const NOISE_SCALE_HORIZONTAL = 20;
@@ -21,12 +26,14 @@ const POINT_DISTORTION_SPREAD = 10;
 
 export default class BroadbandSource {
   constructor(worldStream: Pipe<VesselUpdate.AsObject>) {
-    this.currentSnapshot;
     this.noiseSource = new noise.Noise(Math.random());
     this.pointDistortion = new noise.Noise(Math.random());
     this.explosionSource = new noise.Noise(Math.random());
     setInterval(() => {
-      this.currentSnapshot.pointSources[1].bearing += 1;
+      const currentSnapshot = this.getCurrentSnapshot();
+      this.snapshots.push(currentSnapshot);
+      // TODO: Immer this up
+      currentSnapshot.pointSources[1].bearing += 1;
     }, 2000);
   }
 
@@ -37,25 +44,49 @@ export default class BroadbandSource {
   pointDistortion: any;
 
   /* Shouldn't have a default here. */
-  currentSnapshot: SoundSnapshot = {
-    pointSources: [
-      {
-        bearing: 180,
-        volume: 0.5,
-      },
-      {
-        bearing: 120,
-        volume: 0.1,
-      },
-    ],
-    noiseLevel: 0.5,
-    explosionLevel: 0,
-  };
-  originTime: number = Date.now(); // in ms
+  snapshots: Array<SoundSnapshot> = [
+    {
+      pointSources: [
+        {
+          bearing: 180,
+          freqs: [{ freq: 100, volume: 0.5 }],
+        },
+        {
+          bearing: 120,
+          freqs: [{ freq: 100, volume: 0.2 }],
+        },
+      ],
+      noiseLevel: 0.5,
+      explosionLevel: 0,
+      bearing: 0,
+      timestamp: 0,
+    },
+  ];
+
+  getCurrentSnapshot(): SoundSnapshot {
+    return this.snapshots[this.snapshots.length - 1];
+  }
+
+  getSnapshotAtTime(time: number) {
+    // lol O(n)
+    for (let i = this.snapshots.length - 1; i > 0; i--) {
+      const snapshot = this.snapshots[i];
+      if (snapshot.timestamp < time) {
+        return snapshot;
+      }
+    }
+    // default to earliest snapshot
+    return this.snapshots[0];
+  }
 
   // Bearing is always 0 - 360
-  sample(bearing) {
-    const time = Date.now() - this.originTime;
+  sample(bearing: number, sampleTime?: number | undefined) {
+    const snapshot =
+      sampleTime === undefined
+        ? this.getCurrentSnapshot()
+        : this.getSnapshotAtTime(sampleTime);
+    const time = sampleTime === undefined ? Date.now() : sampleTime;
+
     const backgroundNoise =
       (this.noiseSource.perlin2(
         (bearing * NOISE_SCALE_HORIZONTAL) / 360,
@@ -63,9 +94,11 @@ export default class BroadbandSource {
       ) /
         2 +
         0.5) *
-      this.currentSnapshot.noiseLevel;
-    const pointNoises = this.currentSnapshot.pointSources.map(
-      ({ bearing: pointBearing, volume }) => {
+      snapshot.noiseLevel;
+    const pointNoises = snapshot.pointSources.map(
+      ({ bearing: pointBearing, freqs }) => {
+        const avgFreqVolume =
+          freqs.reduce((acc, { volume }) => volume + acc, 0) / freqs.length;
         const bearingOffset = Math.abs(
           POINT_DISTORTION_MULTIPLIER *
             this.pointDistortion.perlin2(
@@ -76,11 +109,11 @@ export default class BroadbandSource {
             pointBearing
         );
         return (
-          volume * Math.max(1 - bearingOffset / POINT_DISTORTION_SPREAD, 0)
+          avgFreqVolume *
+          Math.max(1 - bearingOffset / POINT_DISTORTION_SPREAD, 0)
         );
       }
     );
-
     return backgroundNoise + pointNoises.reduce((a, b) => a + b, 0);
   }
 }
