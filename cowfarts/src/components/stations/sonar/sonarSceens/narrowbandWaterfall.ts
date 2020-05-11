@@ -4,7 +4,7 @@
 // SO SINGLETON THEN
 
 import { ElemSingleton, show, hide } from "./elemSingleton";
-import BroadbandSource from "./broadbandSource";
+import BroadbandSource from "../../../sonarEngine/broadbandSource";
 
 const H_RES = 1000;
 const V_RES = 300;

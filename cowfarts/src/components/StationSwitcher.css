@@ -1,3 +1,16 @@
+.station-switcher {
+  border-right: black 1px solid;
+  height: 100vh;
+  text-align: center;
+}
+
+.switcher-nav-buttons button {
+  width: 75px;
+  height: 75px;
+  margin-top: 8px;
+  text-transform: capitalize;
+}
+
 .stationswitcher-overlay {
   z-index: 300;
   /* Overlay layer */

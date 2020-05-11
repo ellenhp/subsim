@@ -1,4 +1,4 @@
-import { Pipe } from "../../../../util";
+import { Pipe } from "../../util";
 import noise from "noisejs";
 
 type PointSource = {
