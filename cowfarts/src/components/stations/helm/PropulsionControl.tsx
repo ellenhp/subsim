@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Game } from "../../../game";
+import { GameConnection } from "../../../game";
 import { requestSpeed } from "../../../game";
 
-const PropulsionControl = ({ game }: { game: Game }) => {
+const PropulsionControl = ({ game }: { game: GameConnection }) => {
   const [speed, setSpeed] = useState(0);
   const modSpeed = (num: number) => () => {
     const newSpeed = speed + num;

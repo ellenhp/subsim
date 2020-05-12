@@ -1,5 +1,5 @@
 import React from "react";
-import { Game, createNewGame } from "../game";
+import { GameConnection, createNewGame } from "../game";
 import { VesselUpdate } from "../__protogen__/mass/api/updates_pb";
 import { Station, stationMapping } from "./stations";
 import StationSwitcher from "./StationSwitcher";
@@ -8,7 +8,7 @@ import "./inGame.css";
 import { buildSonarEngine, SonarEngine } from "./sonarEngine/sonarEngine";
 
 interface InGameProps {
-  game: Game;
+  game: GameConnection;
 }
 
 class InGame extends React.Component<InGameProps> {

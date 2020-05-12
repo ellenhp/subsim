@@ -4,11 +4,11 @@ import Radar from "./radar/Radar";
 import Sonar from "./sonar/Sonar";
 import Weapons from "./weapons/Weapons";
 
-import { Game } from "../../game";
+import { GameConnection } from "../../game";
 import { SonarEngine } from "../sonarEngine/sonarEngine";
 
 export type StationProps = {
-  game: Game;
+  game: GameConnection;
   sonarEngine: SonarEngine;
 };
 

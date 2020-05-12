@@ -15,7 +15,7 @@ import buildNewFeasibleScenario from "./builders/feasibleScenario";
 
 const client = new MassBackendClient("http://35.224.26.74");
 
-export interface Game {
+export interface GameConnection {
   scenarioId: string;
   vesselId: string;
   worldEvents: Pipe<VesselUpdate.AsObject>;
@@ -24,7 +24,7 @@ export interface Game {
   ) => Promise<DoActionResponse.AsObject>;
 }
 
-export function createNewGame(): Game {
+export function createNewGame(): GameConnection {
   const scenarioId = v4();
   const playerId = "user";
 
@@ -70,7 +70,7 @@ export function createNewGame(): Game {
   };
 }
 
-export function requestSpeed(game: Game, speed: number) {
+export function requestSpeed(game: GameConnection, speed: number) {
   const speedRequest = new DoActionRequest();
 
   const speedSystemsRequest = new PropulsionSystemRequest();
