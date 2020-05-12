@@ -5,7 +5,7 @@ import "./Sonar.css";
 
 type WaterfallTypes = "short" | "medium" | "long";
 
-const Sonar: StationComponent = ({ sonarEngine }) => {
+const Sonar: StationComponent = ({ engines: { sonarEngine } }) => {
   const [waterfallType, setWaterfallType] = useState<WaterfallTypes>("medium");
 
   const waterfall = {

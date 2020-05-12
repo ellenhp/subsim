@@ -5,12 +5,12 @@ import Sonar from "./sonar/Sonar";
 import Weapons from "./weapons/Weapons";
 
 import { GameConnection } from "../../game";
-import { SonarEngine } from "../sonarEngine/sonarEngine";
 import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
+import { Engines } from "../../engines/engine";
 
 export type StationProps = {
   game: GameConnection;
-  sonarEngine: SonarEngine;
+  engines: Engines;
   latestUpdate: VesselUpdate.AsObject;
 };
 

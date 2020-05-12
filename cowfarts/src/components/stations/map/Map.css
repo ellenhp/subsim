@@ -1,0 +1,35 @@
+.map-viewport {
+  width: calc(100vw - 100px);
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background-color: lightgray;
+}
+
+.map-pane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  transform-origin: top left;
+}
+
+.map-pane img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
+.map-zoom-buttons {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+}
+
+.map-zoom-buttons button {
+  background-color: black;
+  color: white;
+  font-size: 15pt;
+}

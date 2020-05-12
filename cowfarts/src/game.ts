@@ -8,6 +8,7 @@ import {
   DoActionResponse,
   SystemRequest,
   PropulsionSystemRequest,
+  SteeringSystemRequest,
 } from "./__protogen__/mass/api/actions_pb";
 import { Pipe } from "./util/pipe";
 
@@ -82,6 +83,24 @@ export function requestSpeed(game: GameConnection, speed: number) {
   speedRequest.setVesselId(game.vesselId);
   speedRequest.setSystemRequestsList([systemsRequest]);
 
-  console.log(JSON.stringify(speedRequest.toObject()));
   client.doAction(speedRequest, {}, (response) => {});
+}
+
+export function requestHeading(game: GameConnection, heading: number) {
+  if (heading < 0 || heading >= 360) {
+    throw `${heading} IS NOT A VALID HEADING`;
+  }
+  const headingRequest = new DoActionRequest();
+
+  const steeringSystemRequest = new SteeringSystemRequest();
+  steeringSystemRequest.setHeadingDegrees(heading);
+  const systemsRequest = new SystemRequest();
+  systemsRequest.setSteeringRequest(steeringSystemRequest);
+
+  headingRequest.setScenarioId(game.scenarioId);
+  headingRequest.setVesselId(game.vesselId);
+  headingRequest.setSystemRequestsList([systemsRequest]);
+
+  
+  client.doAction(headingRequest, {}, response => {});
 }

@@ -68,27 +68,34 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   vesselDescriptor.addSystems(mapSystem);
   vesselDescriptor.addSystems(hullSystem);
 
-  const nePos = new Position();
-  nePos.setLat(100);
-  nePos.setLng(100);
+  const playerSpawn = new Position();
+  playerSpawn.setLat(47.603);
+  playerSpawn.setLng(-122.374);
 
-  const swPos = new Position();
-  swPos.setLat(101);
-  swPos.setLng(101);
-
-  const bounds = new Bounds();
-  bounds.setNorthEast(nePos);
-  bounds.setSouthWest(swPos);
+  const playerSpawnInfo = new SpawnedVessel.SpawnInformation();
+  playerSpawnInfo.setPosition(playerSpawn);
+  playerSpawnInfo.setExactSpawnHeading(270);
 
   const headingBounds = new HeadingBounds();
   headingBounds.setLeftBound(10);
   headingBounds.setLeftBound(11);
 
-  const spawnInfo = new SpawnedVessel.SpawnInformation();
-  spawnInfo.setBounds(bounds);
-  spawnInfo.setPosition(nePos);
-  spawnInfo.setExactSpawnHeading(10);
-  spawnInfo.setHeadingBounds(headingBounds);
+  // Building Enemy Spawn info
+  const enemyNePos = new Position();
+  enemyNePos.setLat(47.632545);
+  enemyNePos.setLng(-122.474061);
+
+  const enemySwPos = new Position();
+  enemySwPos.setLat(47.581621);
+  enemySwPos.setLng(-122.417695);
+
+  const enemySpawnBounds = new Bounds();
+  enemySpawnBounds.setNorthEast(enemyNePos);
+  enemySpawnBounds.setSouthWest(enemySwPos);
+
+  const enemySpawnInfo = new SpawnedVessel.SpawnInformation();
+  enemySpawnInfo.setBounds(enemySpawnBounds);
+  enemySpawnInfo.setHeadingBounds(headingBounds);
 
   const playerFaction = new Faction();
   playerFaction.setPlayerControlled(true);
@@ -101,13 +108,13 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   const playerVessel = new SpawnedVessel();
   playerVessel.setVesselDescriptorId(vesselId);
   playerVessel.setUniqueId(playerId);
-  playerVessel.setSpawnInfo(spawnInfo);
+  playerVessel.setSpawnInfo(playerSpawnInfo);
   playerVessel.setFaction(playerFaction);
 
   const enemyVessel = new SpawnedVessel();
   enemyVessel.setVesselDescriptorId(vesselId);
   enemyVessel.setUniqueId(v4());
-  enemyVessel.setSpawnInfo(spawnInfo);
+  enemyVessel.setSpawnInfo(enemySpawnInfo);
   enemyVessel.setFaction(enemyFaction);
 
   const endCondition = new EndCondition();
@@ -115,12 +122,12 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   endCondition.setWinningFaction(enemyFaction);
 
   const scnNePos = new Position();
-  scnNePos.setLat(99);
-  scnNePos.setLng(99);
+  scnNePos.setLat(48.1900463);
+  scnNePos.setLng(-123.1800463);
 
   const scnSwPos = new Position();
-  scnSwPos.setLat(102);
-  scnSwPos.setLng(102);
+  scnSwPos.setLat(47.0099536);
+  scnSwPos.setLng(-122.1601388);
 
   const scnBounds = new Bounds();
   scnBounds.setNorthEast(scnNePos);
