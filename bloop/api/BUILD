@@ -18,3 +18,16 @@ py_grpc_library(
     srcs = [":bloop_proto"],
     deps = [":py_bloop_proto"],
 )
+
+java_proto_library(
+    name = "java_bloop_proto",
+    deps = [":bloop_proto"],
+)
+
+java_grpc_library(
+    name = "java_bloop_grpc",
+    srcs = [":bloop_proto"],
+    deps = [
+        ":java_bloop_proto",
+    ],
+)

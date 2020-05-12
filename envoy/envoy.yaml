@@ -23,7 +23,7 @@ static_resources:
               routes:
               - match: { prefix: "/api.MassBackend" }
                 route:
-                  cluster: mass_be
+                  cluster: substrate_be
                   max_grpc_timeout: 0s
               - match: { prefix: "/" }
                 route:
@@ -40,14 +40,14 @@ static_resources:
           - name: envoy.cors
           - name: envoy.router
   clusters:
-  - name: mass_be
+  - name: substrate_be
     connect_timeout: 0.25s
     type: LOGICAL_DNS
     http2_protocol_options: {}
     lb_policy: round_robin
     dns_lookup_family: V4_ONLY
     lb_policy: ROUND_ROBIN
-    hosts: [{ socket_address: { address: mass-be, port_value: 50051 }}]
+    hosts: [{ socket_address: { address: substrate-be, port_value: 50051 }}]
   - name: mass_static
     connect_timeout: 0.25s
     type: LOGICAL_DNS

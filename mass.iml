@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/bazel-mass" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject-ijar" level="project" />
+    <orderEntry type="library" name="guava-28.2-android-ijar1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang33" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject3" level="project" />
+    <orderEntry type="library" name="platformclasspath4" level="project" />
+    <orderEntry type="library" name="platformclasspath2" level="project" />
+    <orderEntry type="library" name="libstub-hjar1" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2-ijar" level="project" />
+    <orderEntry type="library" name="jar12" level="project" />
+    <orderEntry type="library" name="jar28" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api" level="project" />
+    <orderEntry type="library" name="libapi-hjar" level="project" />
+    <orderEntry type="library" name="builder_kt-ijar1" level="project" />
+    <orderEntry type="library" name="lib8" level="project" />
+    <orderEntry type="library" name="jar" level="project" />
+    <orderEntry type="library" name="libcontext-hjar2" level="project" />
+    <orderEntry type="library" name="kotlin2" level="project" />
+    <orderEntry type="library" name="libprotobuf-hjar2" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2-ijar2" level="project" />
+    <orderEntry type="library" name="kotlin-compiler" level="project" />
+    <orderEntry type="library" name="kotlin3" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang32" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject-ijar1" level="project" />
+    <orderEntry type="library" name="kotlin4" level="project" />
+    <orderEntry type="library" name="libkotlin_model_proto-speed-ijar" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2-ijar1" level="project" />
+    <orderEntry type="library" name="platformclasspath" level="project" />
+    <orderEntry type="library" name="libprotobuf-lite-hjar1" level="project" />
+    <orderEntry type="library" name="jars" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang3" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_protobuf_protobuf_java-ijar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api3" level="project" />
+    <orderEntry type="library" name="kotlin-compiler1" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2-ijar1" level="project" />
+    <orderEntry type="library" name="kotlin-compiler3" level="project" />
+    <orderEntry type="library" name="libprotobuf_java-hjar1" level="project" />
+    <orderEntry type="library" name="builder1" level="project" />
+    <orderEntry type="library" name="libstub-hjar2" level="project" />
+    <orderEntry type="library" name="jar14" level="project" />
+    <orderEntry type="library" name="libapi-hjar2" level="project" />
+    <orderEntry type="library" name="kotlin" level="project" />
+    <orderEntry type="library" name="libcontext-hjar" level="project" />
+    <orderEntry type="library" name="libprotobuf_java-hjar2" level="project" />
+    <orderEntry type="library" name="jar29" level="project" />
+    <orderEntry type="library" name="builder_kt-ijar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject" level="project" />
+    <orderEntry type="library" name="guava-28.2-android-ijar" level="project" />
+    <orderEntry type="library" name="libstub-hjar" level="project" />
+    <orderEntry type="library" name="jar10" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_dagger_dagger-ijar" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2-ijar" level="project" />
+    <orderEntry type="library" name="libkotlin_model_proto-speed-ijar1" level="project" />
+    <orderEntry type="library" name="jar32" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang31" level="project" />
+    <orderEntry type="library" name="kotlin1" level="project" />
+    <orderEntry type="library" name="java_tools" level="project" />
+    <orderEntry type="library" name="jar25" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0-ijar1" level="project" />
+    <orderEntry type="library" name="kotlin5" level="project" />
+    <orderEntry type="library" name="platformclasspath3" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2-ijar2" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2" level="project" />
+    <orderEntry type="library" name="guava-28.2-android-ijar2" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0-ijar2" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0-ijar" level="project" />
+    <orderEntry type="library" name="kotlin-compiler2" level="project" />
+    <orderEntry type="library" name="jar7" level="project" />
+    <orderEntry type="library" name="libcontext-hjar1" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject2" level="project" />
+    <orderEntry type="library" name="libprotobuf-hjar1" level="project" />
+    <orderEntry type="library" name="libprotobuf-lite-hjar" level="project" />
+    <orderEntry type="library" name="guava-28.2-android" level="project" />
+    <orderEntry type="library" name="libprotobuf_java-hjar" level="project" />
+    <orderEntry type="library" name="jar22" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_protobuf_protobuf_java-ijar1" level="project" />
+    <orderEntry type="library" name="libprotobuf-hjar" level="project" />
+    <orderEntry type="library" name="builder" level="project" />
+    <orderEntry type="library" name="platformclasspath1" level="project" />
+    <orderEntry type="library" name="libprotobuf-lite-hjar2" level="project" />
+    <orderEntry type="library" name="libapi-hjar1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_dagger_dagger-ijar1" level="project" />
+    <orderEntry type="library" name="kotlin" level="project" />
+    <orderEntry type="library" name="kotlin-compiler3" level="project" />
+    <orderEntry type="library" name="kotlin-compiler1" level="project" />
+    <orderEntry type="library" name="guava-28.2-android-ijar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang3" level="project" />
+    <orderEntry type="library" name="libapi-hjar1" level="project" />
+    <orderEntry type="library" name="libapi-hjar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang32" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_protobuf_protobuf_java-ijar" level="project" />
+    <orderEntry type="library" name="platformclasspath4" level="project" />
+    <orderEntry type="library" name="guava-28.2-android-ijar1" level="project" />
+    <orderEntry type="library" name="libstub-hjar1" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2-ijar2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject2" level="project" />
+    <orderEntry type="library" name="guava-28.2-android" level="project" />
+    <orderEntry type="library" name="libprotobuf-hjar2" level="project" />
+    <orderEntry type="library" name="lib8" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2-ijar" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2-ijar1" level="project" />
+    <orderEntry type="library" name="builder" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0-ijar" level="project" />
+    <orderEntry type="library" name="libprotobuf-lite-hjar2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject3" level="project" />
+    <orderEntry type="library" name="platformclasspath1" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2" level="project" />
+    <orderEntry type="library" name="kotlin2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_dagger_dagger-ijar" level="project" />
+    <orderEntry type="library" name="libstub-hjar2" level="project" />
+    <orderEntry type="library" name="libprotobuf-hjar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject-ijar1" level="project" />
+    <orderEntry type="library" name="libkotlin_model_proto-speed-ijar1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang33" level="project" />
+    <orderEntry type="library" name="jar32" level="project" />
+    <orderEntry type="library" name="libprotobuf_java-hjar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject" level="project" />
+    <orderEntry type="library" name="guava-28.2-android-ijar2" level="project" />
+    <orderEntry type="library" name="jar14" level="project" />
+    <orderEntry type="library" name="libcontext-hjar1" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2-ijar2" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0-ijar2" level="project" />
+    <orderEntry type="library" name="kotlin1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_dagger_dagger-ijar1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_protobuf_protobuf_java-ijar1" level="project" />
+    <orderEntry type="library" name="jar7" level="project" />
+    <orderEntry type="library" name="jars" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang31" level="project" />
+    <orderEntry type="library" name="java_tools" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api3" level="project" />
+    <orderEntry type="library" name="jar" level="project" />
+    <orderEntry type="library" name="jar10" level="project" />
+    <orderEntry type="library" name="kotlin-compiler2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api1" level="project" />
+    <orderEntry type="library" name="libapi-hjar2" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2-ijar" level="project" />
+    <orderEntry type="library" name="libprotobuf-lite-hjar1" level="project" />
+    <orderEntry type="library" name="jar22" level="project" />
+    <orderEntry type="library" name="libkotlin_model_proto-speed-ijar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject-ijar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2-ijar1" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0-ijar1" level="project" />
+    <orderEntry type="library" name="libprotobuf_java-hjar1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api2" level="project" />
+    <orderEntry type="library" name="libstub-hjar" level="project" />
+    <orderEntry type="library" name="platformclasspath2" level="project" />
+    <orderEntry type="library" name="jar25" level="project" />
+    <orderEntry type="library" name="jar29" level="project" />
+    <orderEntry type="library" name="builder1" level="project" />
+    <orderEntry type="library" name="kotlin-compiler" level="project" />
+    <orderEntry type="library" name="libcontext-hjar2" level="project" />
+    <orderEntry type="library" name="kotlin5" level="project" />
+    <orderEntry type="library" name="libcontext-hjar" level="project" />
+    <orderEntry type="library" name="kotlin4" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2" level="project" />
+    <orderEntry type="library" name="jar12" level="project" />
+    <orderEntry type="library" name="libprotobuf_java-hjar2" level="project" />
+    <orderEntry type="library" name="jar28" level="project" />
+    <orderEntry type="library" name="builder_kt-ijar" level="project" />
+    <orderEntry type="library" name="libprotobuf-hjar1" level="project" />
+    <orderEntry type="library" name="platformclasspath" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject1" level="project" />
+    <orderEntry type="library" name="libprotobuf-lite-hjar" level="project" />
+    <orderEntry type="library" name="kotlin3" level="project" />
+    <orderEntry type="library" name="builder_kt-ijar1" level="project" />
+    <orderEntry type="library" name="platformclasspath3" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api3" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0" level="project" />
+    <orderEntry type="library" name="builder1" level="project" />
+    <orderEntry type="library" name="builder" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_dagger_dagger-ijar" level="project" />
+    <orderEntry type="library" name="libprotobuf-hjar" level="project" />
+    <orderEntry type="library" name="libprotobuf_java-hjar1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api2" level="project" />
+    <orderEntry type="library" name="libprotobuf-lite-hjar2" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2-ijar1" level="project" />
+    <orderEntry type="library" name="builder_kt-ijar1" level="project" />
+    <orderEntry type="library" name="jar22" level="project" />
+    <orderEntry type="library" name="builder_kt-ijar" level="project" />
+    <orderEntry type="library" name="guava-28.2-android-ijar2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject-ijar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang3" level="project" />
+    <orderEntry type="library" name="kotlin" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_protobuf_protobuf_java-ijar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject-ijar1" level="project" />
+    <orderEntry type="library" name="platformclasspath4" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api" level="project" />
+    <orderEntry type="library" name="libkotlin_model_proto-speed-ijar" level="project" />
+    <orderEntry type="library" name="libkotlin_model_proto-speed-ijar1" level="project" />
+    <orderEntry type="library" name="libprotobuf_java-hjar2" level="project" />
+    <orderEntry type="library" name="libcontext-hjar" level="project" />
+    <orderEntry type="library" name="jar7" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0-ijar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_dagger_dagger-ijar1" level="project" />
+    <orderEntry type="library" name="libstub-hjar2" level="project" />
+    <orderEntry type="library" name="libprotobuf-hjar2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang33" level="project" />
+    <orderEntry type="library" name="kotlin-compiler" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2" level="project" />
+    <orderEntry type="library" name="platformclasspath2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject3" level="project" />
+    <orderEntry type="library" name="libcontext-hjar1" level="project" />
+    <orderEntry type="library" name="kotlin4" level="project" />
+    <orderEntry type="library" name="kotlin3" level="project" />
+    <orderEntry type="library" name="kotlin5" level="project" />
+    <orderEntry type="library" name="kotlin-compiler1" level="project" />
+    <orderEntry type="library" name="lib8" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0-ijar2" level="project" />
+    <orderEntry type="library" name="kotlin-compiler3" level="project" />
+    <orderEntry type="library" name="libprotobuf-hjar1" level="project" />
+    <orderEntry type="library" name="libapi-hjar1" level="project" />
+    <orderEntry type="library" name="jar32" level="project" />
+    <orderEntry type="library" name="platformclasspath1" level="project" />
+    <orderEntry type="library" name="java_tools" level="project" />
+    <orderEntry type="library" name="kotlin2" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2-ijar2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang32" level="project" />
+    <orderEntry type="library" name="libapi-hjar" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2-ijar1" level="project" />
+    <orderEntry type="library" name="libprotobuf_java-hjar" level="project" />
+    <orderEntry type="library" name="platformclasspath3" level="project" />
+    <orderEntry type="library" name="jar10" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_com_google_protobuf_protobuf_java-ijar1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_annotation_jsr250_api1" level="project" />
+    <orderEntry type="library" name="libprotobuf-lite-hjar" level="project" />
+    <orderEntry type="library" name="platformclasspath" level="project" />
+    <orderEntry type="library" name="jar" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2-ijar" level="project" />
+    <orderEntry type="library" name="libcontext-hjar2" level="project" />
+    <orderEntry type="library" name="libstub-hjar" level="project" />
+    <orderEntry type="library" name="guava-28.2-android-ijar" level="project" />
+    <orderEntry type="library" name="proto-google-common-protos-1.17.0-ijar1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject1" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_javax_inject_javax_inject2" level="project" />
+    <orderEntry type="library" name="jar12" level="project" />
+    <orderEntry type="library" name="javax.annotation-api-1.2" level="project" />
+    <orderEntry type="library" name="kotlin-compiler2" level="project" />
+    <orderEntry type="library" name="io_bazel_rules_kotlin_org_apache_commons_commons_lang31" level="project" />
+    <orderEntry type="library" name="kotlin1" level="project" />
+    <orderEntry type="library" name="libstub-hjar1" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2-ijar2" level="project" />
+    <orderEntry type="library" name="jar28" level="project" />
+    <orderEntry type="library" name="libapi-hjar2" level="project" />
+    <orderEntry type="library" name="jars" level="project" />
+    <orderEntry type="library" name="jar25" level="project" />
+    <orderEntry type="library" name="jar29" level="project" />
+    <orderEntry type="library" name="jar14" level="project" />
+    <orderEntry type="library" name="guava-28.2-android-ijar1" level="project" />
+    <orderEntry type="library" name="guava-28.2-android" level="project" />
+    <orderEntry type="library" name="libprotobuf-lite-hjar1" level="project" />
+    <orderEntry type="library" name="jsr305-3.0.2-ijar" level="project" />
+    <orderEntry type="module" module-name="jmh" />
+    <orderEntry type="module" module-name="generated" />
+    <orderEntry type="module" module-name="test15" />
+    <orderEntry type="module" module-name="test17" />
+    <orderEntry type="module" module-name="test26" />
+    <orderEntry type="module" module-name="main23" />
+    <orderEntry type="module" module-name="debug" />
+    <orderEntry type="module" module-name="test21" />
+    <orderEntry type="module" module-name="generated1" />
+    <orderEntry type="module" module-name="main14" />
+    <orderEntry type="module" module-name="main28" />
+    <orderEntry type="module" module-name="main1" />
+    <orderEntry type="module" module-name="ruby" />
+    <orderEntry type="module" module-name="test9" />
+    <orderEntry type="module" module-name="test14" />
+    <orderEntry type="module" module-name="main4" />
+    <orderEntry type="module" module-name="test29" />
+    <orderEntry type="module" module-name="main30" />
+    <orderEntry type="module" module-name="test28" />
+    <orderEntry type="module" module-name="main29" />
+    <orderEntry type="module" module-name="test4" />
+    <orderEntry type="module" module-name="compatibility_tests" />
+    <orderEntry type="module" module-name="test23" />
+    <orderEntry type="module" module-name="benchmarks" />
+    <orderEntry type="module" module-name="main24" />
+    <orderEntry type="module" module-name="main8" />
+    <orderEntry type="module" module-name="main13" />
+    <orderEntry type="module" module-name="main22" />
+    <orderEntry type="module" module-name="test7" />
+    <orderEntry type="module" module-name="test13" />
+    <orderEntry type="module" module-name="jmh3" />
+    <orderEntry type="module" module-name="gae-interop-testing" />
+    <orderEntry type="module" module-name="main5" />
+    <orderEntry type="module" module-name="main9" />
+    <orderEntry type="module" module-name="generated4" />
+    <orderEntry type="module" module-name="main27" />
+    <orderEntry type="module" module-name="lite" />
+    <orderEntry type="module" module-name="test11" />
+    <orderEntry type="module" module-name="generated5" />
+    <orderEntry type="module" module-name="test3" />
+    <orderEntry type="module" module-name="test5" />
+    <orderEntry type="module" module-name="main17" />
+    <orderEntry type="module" module-name="main18" />
+    <orderEntry type="module" module-name="test2" />
+    <orderEntry type="module" module-name="jmh4" />
+    <orderEntry type="module" module-name="main21" />
+    <orderEntry type="module" module-name="test19" />
+    <orderEntry type="module" module-name="main19" />
+    <orderEntry type="module" module-name="test27" />
+    <orderEntry type="module" module-name="test" />
+    <orderEntry type="module" module-name="test22" />
+    <orderEntry type="module" module-name="jmh1" />
+    <orderEntry type="module" module-name="main20" />
+    <orderEntry type="module" module-name="generated3" />
+    <orderEntry type="module" module-name="generated6" />
+    <orderEntry type="module" module-name="test20" />
+    <orderEntry type="module" module-name="main10" />
+    <orderEntry type="module" module-name="test25" />
+    <orderEntry type="module" module-name="test30" />
+    <orderEntry type="module" module-name="main2" />
+    <orderEntry type="module" module-name="generated2" />
+    <orderEntry type="module" module-name="release" />
+    <orderEntry type="module" module-name="test16" />
+    <orderEntry type="module" module-name="main3" />
+    <orderEntry type="module" module-name="jmh2" />
+    <orderEntry type="module" module-name="main26" />
+    <orderEntry type="module" module-name="main16" />
+    <orderEntry type="module" module-name="test25" />
+    <orderEntry type="module" module-name="benchmarks" />
+    <orderEntry type="module" module-name="test9" />
+    <orderEntry type="module" module-name="test2" />
+    <orderEntry type="module" module-name="test14" />
+    <orderEntry type="module" module-name="main17" />
+    <orderEntry type="module" module-name="test13" />
+    <orderEntry type="module" module-name="generated" />
+    <orderEntry type="module" module-name="test21" />
+    <orderEntry type="module" module-name="main8" />
+    <orderEntry type="module" module-name="test3" />
+    <orderEntry type="module" module-name="generated3" />
+    <orderEntry type="module" module-name="main19" />
+    <orderEntry type="module" module-name="test11" />
+    <orderEntry type="module" module-name="generated6" />
+    <orderEntry type="module" module-name="jmh3" />
+    <orderEntry type="module" module-name="jmh4" />
+    <orderEntry type="module" module-name="main1" />
+    <orderEntry type="module" module-name="generated2" />
+    <orderEntry type="module" module-name="main29" />
+    <orderEntry type="module" module-name="test16" />
+    <orderEntry type="module" module-name="test27" />
+    <orderEntry type="module" module-name="main30" />
+    <orderEntry type="module" module-name="test17" />
+    <orderEntry type="module" module-name="test7" />
+    <orderEntry type="module" module-name="test" />
+    <orderEntry type="module" module-name="generated1" />
+    <orderEntry type="module" module-name="debug" />
+    <orderEntry type="module" module-name="jmh1" />
+    <orderEntry type="module" module-name="main20" />
+    <orderEntry type="module" module-name="main5" />
+    <orderEntry type="module" module-name="main21" />
+    <orderEntry type="module" module-name="test23" />
+    <orderEntry type="module" module-name="main4" />
+    <orderEntry type="module" module-name="test29" />
+    <orderEntry type="module" module-name="test26" />
+    <orderEntry type="module" module-name="main24" />
+    <orderEntry type="module" module-name="test4" />
+    <orderEntry type="module" module-name="gae-interop-testing" />
+    <orderEntry type="module" module-name="main23" />
+    <orderEntry type="module" module-name="main14" />
+    <orderEntry type="module" module-name="test28" />
+    <orderEntry type="module" module-name="generated4" />
+    <orderEntry type="module" module-name="main13" />
+    <orderEntry type="module" module-name="lite" />
+    <orderEntry type="module" module-name="main28" />
+    <orderEntry type="module" module-name="test20" />
+    <orderEntry type="module" module-name="main3" />
+    <orderEntry type="module" module-name="main22" />
+    <orderEntry type="module" module-name="test30" />
+    <orderEntry type="module" module-name="ruby" />
+    <orderEntry type="module" module-name="test22" />
+    <orderEntry type="module" module-name="jmh2" />
+    <orderEntry type="module" module-name="test5" />
+    <orderEntry type="module" module-name="main9" />
+    <orderEntry type="module" module-name="main2" />
+    <orderEntry type="module" module-name="jmh" />
+    <orderEntry type="module" module-name="compatibility_tests" />
+    <orderEntry type="module" module-name="main26" />
+    <orderEntry type="module" module-name="main27" />
+    <orderEntry type="module" module-name="main16" />
+    <orderEntry type="module" module-name="release" />
+    <orderEntry type="module" module-name="main18" />
+    <orderEntry type="module" module-name="generated5" />
+    <orderEntry type="module" module-name="main10" />
+    <orderEntry type="module" module-name="test19" />
+    <orderEntry type="module" module-name="test15" />
+    <orderEntry type="module" module-name="benchmarks" />
+    <orderEntry type="module" module-name="main2" />
+    <orderEntry type="module" module-name="test22" />
+    <orderEntry type="module" module-name="generated5" />
+    <orderEntry type="module" module-name="generated4" />
+    <orderEntry type="module" module-name="test7" />
+    <orderEntry type="module" module-name="test25" />
+    <orderEntry type="module" module-name="main9" />
+    <orderEntry type="module" module-name="test13" />
+    <orderEntry type="module" module-name="main5" />
+    <orderEntry type="module" module-name="main30" />
+    <orderEntry type="module" module-name="test23" />
+    <orderEntry type="module" module-name="test16" />
+    <orderEntry type="module" module-name="generated1" />
+    <orderEntry type="module" module-name="test30" />
+    <orderEntry type="module" module-name="jmh1" />
+    <orderEntry type="module" module-name="test15" />
+    <orderEntry type="module" module-name="test3" />
+    <orderEntry type="module" module-name="test19" />
+    <orderEntry type="module" module-name="main24" />
+    <orderEntry type="module" module-name="jmh3" />
+    <orderEntry type="module" module-name="main16" />
+    <orderEntry type="module" module-name="generated6" />
+    <orderEntry type="module" module-name="main14" />
+    <orderEntry type="module" module-name="jmh" />
+    <orderEntry type="module" module-name="test5" />
+    <orderEntry type="module" module-name="test28" />
+    <orderEntry type="module" module-name="main1" />
+    <orderEntry type="module" module-name="compatibility_tests" />
+    <orderEntry type="module" module-name="main23" />
+    <orderEntry type="module" module-name="release" />
+    <orderEntry type="module" module-name="test20" />
+    <orderEntry type="module" module-name="test14" />
+    <orderEntry type="module" module-name="main19" />
+    <orderEntry type="module" module-name="test27" />
+    <orderEntry type="module" module-name="main10" />
+    <orderEntry type="module" module-name="test17" />
+    <orderEntry type="module" module-name="test21" />
+    <orderEntry type="module" module-name="ruby" />
+    <orderEntry type="module" module-name="test" />
+    <orderEntry type="module" module-name="test2" />
+    <orderEntry type="module" module-name="main18" />
+    <orderEntry type="module" module-name="main20" />
+    <orderEntry type="module" module-name="generated2" />
+    <orderEntry type="module" module-name="test26" />
+    <orderEntry type="module" module-name="generated3" />
+    <orderEntry type="module" module-name="test4" />
+    <orderEntry type="module" module-name="debug" />
+    <orderEntry type="module" module-name="main21" />
+    <orderEntry type="module" module-name="main8" />
+    <orderEntry type="module" module-name="main29" />
+    <orderEntry type="module" module-name="gae-interop-testing" />
+    <orderEntry type="module" module-name="test9" />
+    <orderEntry type="module" module-name="test29" />
+    <orderEntry type="module" module-name="main4" />
+    <orderEntry type="module" module-name="jmh4" />
+    <orderEntry type="module" module-name="generated" />
+    <orderEntry type="module" module-name="jmh2" />
+    <orderEntry type="module" module-name="main17" />
+    <orderEntry type="module" module-name="main22" />
+    <orderEntry type="module" module-name="lite" />
+    <orderEntry type="module" module-name="main3" />
+    <orderEntry type="module" module-name="main28" />
+    <orderEntry type="module" module-name="main27" />
+    <orderEntry type="module" module-name="main26" />
+    <orderEntry type="module" module-name="main13" />
+    <orderEntry type="module" module-name="test11" />
+  </component>
+</module>
