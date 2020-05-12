@@ -35,8 +35,25 @@
 }
 
 .map-player-icon {
+  border-radius: 100%;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  vertical-align: bottom;
+  border: 2px solid blue;
   color: blue;
   position: absolute;
-  top: -12px;
-  left: -9px;
+  top: -11px;
+  left: -11px;
+  font-size: 22px;
+  background-color: rgba(255, 255, 255, 0.7)
+}
+
+.map-player-icon::after {
+  position: relative;
+  height: 0;
+  top: -6px;
+  font-size: 15px;
+  content: "";
+  border: 1px solid blue;
 }

@@ -95,6 +95,14 @@ const paneTransform = (viewport: Viewport) => {
   return `scale(${zoom}) translate(${-x}px, ${-y}px)`;
 };
 
+// TODO: We really should compress this proto on entry
+// and replace VesselUpdate.AsObject as the canonical world update.
+const getPlayerHeading = (latestUpdate: VesselUpdate.AsObject) => {
+  return latestUpdate.systemUpdatesList.filter(
+    (system) => system.steeringUpdate
+  )[0].steeringUpdate.actualHeadingDegrees;
+};
+
 const Map: StationComponent = ({ engines: { mapEngine }, latestUpdate }) => {
   const [dragState, setDragState] = useState<DragState>({ status: "dropped" });
   const [viewport, setViewport] = useState<Viewport>(initState);
@@ -172,7 +180,9 @@ const Map: StationComponent = ({ engines: { mapEngine }, latestUpdate }) => {
   );
 
   const playerIconStyle = {
-    transform: `translate(${playerTL.left}px, ${playerTL.top}px`,
+    transform: `translate(${playerTL.left}px, ${
+      playerTL.top
+    }px) rotate(${getPlayerHeading(latestUpdate)}deg)`,
   };
 
   return (
@@ -193,9 +203,7 @@ const Map: StationComponent = ({ engines: { mapEngine }, latestUpdate }) => {
           <img src={mapEngine.mapImageEl.src} />
         </div>
         {dragState.status === "dropped" && (
-          <div className="map-player-icon" style={playerIconStyle}>
-            ⌖
-          </div>
+          <div className="map-player-icon" style={playerIconStyle} />
         )}
       </div>
       <div className="map-zoom-buttons">
