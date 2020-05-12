@@ -2,6 +2,7 @@ load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_libra
 load("@io_bazel_rules_docker//java:image.bzl", "java_image")
 load("@io_bazel_rules_k8s//k8s:object.bzl", "k8s_object")
 load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
+load("@io_bazel_rules_docker//container:container.bzl", "container_push")
 
 kt_jvm_library(
     name = "substrate_lib",

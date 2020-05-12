@@ -18,4 +18,4 @@ spec:
         - name: substrate-be
           image: "gcr.io/mass-276203/mass:dev"
           ports:
-            - containerPort: 8080
+            - containerPort: 50051
