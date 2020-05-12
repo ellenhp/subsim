@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Game, createNewGame } from "../game";
+import { GameConnection, createNewGame } from "../game";
 import InGame from "./InGame";
 import TitleScreen from "./TitleScreen";
 import "./App.css";
@@ -15,7 +15,7 @@ type AppState =
     }
   | {
       status: "inGame";
-      activeGame: Game;
+      activeGame: GameConnection;
     };
 
 const App = () => {

@@ -3,6 +3,14 @@
   width: 400px;
 }
 
-.waterfalls {
+.waterfall-wrapper {
+  width: 400px;
+}
+
+.waterfall-switcher {
   display: flex;
+}
+
+.waterfall-switcher button {
+  flex-grow: 1;
 }

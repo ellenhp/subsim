@@ -8,14 +8,15 @@ import {
   DoActionResponse,
   SystemRequest,
   PropulsionSystemRequest,
+  SteeringSystemRequest,
 } from "./__protogen__/mass/api/actions_pb";
 import { Pipe } from "./util/pipe";
 
 import buildNewFeasibleScenario from "./builders/feasibleScenario";
 
-const client = new MassBackendClient("http://subsim.io");
+const client = new MassBackendClient("http://35.224.26.74");
 
-export interface Game {
+export interface GameConnection {
   scenarioId: string;
   vesselId: string;
   worldEvents: Pipe<VesselUpdate.AsObject>;
@@ -24,7 +25,7 @@ export interface Game {
   ) => Promise<DoActionResponse.AsObject>;
 }
 
-export function createNewGame(): Game {
+export function createNewGame(): GameConnection {
   const scenarioId = v4();
   const playerId = "user";
 
@@ -42,13 +43,19 @@ export function createNewGame(): Game {
   var deadline = new Date();
   deadline.setSeconds(deadline.getSeconds() + 600);
 
-  const stream = client.connect(connectionReq, {
-    deadline: `${deadline.getTime()}`,
-  });
+  let stream;
 
-  stream.on("data", (response) => {
-    worldEvents.fire(response.toObject());
-  });
+  const createStream = () => {
+    stream = client.connect(connectionReq, {
+      deadline: `${deadline.getTime()}`,
+    });
+
+    stream.on("data", (response) => {
+      worldEvents.fire(response.toObject());
+    });
+  };
+
+  createStream();
 
   function performAction(arg: DoActionRequest) {
     return new Promise((resolve) => {
@@ -64,7 +71,7 @@ export function createNewGame(): Game {
   };
 }
 
-export function requestSpeed(game: Game, speed: number) {
+export function requestSpeed(game: GameConnection, speed: number) {
   const speedRequest = new DoActionRequest();
 
   const speedSystemsRequest = new PropulsionSystemRequest();
@@ -76,6 +83,24 @@ export function requestSpeed(game: Game, speed: number) {
   speedRequest.setVesselId(game.vesselId);
   speedRequest.setSystemRequestsList([systemsRequest]);
 
-  console.log(JSON.stringify(speedRequest.toObject()));
-  false && client.doAction(speedRequest, {}, (response) => {});
+  client.doAction(speedRequest, {}, (response) => {});
+}
+
+export function requestHeading(game: GameConnection, heading: number) {
+  if (heading < 0 || heading >= 360) {
+    throw `${heading} IS NOT A VALID HEADING`;
+  }
+  const headingRequest = new DoActionRequest();
+
+  const steeringSystemRequest = new SteeringSystemRequest();
+  steeringSystemRequest.setHeadingDegrees(heading);
+  const systemsRequest = new SystemRequest();
+  systemsRequest.setSteeringRequest(steeringSystemRequest);
+
+  headingRequest.setScenarioId(game.scenarioId);
+  headingRequest.setVesselId(game.vesselId);
+  headingRequest.setSystemRequestsList([systemsRequest]);
+
+  
+  client.doAction(headingRequest, {}, response => {});
 }

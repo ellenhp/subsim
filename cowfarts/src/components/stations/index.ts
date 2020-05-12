@@ -4,12 +4,14 @@ import Radar from "./radar/Radar";
 import Sonar from "./sonar/Sonar";
 import Weapons from "./weapons/Weapons";
 
-import { Game } from "../../game";
-import { SonarEngine } from "../sonarEngine/sonarEngine";
+import { GameConnection } from "../../game";
+import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
+import { Engines } from "../../engines/engine";
 
 export type StationProps = {
-  game: Game;
-  sonarEngine: SonarEngine;
+  game: GameConnection;
+  engines: Engines;
+  latestUpdate: VesselUpdate.AsObject;
 };
 
 export type StationComponent = React.FunctionComponent<StationProps>;
