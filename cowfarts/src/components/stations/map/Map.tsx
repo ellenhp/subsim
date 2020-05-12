@@ -17,6 +17,7 @@ type TopLeft = {
 
 const MAP_EL_ID = "map-pane-element-loooolz";
 const MAP_VIEWPORT_ID = "map-viewport-element-loooolz";
+const MAP_OVERLAY_ID = "map-overlay-element-loooolz";
 
 const initState = {
   x: 0,
@@ -128,12 +129,17 @@ const Map: StationComponent = ({ engines: { mapEngine }, latestUpdate }) => {
     document.getElementById(MAP_EL_ID).style.transform = paneTransform(
       newViewport
     );
+
+    document.getElementById(MAP_OVERLAY_ID).style.transform = `translate(${
+      event.screenX - dragState.origin.left
+    }px, ${event.screenY - dragState.origin.top}px)`;
   };
 
   const dragEnd = (event: React.MouseEvent) => {
     if (dragState.status !== "dragging") {
       return;
     }
+    // Reset the overlay to be what you'd expect
     const newViewport = computeNewViewportFromDrag(event, dragState);
     setViewport(newViewport);
     setDragState({
@@ -185,6 +191,9 @@ const Map: StationComponent = ({ engines: { mapEngine }, latestUpdate }) => {
     }px) rotate(${getPlayerHeading(latestUpdate)}deg)`,
   };
 
+  const overlayStyle =
+    dragState.status !== "dragging" ? { transform: "translate(0, 0)" } : {};
+
   return (
     <>
       <div
@@ -202,9 +211,9 @@ const Map: StationComponent = ({ engines: { mapEngine }, latestUpdate }) => {
         >
           <img src={mapEngine.mapImageEl.src} />
         </div>
-        {dragState.status === "dropped" && (
+        <div className="map-overlay" style={overlayStyle} id={MAP_OVERLAY_ID}>
           <div className="map-player-icon" style={playerIconStyle} />
-        )}
+        </div>
       </div>
       <div className="map-zoom-buttons">
         <button onClick={zoomIn}>Zoom In</button>

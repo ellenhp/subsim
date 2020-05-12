@@ -57,3 +57,8 @@
   content: "";
   border: 1px solid blue;
 }
+
+.map-overlay {
+  position: absolute;
+  transform: translate(0, 0);
+}
