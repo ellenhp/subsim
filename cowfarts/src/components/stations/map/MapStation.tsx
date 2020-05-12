@@ -1,19 +1,15 @@
 import React, { useState } from "react";
 import { StationComponent } from "..";
-import "./Map.css";
+import "./MapStation.css";
 import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
-import { unstable_batchedUpdates } from "react-dom";
-
-type Viewport = {
-  x /* viewport center, 0 - 1 */;
-  y /* viewport center, 0 - 1 */;
-  zoom;
-};
-
-type TopLeft = {
-  top: number;
-  left: number;
-};
+import {
+  Viewport,
+  TopLeft,
+  localToGlobal,
+  globalToLocal,
+  changeZoom,
+  latLongToMapTL,
+} from "./helpers";
 
 const MAP_EL_ID = "map-pane-element-loooolz";
 const MAP_VIEWPORT_ID = "map-viewport-element-loooolz";
@@ -23,26 +19,6 @@ const initState = {
   x: 0,
   y: 0,
   zoom: 1,
-};
-
-const localToGlobal = (
-  { top, left }: TopLeft,
-  { x, y, zoom }: Viewport
-): TopLeft => {
-  return {
-    top: zoom * (top - y),
-    left: zoom * (left - x),
-  };
-};
-
-const globalToLocal = (
-  { top, left }: TopLeft,
-  { x, y, zoom }: Viewport
-): TopLeft => {
-  return {
-    top: y + top / zoom,
-    left: x + left / zoom,
-  };
 };
 
 type DraggingState = {
@@ -71,22 +47,6 @@ const computeNewViewportFromDrag = (
     x,
     y,
     zoom: draggingState.initialViewPort.zoom,
-  };
-};
-
-const changeZoom = (
-  zoomAmount: number,
-  viewport: Viewport,
-  origin = { top: 0, left: 0 }
-) => {
-  const oldZoom = viewport.zoom;
-  const scaledZoom = 0.5 * zoomAmount * viewport.zoom;
-  const newZoom = Math.min(5, Math.max(0.1, viewport.zoom + scaledZoom));
-
-  return {
-    x: viewport.x + (origin.left / oldZoom - origin.left / newZoom),
-    y: viewport.y + (origin.top / oldZoom - origin.top / newZoom),
-    zoom: newZoom,
   };
 };
 
@@ -172,16 +132,7 @@ const Map: StationComponent = ({ engines: { mapEngine }, latestUpdate }) => {
   };
 
   const playerTL = localToGlobal(
-    {
-      top:
-        (mapEngine.data.height *
-          (latestUpdate.position.lat - mapEngine.data.topLeft.lat)) /
-        (mapEngine.data.bottomRight.lat - mapEngine.data.topLeft.lat),
-      left:
-        (mapEngine.data.width *
-          (latestUpdate.position.lng - mapEngine.data.topLeft.long)) /
-        (mapEngine.data.bottomRight.long - mapEngine.data.topLeft.long),
-    },
+    latLongToMapTL(latestUpdate.position, mapEngine.data),
     viewport
   );
 

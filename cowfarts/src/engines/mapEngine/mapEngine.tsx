@@ -1,4 +1,6 @@
-import { puget, MapImage } from "./data";
+/* This should maybe kinda exist?? IDK */
+
+import { puget, MapData } from "./data";
 
 export default class MapEngine {
   constructor(mapUrl: "puget") {
@@ -7,6 +9,6 @@ export default class MapEngine {
     this.data = puget;
   }
 
-  data: MapImage;
+  data: MapData;
   mapImageEl: HTMLImageElement;
 }

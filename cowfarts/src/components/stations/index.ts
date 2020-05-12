@@ -1,5 +1,5 @@
 import Helm from "./helm/Helm";
-import Map from "./map/Map";
+import Map from "./map/MapStation";
 import Radar from "./radar/Radar";
 import Sonar from "./sonar/Sonar";
 import Weapons from "./weapons/Weapons";
