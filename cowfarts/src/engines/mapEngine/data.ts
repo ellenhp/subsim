@@ -1,4 +1,4 @@
-type MapImage = {
+export type MapImage = {
   projection: "mercador";
   url: string;
   topLeft: {
@@ -9,6 +9,8 @@ type MapImage = {
     lat: number;
     long: number;
   };
+  height: number;
+  width: number;
 };
 
 export const puget: MapImage = {
@@ -17,10 +19,12 @@ export const puget: MapImage = {
     "https://storage.googleapis.com/artifacts.mass-276203.appspot.com/puget_chart.png",
   topLeft: {
     lat: 48 + 2200 / 5872,
-    long: -123.5 - 204 / 3952,
+    long: -123 - 2020 / 3952,
   },
   bottomRight: {
-    lat: 47.25 - 1856 / 5782,
-    long: -121.75 + 204 / 3952,
+    lat: 48.5 - 6230 / 5782,
+    long: -122.25 + 3537 / 3952,
   },
+  height: 5570,
+  width: 8426,
 };

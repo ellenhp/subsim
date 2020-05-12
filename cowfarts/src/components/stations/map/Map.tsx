@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { StationComponent } from "..";
 import "./Map.css";
+import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
+import { unstable_batchedUpdates } from "react-dom";
 
 type Viewport = {
   x /* viewport center, 0 - 1 */;
@@ -93,7 +95,7 @@ const paneTransform = (viewport: Viewport) => {
   return `scale(${zoom}) translate(${-x}px, ${-y}px)`;
 };
 
-const Map: StationComponent = ({ engines: { mapEngine } }) => {
+const Map: StationComponent = ({ engines: { mapEngine }, latestUpdate }) => {
   const [dragState, setDragState] = useState<DragState>({ status: "dropped" });
   const [viewport, setViewport] = useState<Viewport>(initState);
 
@@ -155,6 +157,24 @@ const Map: StationComponent = ({ engines: { mapEngine } }) => {
     );
   };
 
+  const playerTL = localToGlobal(
+    {
+      top:
+        (mapEngine.data.height *
+          (latestUpdate.position.lat - mapEngine.data.topLeft.lat)) /
+        (mapEngine.data.bottomRight.lat - mapEngine.data.topLeft.lat),
+      left:
+        (mapEngine.data.width *
+          (latestUpdate.position.lng - mapEngine.data.topLeft.long)) /
+        (mapEngine.data.bottomRight.long - mapEngine.data.topLeft.long),
+    },
+    viewport
+  );
+
+  const playerIconStyle = {
+    transform: `translate(${playerTL.left}px, ${playerTL.top}px`,
+  };
+
   return (
     <>
       <div
@@ -172,6 +192,11 @@ const Map: StationComponent = ({ engines: { mapEngine } }) => {
         >
           <img src={mapEngine.mapImageEl.src} />
         </div>
+        {dragState.status === "dropped" && (
+          <div className="map-player-icon" style={playerIconStyle}>
+            ⌖
+          </div>
+        )}
       </div>
       <div className="map-zoom-buttons">
         <button onClick={zoomIn}>Zoom In</button>

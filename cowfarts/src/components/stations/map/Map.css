@@ -33,3 +33,10 @@
   color: white;
   font-size: 15pt;
 }
+
+.map-player-icon {
+  color: blue;
+  position: absolute;
+  top: -12px;
+  left: -9px;
+}
