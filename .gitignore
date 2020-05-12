@@ -6,7 +6,8 @@
 *.prt
 *.DS_Store
 *.log
-
+.idea/*
+.ijwb/*
 # Ellen is a bad programmer so she needs valgrind core dumps to be gitignored, lol
 vgcore.*
 

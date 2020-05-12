@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mass-be
+  name: substrate-be
   labels:
-    app: mass-be
+    app: substrate-be
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mass-be
+      app: substrate-be
   template:
     metadata:
       labels:
-        app: mass-be
+        app: substrate-be
     spec:
       containers:
-        - name: mass-be
+        - name: substrate-be
           image: "gcr.io/mass-276203/mass:dev"
           ports:
-            - containerPort: 8080
+            - containerPort: 50051
