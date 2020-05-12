@@ -9,7 +9,7 @@ import {
   SystemRequest,
   PropulsionSystemRequest,
 } from "./__protogen__/mass/api/actions_pb";
-import { Pipe } from "./util";
+import { Pipe } from "./util/pipe";
 
 import buildNewFeasibleScenario from "./builders/feasibleScenario";
 
@@ -38,7 +38,13 @@ export function createNewGame(): Game {
   // The reason we're wrapping this in a pipe is so that
   // we can reconnect if necessary...
   console.log(connectionReq.toObject());
-  const stream = client.connect(connectionReq);
+
+  var deadline = new Date();
+  deadline.setSeconds(deadline.getSeconds() + 600);
+
+  const stream = client.connect(connectionReq, {
+    deadline: `${deadline.getTime()}`,
+  });
 
   stream.on("data", (response) => {
     worldEvents.fire(response.toObject());

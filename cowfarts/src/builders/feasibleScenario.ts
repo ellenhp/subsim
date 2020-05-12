@@ -21,7 +21,7 @@ import {
   MapSystem,
   VesselSystem,
 } from "../__protogen__/mass/api/systems_pb";
-import { Pipe } from "../util";
+import { Pipe } from "../util/pipe";
 import {
   Bounds,
   Position,

@@ -1,5 +1,6 @@
-import { Pipe } from "../../../../util";
+import { Pipe } from "../../util/pipe";
 import noise from "noisejs";
+import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
 
 type PointSource = {
   volume: number;
@@ -19,7 +20,7 @@ const POINT_DISTORTION_MULTIPLIER = 10;
 const POINT_DISTORTION_SPREAD = 10;
 
 export default class BroadbandSource {
-  constructor(/*soundscape: Pipe<SoundSnapshot>*/) {
+  constructor(worldStream: Pipe<VesselUpdate.AsObject>) {
     this.currentSnapshot;
     this.noiseSource = new noise.Noise(Math.random());
     this.pointDistortion = new noise.Noise(Math.random());

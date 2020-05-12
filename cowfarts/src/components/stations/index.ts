@@ -5,9 +5,11 @@ import Sonar from "./sonar/Sonar";
 import Weapons from "./weapons/Weapons";
 
 import { Game } from "../../game";
+import { SonarEngine } from "../sonarEngine/sonarEngine";
 
 export type StationProps = {
   game: Game;
+  sonarEngine: SonarEngine;
 };
 
 export type StationComponent = React.FunctionComponent<StationProps>;

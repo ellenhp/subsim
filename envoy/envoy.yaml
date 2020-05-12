@@ -14,13 +14,14 @@ static_resources:
         config:
           codec_type: auto
           stat_prefix: ingress_grpc
+          stream_idle_timeout: 0s 
           route_config:
             name: local_route
             virtual_hosts:
             - name: main
               domains: ["*"]
               routes:
-              - match: { prefix: "/", grpc: {} }
+              - match: { prefix: "/api.MassBackend" }
                 route:
                   cluster: substrate_be
                   max_grpc_timeout: 0s
