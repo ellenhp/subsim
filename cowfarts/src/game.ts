@@ -13,7 +13,7 @@ import { Pipe } from "./util/pipe";
 
 import buildNewFeasibleScenario from "./builders/feasibleScenario";
 
-const client = new MassBackendClient("http://subsim.io");
+const client = new MassBackendClient("http://35.224.26.74");
 
 export interface Game {
   scenarioId: string;
@@ -42,13 +42,19 @@ export function createNewGame(): Game {
   var deadline = new Date();
   deadline.setSeconds(deadline.getSeconds() + 600);
 
-  const stream = client.connect(connectionReq, {
-    deadline: `${deadline.getTime()}`,
-  });
+  let stream;
 
-  stream.on("data", (response) => {
-    worldEvents.fire(response.toObject());
-  });
+  const createStream = () => {
+    stream = client.connect(connectionReq, {
+      deadline: `${deadline.getTime()}`,
+    });
+
+    stream.on("data", (response) => {
+      worldEvents.fire(response.toObject());
+    });
+  };
+
+  createStream();
 
   function performAction(arg: DoActionRequest) {
     return new Promise((resolve) => {
@@ -77,5 +83,5 @@ export function requestSpeed(game: Game, speed: number) {
   speedRequest.setSystemRequestsList([systemsRequest]);
 
   console.log(JSON.stringify(speedRequest.toObject()));
-  false && client.doAction(speedRequest, {}, (response) => {});
+  client.doAction(speedRequest, {}, (response) => {});
 }

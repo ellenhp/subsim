@@ -20,6 +20,7 @@ import {
   PropulsionSystem,
   MapSystem,
   VesselSystem,
+  HullSystem,
 } from "../__protogen__/mass/api/systems_pb";
 import { Pipe } from "../util/pipe";
 import {
@@ -54,6 +55,10 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   const mapSystem = new VesselSystem();
   mapSystem.setMapSystem(map);
 
+  const hull = new HullSystem();
+  const hullSystem = new VesselSystem();
+  hullSystem.setHullSystem(hull);
+
   const vesselDescriptor = new VesselDescriptor();
   vesselDescriptor.setUniqueId(vesselId);
   vesselDescriptor.setType(0);
@@ -61,6 +66,7 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   vesselDescriptor.addSystems(divingSystem);
   vesselDescriptor.addSystems(propulsionSystem);
   vesselDescriptor.addSystems(mapSystem);
+  vesselDescriptor.addSystems(hullSystem);
 
   const nePos = new Position();
   nePos.setLat(100);
