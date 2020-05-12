@@ -6,10 +6,12 @@ import Weapons from "./weapons/Weapons";
 
 import { GameConnection } from "../../game";
 import { SonarEngine } from "../sonarEngine/sonarEngine";
+import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
 
 export type StationProps = {
   game: GameConnection;
   sonarEngine: SonarEngine;
+  latestUpdate: VesselUpdate.AsObject;
 };
 
 export type StationComponent = React.FunctionComponent<StationProps>;

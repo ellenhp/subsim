@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { GameConnection } from "../../../game";
 import { requestSpeed } from "../../../game";
+import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
 
-const PropulsionControl = ({ game }: { game: GameConnection }) => {
+interface PropulsionControlProps {
+  game: GameConnection;
+  latestUpdate: VesselUpdate.AsObject;
+}
+
+const PropulsionControl = ({ game }: PropulsionControlProps) => {
   const [speed, setSpeed] = useState(0);
   const modSpeed = (num: number) => () => {
     const newSpeed = speed + num;
     setSpeed(newSpeed);
     requestSpeed(game, newSpeed);
   };
+
   return (
     <>
       <span>Requested speed: {speed}</span>

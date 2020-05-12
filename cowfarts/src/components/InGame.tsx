@@ -43,7 +43,11 @@ class InGame extends React.Component<InGameProps> {
           />
         </div>
         <div className="station-wrapper">
-          <CurrentStation game={this.game} sonarEngine={this.sonarEngine} />
+          <CurrentStation
+            game={this.game}
+            sonarEngine={this.sonarEngine}
+            latestUpdate={this.state.latestUpdate}
+          />
           {JSON.stringify(this.state.latestUpdate)}
         </div>
       </div>
