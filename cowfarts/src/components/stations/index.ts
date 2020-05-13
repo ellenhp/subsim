@@ -1,3 +1,4 @@
+import React from "react";
 import Helm from "./helm/Helm";
 import Map from "./map/MapStation";
 import Radar from "./radar/Radar";
@@ -14,7 +15,7 @@ export type StationProps = {
   latestUpdate: VesselUpdate.AsObject;
 };
 
-export type StationComponent = React.FunctionComponent<StationProps>;
+export type StationComponent = React.Component<StationProps>;
 
 export enum Station {
   HELM = "helm",

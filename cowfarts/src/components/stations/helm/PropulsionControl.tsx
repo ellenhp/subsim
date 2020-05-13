@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { GameConnection } from "../../../game";
 import { requestSpeed } from "../../../game";
 import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
+import { getRequestedSpeed } from "../../../gettorz";
 
 interface PropulsionControlProps {
   game: GameConnection;
   latestUpdate: VesselUpdate.AsObject;
 }
 
-const PropulsionControl = ({ game }: PropulsionControlProps) => {
-  const [speed, setSpeed] = useState(0);
+const PropulsionControl = ({ game, latestUpdate }: PropulsionControlProps) => {
+  const [speed, setSpeed] = useState(getRequestedSpeed(latestUpdate));
   const modSpeed = (num: number) => () => {
     const newSpeed = speed + num;
     setSpeed(newSpeed);

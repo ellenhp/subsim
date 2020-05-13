@@ -1,3 +1,7 @@
+.helm-station {
+  margin: 0 32px;
+}
+
 .helm-map {
-  height: 200px;
+  height: 400px;
 }

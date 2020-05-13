@@ -11,17 +11,15 @@ const Helm: StationComponent = ({
   engines: { mapEngine },
 }) => {
   return (
-    <div>
+    <div className={"helm-station"}>
       <h1>Helm</h1>
 
       {
-        /* LOOOL */ latestUpdate && (
-          <Map
-            className="helm-map"
-            mapEngine={mapEngine}
-            latestUpdate={latestUpdate}
-          />
-        )
+        <Map
+          className="helm-map"
+          mapEngine={mapEngine}
+          latestUpdate={latestUpdate}
+        />
       }
       <PropulsionControl game={game} latestUpdate={latestUpdate} />
       <SteeringControl game={game} latestUpdate={latestUpdate} />
