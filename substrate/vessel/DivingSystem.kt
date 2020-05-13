@@ -1,6 +1,7 @@
 package substrate.vessel
 
 import api.Actions
+import api.ScenarioOuterClass
 import api.Systems
 import api.Updates
 import java.time.Duration
@@ -18,8 +19,15 @@ class DivingSystem(vessel: Vessel, val descriptor: Systems.DivingSystem) : Vesse
                 .build()
     }
 
+    override fun setupInitialState(spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation) {
+        requestedDepthFeet = vessel.getSystem<HullSystem>().actualDepthFeet
+    }
+
     override fun processRequest(request: Actions.SystemRequest) {
-        requestedDepthFeet = request.divingRequest.depthFeet.toDouble()
+        val draftFeet = vessel.getSystem<HullSystem>().draftFeet
+        if (request.divingRequest.depthFeet in draftFeet..descriptor.maxDepthFeet) {
+            requestedDepthFeet = request.divingRequest.depthFeet.toDouble()
+        }
     }
 
     override fun step(dt: Duration) {

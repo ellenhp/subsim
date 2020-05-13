@@ -5,17 +5,24 @@ import api.ScenarioOuterClass
 import api.ScenarioOuterClass.VesselDescriptor
 import api.Spatial
 import api.Updates
+import substrate.sonar.SonarClient
 import java.time.Duration
 import java.time.temporal.TemporalAmount
 
 class Vessel(val uniqueId: String,
              val vesselDescriptor: VesselDescriptor,
-             val spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation) {
+             val spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation,
+             val sonarClient: SonarClient) {
 
     val systems : List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
     var position: Spatial.Position = if (spawnInfo.hasPosition()) spawnInfo.position else randomPositionWithinBounds(spawnInfo.bounds)
     var heading: Double = if (spawnInfo.hasHeadingBounds()) randomHeadingWithinBounds(spawnInfo.headingBounds) else spawnInfo.exactSpawnHeading.toDouble()
     var noiseLevel = 0.0
+    private var isDead = false
+
+    init {
+        systems.forEach { it.setupInitialState(spawnInfo) }
+    }
 
     fun step(dt: Duration) {
         systems.forEach { it.step(dt) }
@@ -25,6 +32,7 @@ class Vessel(val uniqueId: String,
         val updateBuilder = Updates.VesselUpdate.newBuilder()
         systems.forEach { updateBuilder.addSystemUpdates(it.getSystemUpdate()) }
         updateBuilder.position = position
+        updateBuilder.isDead = isDead
         return updateBuilder.build()
     }
 
@@ -37,6 +45,10 @@ class Vessel(val uniqueId: String,
         maybeGetSystem<SonarSystem>()?.let {
             it.updateContact(otherContact, powerLevel)
         }
+    }
+
+    fun kill() {
+        isDead = true
     }
 
     inline fun <reified T : VesselSystem> getSystem() : T {
@@ -81,7 +93,6 @@ class Vessel(val uniqueId: String,
             systemDescriptor.hasSonarSystem() -> SonarSystem(this, systemDescriptor.sonarSystem)
             else -> throw VesselInstantiationException("No matching system for vessel descriptor ${vesselDescriptor.uniqueId}. Upgrade the server?")
         }
-        system.setupInitialState(spawnInfo)
         return system
     }
 

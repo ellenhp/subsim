@@ -30,6 +30,9 @@ message VesselUpdate {
 
   // The position of the vessel as of when the update was created.
   Position position = 3;
+
+  // Whether or not this vessel has been destroyed.
+  bool is_dead = 4;
 }
 
 message SystemUpdate {

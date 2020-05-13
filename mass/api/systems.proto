@@ -45,7 +45,7 @@ message MapSystem {
 }
 message HullSystem {
   // The draft of the vessel while surfaced.
-  double draft_surfaced = 1;
+  uint32 draft_feet = 1;
 }
 message SonarSystem {
   message SonarArray {

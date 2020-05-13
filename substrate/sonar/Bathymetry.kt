@@ -31,6 +31,6 @@ class Bathymetry(bathyFile: String) {
         val output = IntArray(1)
         band.ReadRaster(x, y, 1, 1, output)
 
-        return output[0]
+        return -output[0]
     }
 }
