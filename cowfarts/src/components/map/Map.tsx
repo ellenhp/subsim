@@ -15,6 +15,7 @@ import MapEngine from "../../engines/mapEngine/mapEngine";
 import { MAP_EL_ID, MAP_VIEWPORT_ID, MAP_OVERLAY_ID } from "./constants";
 import { ToolHandler, MapTool } from "./tools";
 import PanTool from "./tools/panTool";
+import React = require("react");
 
 interface MapProps {
   className?: string;
@@ -36,11 +37,13 @@ const getPlayerHeading = (latestUpdate: VesselUpdate.AsObject) => {
   )[0].steeringUpdate.actualHeadingDegrees;
 };
 
-const tools = [new PanTool()];
+const tools = {
+  pan: new PanTool(),
+};
 
 const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
   const [viewport, setViewport] = useState<Viewport>(initState);
-  const [tool, setTool] = useState<MapTool>(tools[0]);
+  const [tool, setTool] = useState<MapTool>(tools.pan);
 
   const zoomIn = (event: React.MouseEvent) => {
     const { top, left, bottom, right } = document
@@ -66,6 +69,25 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
     );
   };
 
+  const centerOnPlayer = () => {
+    const { top, left, bottom, right } = document
+      .getElementById(MAP_VIEWPORT_ID)
+      .getBoundingClientRect();
+    const offset = globalToLocal(
+      {
+        top: (bottom - top) / 2,
+        left: (right - left) / 2,
+      },
+      viewport
+    );
+    const pos = latLongToMapTL(latestUpdate.position, mapEngine.data);
+    setViewport({
+      x: viewport.x + pos.left - offset.left,
+      y: viewport.y + pos.top - offset.top,
+      zoom: viewport.zoom,
+    });
+  };
+
   const playerTL = localToGlobal(
     latLongToMapTL(latestUpdate.position, mapEngine.data),
     viewport
@@ -77,21 +99,22 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
     }px) rotate(${getPlayerHeading(latestUpdate)}deg)`,
   };
 
+  const mouseMove = (event: React.MouseEvent) =>
+    tool.mouseMove && tool.mouseMove(event, viewport, setViewport);
+  const mouseUp = (event: React.MouseEvent) =>
+    tool.mouseUp && tool.mouseUp(event, viewport, setViewport);
+  const mouseDown = (event: React.MouseEvent) =>
+    tool.mouseDown && tool.mouseDown(event, viewport, setViewport);
+  const mouseLeave = (event: React.MouseEvent) =>
+    tool.mouseLeave && tool.mouseLeave(event, viewport, setViewport);
+
   return (
     <div
       className={"map-viewport " + className}
-      onMouseMove={(event) =>
-        tool.mouseMove && tool.mouseMove(event, viewport, setViewport)
-      }
-      onMouseUp={(event) =>
-        tool.mouseUp && tool.mouseUp(event, viewport, setViewport)
-      }
-      onMouseDown={(event) =>
-        tool.mouseDown && tool.mouseDown(event, viewport, setViewport)
-      }
-      onMouseLeave={(event) =>
-        tool.mouseLeave && tool.mouseLeave(event, viewport, setViewport)
-      }
+      onMouseMove={mouseMove}
+      onMouseUp={mouseUp}
+      onMouseDown={mouseDown}
+      onMouseLeave={mouseLeave}
       id={MAP_VIEWPORT_ID}
     >
       <div
@@ -107,6 +130,7 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
       <div className="map-zoom-buttons">
         <button onClick={zoomIn}>Zoom In</button>
         <button onClick={zoomOut}>Zoom Out</button>
+        <button onClick={centerOnPlayer}>Center on Player</button>
       </div>
     </div>
   );
