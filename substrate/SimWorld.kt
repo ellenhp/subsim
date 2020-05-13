@@ -79,7 +79,7 @@ class SimWorld(
         var firstDepth = vesselPair.first.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
         var secondDepth = vesselPair.second.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
 
-        val loss = sonarClient.propagate(vesselPair.first.position, vesselPair.second.position, firstDepth, secondDepth) {
+        sonarClient.propagate(vesselPair.first.position, vesselPair.second.position, firstDepth, secondDepth) {
             vesselPair.second.processSonarContact(vesselPair.first, it * vesselPair.first.noiseLevel)
         }
     }
