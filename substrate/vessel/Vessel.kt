@@ -25,7 +25,9 @@ class Vessel(val uniqueId: String,
     }
 
     fun step(dt: Duration) {
-        systems.forEach { it.step(dt) }
+        if (!isDead) {
+            systems.forEach { it.step(dt) }
+        }
     }
 
     fun getUpdate(): Updates.VesselUpdate {

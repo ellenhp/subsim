@@ -99,5 +99,8 @@ message SonarSystemUpdate {
     repeated SonarContact contacts = 2;
   }
 
+  // Sonar array updates, including contact information.
   repeated SonarArrayUpdate array_updates = 1;
+  // The depth below the keel, in feet.
+  uint32 depth_below_keel_feet = 2;
 }

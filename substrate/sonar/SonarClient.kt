@@ -5,21 +5,23 @@ import BloopOuterClass
 import api.Spatial
 import io.grpc.stub.StreamObserver
 import substrate.utils.Utils
+import substrate.utils.Utils.Companion.toMeters
 import java.lang.Math.toRadians
 import kotlin.math.*
 
 
 class SonarClient(val stub: BloopGrpc.BloopStub, val bathymetry: Bathymetry) {
     
-    fun propagate(from: Spatial.Position, to: Spatial.Position, fromDepth: Double, toDepth: Double, lossHandler: (Float) -> Unit) {
+    fun propagate(from: Spatial.Position, to: Spatial.Position, fromDepthFeet: Double, toDepthFeet: Double, lossHandler: (Float) -> Unit) {
         val distance = distanceMeters(from, to)
-        val heading = Utils.calculateBearingRadians(from, to)
-        val bathymetricProfile = bathymetricProfile(distance, from, heading)
+        // Pad the distance by 100m because bellhop likes having information beyond the endpoints.
+        val bathymetricProfile = bathymetricProfile(distance + 100, from, to)
 
         val request = BloopOuterClass.PropagateRequest.newBuilder()
                 .setBathymetry(bathymetricProfile)
-                .addDepths(toDepth.toFloat())
+                .addDepths(toMeters(toDepthFeet))
                 .addRanges(distance.toFloat())
+                .setSourceDepth(toMeters(fromDepthFeet))
                 .setFrequency(200)
                 .setSsp(soundSpeedProfile())
                 .build()
@@ -70,26 +72,32 @@ class SonarClient(val stub: BloopGrpc.BloopStub, val bathymetry: Bathymetry) {
         return profileBuilder.build()
     }
 
-    private fun bathymetricProfile(distance: Double, from: Spatial.Position, heading: Double): BloopOuterClass.BathymetricProfile? {
-        val bathymetryResolution = 200.0
-        val numDepthPoints = 3 + (distance / bathymetryResolution).roundToInt()
+    private fun bathymetricProfile(distance: Double, from: Spatial.Position, to: Spatial.Position): BloopOuterClass.BathymetricProfile? {
+        val bathymetryResolutionNominal = 200.0
+        val numDepthPoints = 1 + (distance / bathymetryResolutionNominal).roundToInt()
+        val bathymetryResolutionActual = distance / numDepthPoints
 
         val bathymetryBuilder = BloopOuterClass.BathymetricProfile.newBuilder()
         var currentPos = from
         var currentRange = 0.0
 
+        val deltaLatPerPoint = (to.lat - from.lat) / numDepthPoints
+        val deltaLngPerPoint = (to.lng - from.lng) / numDepthPoints
+
         // Bloop needs this for some reason, sometimes.
         bathymetryBuilder.addPoints(BloopOuterClass.BathymetricProfile.BathymetricProfilePoint.newBuilder()
                 .setRangeMeters(-1.0)
-                .setDepthMeters(bathymetry.getDepth(currentPos.lat, currentPos.lng).toDouble()))
+                .setDepthMeters(bathymetry.getDepthMeters(currentPos.lat, currentPos.lng).toDouble()))
 
-        for (i in 1..numDepthPoints) {
+        for (i in 1..(numDepthPoints + 1)) {
+            val position = Spatial.Position.newBuilder().setLat(from.lat + deltaLatPerPoint * i)
             bathymetryBuilder.addPoints(
                     BloopOuterClass.BathymetricProfile.BathymetricProfilePoint.newBuilder()
                             .setRangeMeters(currentRange)
-                            .setDepthMeters(bathymetry.getDepth(currentPos.lat, currentPos.lng).toDouble()))
-            currentRange += bathymetryResolution
-            currentPos = stepInDirection(currentPos, heading, bathymetryResolution)
+                            .setDepthMeters(bathymetry.getDepthMeters(
+                                    from.lat + deltaLatPerPoint * i,
+                                    from.lng + deltaLngPerPoint * i).toDouble()))
+            currentRange += bathymetryResolutionActual
         }
         return bathymetryBuilder.build()
     }
@@ -105,27 +113,4 @@ class SonarClient(val stub: BloopGrpc.BloopStub, val bathymetry: Bathymetry) {
                 ))
         return distMeters
     }
-
-    private fun stepInDirection(pos: Spatial.Position, heading: Double, distanceMeters: Double): Spatial.Position {
-        // We'll need this later, compute it now for clarity :)
-        val absoluteLatitudeRadians = toRadians(pos.lat)
-
-        // Determine the components of the velocity in a locally cartesian X-Y
-        // grid, in knots.
-        val headingRadians = toRadians(heading)
-        // A heading of zero is due north, so we need to use sin for X and cos for Y.
-        val xMeters = distanceMeters * sin(headingRadians)
-        val yMeters = distanceMeters * cos(headingRadians)
-
-        val metersPerNauticalMile = 1852.0
-
-        @Suppress("UnnecessaryVariable")
-        // One nautical mile is approximately one minute of latitude.
-        val latMinutes = yMeters / metersPerNauticalMile
-        // Longitudinal speed depends on our absolute latitude.
-        val lngMinutes = xMeters / metersPerNauticalMile / cos(absoluteLatitudeRadians)
-
-        return Spatial.Position.newBuilder().setLat(pos.lat + latMinutes / 60).setLng(pos.lng + lngMinutes / 60).build()
-    }
-
 }

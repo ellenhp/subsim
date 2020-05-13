@@ -79,12 +79,7 @@ class SimWorld(
         var firstDepth = vesselPair.first.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
         var secondDepth = vesselPair.second.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
 
-        // TODO once vessels have draft, get rid of these
-        firstDepth -= 3
-        secondDepth -= 3
-
-        val loss = sonarClient.propagate(vesselPair.first.position, vesselPair.second.position, firstDepth, secondDepth) {
-            println("called bloop successfully, returned loss: $it")
+        sonarClient.propagate(vesselPair.first.position, vesselPair.second.position, firstDepth, secondDepth) {
             vesselPair.second.processSonarContact(vesselPair.first, it * vesselPair.first.noiseLevel)
         }
     }
