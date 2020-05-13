@@ -9,6 +9,7 @@ kt_jvm_library(
         "//bloop/api:java_bloop_proto",
         "//mass/api:java_spatial_proto",
         "//substrate/utils",
+        "@com_github_jetbrains_kotlin//:kotlin-stdlib-jdk8",
         "@maven//:org_gdal_gdal",
     ],
 )

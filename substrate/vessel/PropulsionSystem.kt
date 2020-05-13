@@ -17,7 +17,9 @@ class PropulsionSystem(vessel: Vessel, val descriptor: Systems.PropulsionSystem)
     }
 
     override fun processRequest(request: Actions.SystemRequest) {
-        requestedSpeedKnots = request.propulsionRequest.speedKnots.toDouble()
+        if (request.propulsionRequest.speedKnots in 0..descriptor.maxSpeedKnots) {
+            requestedSpeedKnots = request.propulsionRequest.speedKnots.toDouble()
+        }
     }
     override fun step(dt: Duration) {
         updateSpeed(dt)

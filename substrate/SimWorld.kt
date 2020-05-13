@@ -28,7 +28,7 @@ class SimWorld(
             if (descriptor === null) {
                 throw VesselInstantiationException("Vessel descriptor ${it.vesselDescriptorId} not defined in scenario")
             }
-            Vessel(it.uniqueId, descriptor, it.spawnInfo)
+            Vessel(it.uniqueId, descriptor, it.spawnInfo, sonarClient)
         }.toMutableList()
     }
 

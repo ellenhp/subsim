@@ -81,13 +81,13 @@ class SonarClient(val stub: BloopGrpc.BloopStub, val bathymetry: Bathymetry) {
         // Bloop needs this for some reason, sometimes.
         bathymetryBuilder.addPoints(BloopOuterClass.BathymetricProfile.BathymetricProfilePoint.newBuilder()
                 .setRangeMeters(-1.0)
-                .setDepthMeters(abs(bathymetry.getDepth(currentPos.lat, currentPos.lng).toDouble())))
+                .setDepthMeters(bathymetry.getDepth(currentPos.lat, currentPos.lng).toDouble()))
 
         for (i in 1..numDepthPoints) {
             bathymetryBuilder.addPoints(
                     BloopOuterClass.BathymetricProfile.BathymetricProfilePoint.newBuilder()
                             .setRangeMeters(currentRange)
-                            .setDepthMeters(abs(bathymetry.getDepth(currentPos.lat, currentPos.lng).toDouble())))
+                            .setDepthMeters(bathymetry.getDepth(currentPos.lat, currentPos.lng).toDouble()))
             currentRange += bathymetryResolution
             currentPos = stepInDirection(currentPos, heading, bathymetryResolution)
         }
