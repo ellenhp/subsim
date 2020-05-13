@@ -101,6 +101,5 @@ export function requestHeading(game: GameConnection, heading: number) {
   headingRequest.setVesselId(game.vesselId);
   headingRequest.setSystemRequestsList([systemsRequest]);
 
-  
-  client.doAction(headingRequest, {}, response => {});
+  client.doAction(headingRequest, {}, (response) => {});
 }

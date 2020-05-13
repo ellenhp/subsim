@@ -20,9 +20,15 @@ type SoundSnapshot = {
 
 const NOISE_SCALE_HORIZONTAL = 20;
 const NOISE_SCALE_VERTICAL = 1;
+// aaa
+const NOISE_ANGLE_SPREAD = 15;
+const NOISE_ANGLE_SCALE_HORIZONTAL = 3;
+const NOISE_ANGLE_SCALE_VERTICAL = 0.2;
+// ---
 const POINT_DISTORTION_SCALE = 20;
 const POINT_DISTORTION_MULTIPLIER = 10;
 const POINT_DISTORTION_SPREAD = 10;
+const DB_MULTIPLIER = 70;
 
 function getSonarUpdate(update: VesselUpdate.AsObject) {
   return update.systemUpdatesList.filter((system) => system.sonarUpdate)[0]
@@ -32,6 +38,7 @@ function getSonarUpdate(update: VesselUpdate.AsObject) {
 export default class BroadbandSource {
   constructor(worldStream: Pipe<VesselUpdate.AsObject>) {
     this.noiseSource = new noise.Noise(Math.random());
+    this.noiseAngleSource = new noise.Noise(Math.random());
     this.pointDistortion = new noise.Noise(Math.random());
     this.explosionSource = new noise.Noise(Math.random());
 
@@ -44,7 +51,7 @@ export default class BroadbandSource {
         return;
       }
       this.snapshots.push({
-        noiseLevel: 0.5,
+        noiseLevel: 0.008,
         explosionLevel: 0,
         bearing: 0,
         timestamp: Date.now(),
@@ -61,17 +68,12 @@ export default class BroadbandSource {
         }),
       });
     });
-    /*setInterval(() => {
-      const currentSnapshot = this.getCurrentSnapshot();
-      this.snapshots.push(currentSnapshot);
-      // TODO: Immer this up
-      currentSnapshot.pointSources[1].bearing += 1;
-    }, 2000);*/
   }
 
   interval: NodeJS.Timeout;
 
   noiseSource: any;
+  noiseAngleSource: any;
   explosionSource: any;
   pointDistortion: any;
 
@@ -119,9 +121,14 @@ export default class BroadbandSource {
         : this.getSnapshotAtTime(sampleTime);
     const time = sampleTime === undefined ? Date.now() : sampleTime;
 
+    const noiseBearingDeviation =
+      this.pointDistortion.perlin2(
+        (bearing * NOISE_ANGLE_SCALE_HORIZONTAL) / 360,
+        (time * NOISE_ANGLE_SCALE_VERTICAL) / 1000
+      ) * NOISE_ANGLE_SPREAD;
     const backgroundNoise =
       (this.noiseSource.perlin2(
-        (bearing * NOISE_SCALE_HORIZONTAL) / 360,
+        ((bearing + noiseBearingDeviation) * NOISE_SCALE_HORIZONTAL) / 360,
         (time * NOISE_SCALE_VERTICAL) / 1000
       ) /
         2 +
@@ -146,9 +153,6 @@ export default class BroadbandSource {
         );
       }
     );
-    return (
-      backgroundNoise +
-      Math.log(pointNoises.reduce((a, b) => a + b, 0) + 1) * 100
-    );
+    return backgroundNoise + pointNoises.reduce((a, b) => a + b, 0);
   }
 }
