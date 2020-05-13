@@ -9,10 +9,17 @@ import BroadbandSource from "../broadbandSource";
 const H_RES = 1000;
 const V_RES = 300;
 const SCOPE_IN_SECONDS = 10;
+const INPUT_MULTIPLIER = 1000;
+
+type DisplaySettings = {
+  multiplier: number;
+  gain: number;
+  contrast: number;
+};
 
 const createBroadbandWaterfall = (
   source: BroadbandSource,
-  multiplier: number = 1
+  { multiplier, gain, contrast }: DisplaySettings
 ): ElemSingleton<HTMLCanvasElement> => {
   const canvasElement = document.createElement("canvas");
   canvasElement.className = "elem-singleton";
@@ -31,7 +38,11 @@ const createBroadbandWaterfall = (
   function drawWaterfall() {
     for (var i = 0; i < H_RES; i++) {
       const bearing = (i * 360) / H_RES;
-      samples[i] += source.sample(bearing) / multiplier;
+      const activation = Math.min(
+        Math.pow(source.sample(bearing) * INPUT_MULTIPLIER, contrast) * gain,
+        1
+      );
+      samples[i] += activation / multiplier;
     }
     count++;
     if (count % multiplier === 0) {
@@ -66,9 +77,21 @@ const createBroadbandWaterfall = (
 };
 
 const buildWaterfalls = (broadbandSource: BroadbandSource) => ({
-  broadbandShort: createBroadbandWaterfall(broadbandSource, 2),
-  broadbandMedium: createBroadbandWaterfall(broadbandSource, 8),
-  broadbandLong: createBroadbandWaterfall(broadbandSource, 32),
+  broadbandShort: createBroadbandWaterfall(broadbandSource, {
+    multiplier: 4,
+    contrast: 1,
+    gain: 0.08,
+  }),
+  broadbandMedium: createBroadbandWaterfall(broadbandSource, {
+    multiplier: 16,
+    contrast: 2,
+    gain: 0.02,
+  }),
+  broadbandLong: createBroadbandWaterfall(broadbandSource, {
+    multiplier: 64,
+    contrast: 3,
+    gain: 0.005,
+  }),
 });
 
 export default buildWaterfalls;
