@@ -52,7 +52,7 @@ fun downloadBathymetry(bathyFile: String) {
 fun getBloopHost(): String {
     val env = System.getenv("BLOOP_HOST")
     return if (env === null || env.isEmpty()) {
-        "localhost"
+        "bloop-be"
     } else {
         env
     }
