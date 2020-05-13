@@ -61,6 +61,7 @@ class InGame extends React.Component<InGameProps> {
               />
             )
           }
+          {JSON.stringify(this.state.latestUpdate)}
         </div>
       </div>
     );

@@ -24,17 +24,49 @@ const POINT_DISTORTION_SCALE = 20;
 const POINT_DISTORTION_MULTIPLIER = 10;
 const POINT_DISTORTION_SPREAD = 10;
 
+function getSonarUpdate(update: VesselUpdate.AsObject) {
+  return update.systemUpdatesList.filter((system) => system.sonarUpdate)[0]
+    .sonarUpdate.arrayUpdatesList[0];
+}
+
 export default class BroadbandSource {
   constructor(worldStream: Pipe<VesselUpdate.AsObject>) {
     this.noiseSource = new noise.Noise(Math.random());
     this.pointDistortion = new noise.Noise(Math.random());
     this.explosionSource = new noise.Noise(Math.random());
-    setInterval(() => {
+
+    worldStream.listen((update) => {
+      const sonarUpdate = getSonarUpdate(update);
+      if (
+        JSON.stringify(sonarUpdate) ===
+        JSON.stringify(this.getCurrentSnapshot())
+      ) {
+        return;
+      }
+      this.snapshots.push({
+        noiseLevel: 0.5,
+        explosionLevel: 0,
+        bearing: 0,
+        timestamp: Date.now(),
+        pointSources: sonarUpdate.contactsList.map((contact) => {
+          return {
+            bearing: contact.bearing,
+            freqs: [
+              {
+                freq: 100,
+                volume: contact.broadbandPowerLevel,
+              },
+            ],
+          };
+        }),
+      });
+    });
+    /*setInterval(() => {
       const currentSnapshot = this.getCurrentSnapshot();
       this.snapshots.push(currentSnapshot);
       // TODO: Immer this up
       currentSnapshot.pointSources[1].bearing += 1;
-    }, 2000);
+    }, 2000);*/
   }
 
   interval: NodeJS.Timeout;
@@ -47,14 +79,14 @@ export default class BroadbandSource {
   snapshots: Array<SoundSnapshot> = [
     {
       pointSources: [
-        {
+        /*{
           bearing: 180,
           freqs: [{ freq: 100, volume: 0.5 }],
         },
         {
           bearing: 120,
           freqs: [{ freq: 100, volume: 0.2 }],
-        },
+        },*/
       ],
       noiseLevel: 0.5,
       explosionLevel: 0,
@@ -114,6 +146,9 @@ export default class BroadbandSource {
         );
       }
     );
-    return backgroundNoise + pointNoises.reduce((a, b) => a + b, 0);
+    return (
+      backgroundNoise +
+      Math.log(pointNoises.reduce((a, b) => a + b, 0) + 1) * 100
+    );
   }
 }
