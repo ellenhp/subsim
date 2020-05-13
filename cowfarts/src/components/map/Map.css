@@ -1,9 +1,14 @@
 .map-viewport {
-  width: calc(100vw - 100px);
-  height: 100vh;
   overflow: hidden;
   position: relative;
   background-color: lightgray;
+  min-width: 100px;
+  min-height: 100px;
+}
+
+.map-viewport-center {
+  transform: translate(50%, 50%);
+  height: 100%;
 }
 
 .map-pane {

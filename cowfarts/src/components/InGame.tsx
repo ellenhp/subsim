@@ -49,14 +49,18 @@ class InGame extends React.Component<InGameProps> {
           />
         </div>
         <div className="station-wrapper">
-          <CurrentStation
-            game={this.game}
-            engines={{
-              sonarEngine: this.sonarEngine,
-              mapEngine: this.mapEngine,
-            }}
-            latestUpdate={this.state.latestUpdate}
-          />
+          {
+            /* LOOOL */ this.state.latestUpdate && (
+              <CurrentStation
+                game={this.game}
+                engines={{
+                  sonarEngine: this.sonarEngine,
+                  mapEngine: this.mapEngine,
+                }}
+                latestUpdate={this.state.latestUpdate}
+              />
+            )
+          }
         </div>
       </div>
     );

@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { GameConnection } from "../../../game";
 import { requestHeading } from "../../../game";
 import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
+import { getRequestedHeading } from "../../../gettorz";
 
 interface SteeringControlProps {
   game: GameConnection;
   latestUpdate: VesselUpdate.AsObject;
 }
 
-const SteeringControl = ({ game }: SteeringControlProps) => {
-  const [heading, setHeading] = useState(0);
+const SteeringControl = ({ game, latestUpdate }: SteeringControlProps) => {
+  const [heading, setHeading] = useState(getRequestedHeading(latestUpdate));
   const modHeading = (num: number) => () => {
     const newHeading = (heading + num + 360) % 360;
     setHeading(newHeading);
