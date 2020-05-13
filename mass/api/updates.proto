@@ -44,6 +44,8 @@ message SystemUpdate {
     MapSystemUpdate map_update = 4;
     // Hull system update.
     HullSystemUpdate hull_update = 5;
+    // Sonar system update.
+    SonarSystemUpdate sonar_update = 6;
   }
 }
 
@@ -75,4 +77,24 @@ message MapSystemUpdate {
 message HullSystemUpdate {
   // Actual depth/draft in feet.
   double actual_depth_feet = 1;
+}
+
+message SonarSystemUpdate {
+  message SonarContact {
+    // The vessel's unique ID.
+    string vessel_id = 1;
+    // Bearing from true north.
+    float bearing = 2;
+    // Broadband power level, in ????? units.
+    float broadband_power_level = 3;
+  }
+
+  message SonarArrayUpdate {
+    // The ID of this sonar array, defined in the vessel descriptor.
+    string id = 1;
+    // A list of contacts
+    repeated SonarContact contacts = 2;
+  }
+
+  repeated SonarArrayUpdate array_updates = 1;
 }

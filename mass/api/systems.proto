@@ -34,6 +34,10 @@ message PropulsionSystem {
   uint32 max_speed_knots = 1;
   // The acceleration of this vessel, in knots per second.
   double knots_per_second = 2;
+  // Noise level of this system at rest.
+  double base_noise_power = 3;
+  // The additional amount of noise power generated per knot before cavitation.
+  double noise_per_knot_noncavitating = 4;
 }
 message MapSystem {
   // There isn't really anything to put here but it'll initialize things on
@@ -43,6 +47,16 @@ message HullSystem {
   // The draft of the vessel while surfaced.
   double draft_surfaced = 1;
 }
+message SonarSystem {
+  message SonarArray {
+    // The unique id of this sonar array. This only needs to be unique for this
+    // particular vessel.
+    string unique_id = 1;
+    // The noise floor of this sonar array.
+    double noise_floor = 2;
+  }
+  repeated SonarArray sonar_arrays = 1;
+}
 
 message VesselSystem {
   oneof system {
@@ -51,5 +65,6 @@ message VesselSystem {
     PropulsionSystem propulsion_system = 3;
     MapSystem map_system = 4;
     HullSystem hull_system = 5;
+    SonarSystem sonar_system = 6;
   }
 }
