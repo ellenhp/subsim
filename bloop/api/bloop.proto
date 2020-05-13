@@ -38,10 +38,9 @@ message BathymetricProfile {
   repeated BathymetricProfilePoint points = 1;
 }
 message PropagateRequest {
-
-  // The ranges to calculate at.
+  // The receiver ranges to calculate for.
   repeated float ranges = 1;
-  // The depths to calculate at.
+  // The receiver depths to calculate for.
   repeated float depths = 2;
   // The frequency to use.
   int32 frequency = 3;
@@ -49,6 +48,8 @@ message PropagateRequest {
   SoundSpeedProfile ssp = 4;
   // The bathymetric profile to use.
   BathymetricProfile bathymetry = 5;
+  // The source depth to use, in meters.
+  float source_depth = 6;
 }
 
 message PropagationLossGrid {

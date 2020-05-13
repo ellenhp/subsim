@@ -20,7 +20,7 @@ class Bathymetry(bathyFile: String) {
         sourceSpatialReference.SetWellKnownGeogCS("WGS84")
     }
 
-    fun getDepth(lat: Double, lng: Double): Int {
+    fun getDepthMeters(lat: Double, lng: Double): Int {
         band.GetDataset().GetLayer(1)
         val transformation = CoordinateTransformation(sourceSpatialReference, destSpatialReference)
         val xy =  transformation.TransformPoint(lng, lat)
@@ -31,6 +31,11 @@ class Bathymetry(bathyFile: String) {
         val output = IntArray(1)
         band.ReadRaster(x, y, 1, 1, output)
 
+        // The GeoTIFF we use is in meters.
         return -output[0]
+    }
+
+    fun getDepthFeet(lat: Double, lng: Double): Int {
+        return (getDepthMeters(lat, lng) * 3.28084).roundToInt()
     }
 }

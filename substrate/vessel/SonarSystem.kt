@@ -7,6 +7,7 @@ import java.lang.Math.toDegrees
 import java.time.Duration
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.roundToInt
 
 class SonarSystem(vessel: Vessel, private val sonarSystem: Systems.SonarSystem) : VesselSystem(vessel) {
 
@@ -14,9 +15,11 @@ class SonarSystem(vessel: Vessel, private val sonarSystem: Systems.SonarSystem) 
     private val contactLastSeenTimes = ConcurrentHashMap<Vessel, Instant>()
 
     override fun getSystemUpdate(): Updates.SystemUpdate {
+        val seaFloorDepthFeet = vessel.sonarClient.bathymetry.getDepthFeet(vessel.position.lat, vessel.position.lng)
         return Updates.SystemUpdate.newBuilder()
-                .setSonarUpdate(Updates.SonarSystemUpdate.newBuilder().addArrayUpdates(
-                        Updates.SonarSystemUpdate.SonarArrayUpdate.newBuilder()
+                .setSonarUpdate(Updates.SonarSystemUpdate.newBuilder()
+                        .setDepthBelowKeelFeet((seaFloorDepthFeet - vessel.getSystem<HullSystem>().actualDepthFeet).roundToInt())
+                        .addArrayUpdates(Updates.SonarSystemUpdate.SonarArrayUpdate.newBuilder()
                                 .addAllContacts(contactNoiseLevels.map {
                                     Updates.SonarSystemUpdate.SonarContact.newBuilder()
                                             .setVesselId(it.key.uniqueId)

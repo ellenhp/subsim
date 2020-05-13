@@ -15,7 +15,7 @@ class HullSystem(vessel: Vessel, val hullSystem: Systems.HullSystem) : VesselSys
     }
 
     override fun step(dt: Duration) {
-        val seaFloorDepth = vessel.sonarClient.bathymetry.getDepth(vessel.position.lat, vessel.position.lng)
+        val seaFloorDepth = vessel.sonarClient.bathymetry.getDepthFeet(vessel.position.lat, vessel.position.lng)
         if (seaFloorDepth < max(hullSystem.draftFeet.toDouble(), actualDepthFeet)) {
             vessel.kill()
         }
