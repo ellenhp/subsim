@@ -1,5 +1,5 @@
-import { TopLeft, LatLong } from "../../../commonTypes";
-import { MapData } from "../../../engines/mapEngine/data";
+import { TopLeft, LatLong } from "../../commonTypes";
+import { MapData } from "../../engines/mapEngine/data";
 
 export type Viewport = {
   x /* viewport top left, in px */;
