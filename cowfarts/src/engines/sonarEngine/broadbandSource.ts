@@ -26,9 +26,8 @@ const NOISE_ANGLE_SCALE_HORIZONTAL = 3;
 const NOISE_ANGLE_SCALE_VERTICAL = 0.2;
 // ---
 const POINT_DISTORTION_SCALE = 20;
-const POINT_DISTORTION_MULTIPLIER = 10;
+const POINT_DISTORTION_MULTIPLIER = 5;
 const POINT_DISTORTION_SPREAD = 10;
-const DB_MULTIPLIER = 70;
 
 function getSonarUpdate(update: VesselUpdate.AsObject) {
   return update.systemUpdatesList.filter((system) => system.sonarUpdate)[0]
