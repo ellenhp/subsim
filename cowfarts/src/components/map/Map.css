@@ -6,6 +6,11 @@
   min-height: 100px;
 }
 
+.map-viewport-center {
+  transform: translate(50%, 50%);
+  height: 100%;
+}
+
 .map-pane {
   position: absolute;
   top: 0;

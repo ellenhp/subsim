@@ -15,7 +15,8 @@ import MapEngine from "../../engines/mapEngine/mapEngine";
 import { MAP_EL_ID, MAP_VIEWPORT_ID, MAP_OVERLAY_ID } from "./constants";
 import { ToolHandler, MapTool } from "./tools";
 import PanTool from "./tools/panTool";
-import React = require("react");
+import { LatLong } from "../../commonTypes";
+import { MapData } from "../../engines/mapEngine/data";
 
 interface MapProps {
   className?: string;
@@ -37,55 +38,54 @@ const getPlayerHeading = (latestUpdate: VesselUpdate.AsObject) => {
   )[0].steeringUpdate.actualHeadingDegrees;
 };
 
+/* This is a lot */
+const getViewportWithPlayerInCenter = (
+  viewport: Viewport,
+  position: LatLong,
+  data: MapData
+) => {
+  const pos = latLongToMapTL(position, data);
+  return {
+    x: pos.left,
+    y: pos.top,
+    zoom: viewport.zoom,
+  };
+};
+
 const tools = {
   pan: new PanTool(),
 };
 
 const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
-  const [viewport, setViewport] = useState<Viewport>(initState);
+  // Thank god that this is just math
+  const initialState = getViewportWithPlayerInCenter(
+    {
+      x: 0,
+      y: 0,
+      zoom: 1,
+    },
+    latestUpdate.position,
+    mapEngine.data
+  );
+  const [viewport, setViewport] = useState<Viewport>(initialState);
   const [tool, setTool] = useState<MapTool>(tools.pan);
 
   const zoomIn = (event: React.MouseEvent) => {
-    const { top, left, bottom, right } = document
-      .getElementById(MAP_VIEWPORT_ID)
-      .getBoundingClientRect();
-    setViewport(
-      changeZoom(1, viewport, {
-        top: (bottom - top) / 2,
-        left: (right - left) / 2,
-      })
-    );
+    setViewport(changeZoom(1, viewport));
   };
 
   const zoomOut = (event: React.MouseEvent) => {
-    const { top, left, bottom, right } = document
-      .getElementById(MAP_VIEWPORT_ID)
-      .getBoundingClientRect();
-    setViewport(
-      changeZoom(-1, viewport, {
-        top: (bottom - top) / 2,
-        left: (right - left) / 2,
-      })
-    );
+    setViewport(changeZoom(-1, viewport));
   };
 
   const centerOnPlayer = () => {
-    const { top, left, bottom, right } = document
-      .getElementById(MAP_VIEWPORT_ID)
-      .getBoundingClientRect();
-    const offset = globalToLocal(
-      {
-        top: (bottom - top) / 2,
-        left: (right - left) / 2,
-      },
-      viewport
+    setViewport(
+      getViewportWithPlayerInCenter(
+        viewport,
+        latestUpdate.position,
+        mapEngine.data
+      )
     );
-    const pos = latLongToMapTL(latestUpdate.position, mapEngine.data);
-    setViewport({
-      x: viewport.x + pos.left - offset.left,
-      y: viewport.y + pos.top - offset.top,
-      zoom: viewport.zoom,
-    });
   };
 
   const playerTL = localToGlobal(
@@ -117,16 +117,19 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
       onMouseLeave={mouseLeave}
       id={MAP_VIEWPORT_ID}
     >
-      <div
-        className="map-pane"
-        style={{ transform: paneTransform(viewport) }}
-        id={MAP_EL_ID}
-      >
-        <img src={mapEngine.mapImageEl.src} />
+      <div className="map-viewport-center">
+        <div
+          className="map-pane"
+          style={{ transform: paneTransform(viewport) }}
+          id={MAP_EL_ID}
+        >
+          <img src={mapEngine.mapImageEl.src} />
+        </div>
+        <div className="map-overlay" id={MAP_OVERLAY_ID}>
+          <div className="map-player-icon" style={playerIconStyle} />
+        </div>
       </div>
-      <div className="map-overlay" id={MAP_OVERLAY_ID}>
-        <div className="map-player-icon" style={playerIconStyle} />
-      </div>
+
       <div className="map-zoom-buttons">
         <button onClick={zoomIn}>Zoom In</button>
         <button onClick={zoomOut}>Zoom Out</button>
