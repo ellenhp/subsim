@@ -17,7 +17,7 @@ class WorldManager(bloopHost: String, bathyFile: String, private val bloopCallFr
 
     private val worlds = ConcurrentHashMap<String, SimWorld>()
     private val lastAccessTimes = ConcurrentHashMap<String, Instant>()
-    private val sonarClient = SonarClient(Bloop.getBlockingStub(bloopHost), Bathymetry(bathyFile))
+    private val sonarClient = SonarClient(Bloop.getStub(bloopHost), Bathymetry(bathyFile))
 
     fun maybeAdd(worldId: String, scenario: ScenarioOuterClass.Scenario) {
         worlds.getOrPut(worldId, { SimWorld(worldId, scenario, sonarClient, bloopCallFrequencySeconds) })

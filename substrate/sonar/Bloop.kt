@@ -5,12 +5,12 @@ import io.grpc.ManagedChannelBuilder
 
 class Bloop {
     companion object {
-        fun getBlockingStub(host: String): BloopGrpc.BloopBlockingStub {
+        fun getStub(host: String): BloopGrpc.BloopStub {
             val channel: ManagedChannel = ManagedChannelBuilder.forTarget("$host:50052")
                     .usePlaintext()
                     .build()
 
-            return BloopGrpc.newBlockingStub(channel)
+            return BloopGrpc.newStub(channel)
         }
     }
 }

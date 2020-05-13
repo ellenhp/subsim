@@ -34,6 +34,9 @@ class Vessel(val uniqueId: String,
 
     fun processSonarContact(otherContact: Vessel, powerLevel: Double) {
         println("$uniqueId heard ${otherContact.uniqueId} at power level $powerLevel")
+        maybeGetSystem<SonarSystem>()?.let {
+            it.updateContact(otherContact, powerLevel)
+        }
     }
 
     inline fun <reified T : VesselSystem> getSystem() : T {
@@ -75,6 +78,7 @@ class Vessel(val uniqueId: String,
             systemDescriptor.hasPropulsionSystem() -> PropulsionSystem(this, systemDescriptor.propulsionSystem)
             systemDescriptor.hasMapSystem() -> MapSystem(this, systemDescriptor.mapSystem)
             systemDescriptor.hasHullSystem() -> HullSystem(this, systemDescriptor.hullSystem)
+            systemDescriptor.hasSonarSystem() -> SonarSystem(this, systemDescriptor.sonarSystem)
             else -> throw VesselInstantiationException("No matching system for vessel descriptor ${vesselDescriptor.uniqueId}. Upgrade the server?")
         }
         system.setupInitialState(spawnInfo)

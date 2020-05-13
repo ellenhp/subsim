@@ -3,15 +3,17 @@ package substrate.sonar
 import BloopGrpc
 import BloopOuterClass
 import api.Spatial
+import io.grpc.stub.StreamObserver
+import substrate.utils.Utils
 import java.lang.Math.toRadians
 import kotlin.math.*
 
 
-class SonarClient(val stub: BloopGrpc.BloopBlockingStub, val bathymetry: Bathymetry) {
+class SonarClient(val stub: BloopGrpc.BloopStub, val bathymetry: Bathymetry) {
     
-    fun propagateSynchronous(from: Spatial.Position, to: Spatial.Position, fromDepth: Double, toDepth: Double): Float {
+    fun propagate(from: Spatial.Position, to: Spatial.Position, fromDepth: Double, toDepth: Double, lossHandler: (Float) -> Unit) {
         val distance = distanceMeters(from, to)
-        val heading = calculateBearingRadians(from, to)
+        val heading = Utils.calculateBearingRadians(from, to)
         val bathymetricProfile = bathymetricProfile(distance, from, heading)
 
         val request = BloopOuterClass.PropagateRequest.newBuilder()
@@ -21,10 +23,19 @@ class SonarClient(val stub: BloopGrpc.BloopBlockingStub, val bathymetry: Bathyme
                 .setFrequency(200)
                 .setSsp(soundSpeedProfile())
                 .build()
-        println(request)
-        val response = stub.propagate(request)
-        println(response)
-        return response.loss.getPoints(0).loss
+        stub.propagate(request, object: StreamObserver<BloopOuterClass.PropagateResponse> {
+            override fun onNext(response: BloopOuterClass.PropagateResponse) {
+                lossHandler(response.loss.getPoints(0).loss)
+            }
+
+            override fun onError(t: Throwable) {
+                println("error from bloop!")
+                t.printStackTrace()
+            }
+
+            override fun onCompleted() {}
+
+        })
     }
 
     private fun soundSpeedProfile(): BloopOuterClass.SoundSpeedProfile? {
@@ -115,15 +126,6 @@ class SonarClient(val stub: BloopGrpc.BloopBlockingStub, val bathymetry: Bathyme
         val lngMinutes = xMeters / metersPerNauticalMile / cos(absoluteLatitudeRadians)
 
         return Spatial.Position.newBuilder().setLat(pos.lat + latMinutes / 60).setLng(pos.lng + lngMinutes / 60).build()
-    }
-
-    private fun calculateBearingRadians(pos1: Spatial.Position, pos2: Spatial.Position): Double {
-        val deltaLng = pos2.lng - pos1.lng
-        val y = sin(pos2.lng - pos1.lng) * cos(pos2.lat)
-        val x = cos(pos1.lat) * sin(pos2.lat) - (sin(pos1.lat)
-                * cos(pos2.lat) * cos(pos2.lng - pos1.lng))
-        val radiansInCircle = Math.PI * 2
-        return (atan2(y, x) + radiansInCircle) % radiansInCircle
     }
 
 }
