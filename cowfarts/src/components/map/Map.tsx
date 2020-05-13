@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-import { StationComponent } from "../stations";
 import "./Map.css";
 import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
 import {
   Viewport,
-  TopLeft,
   localToGlobal,
-  globalToLocal,
   changeZoom,
   latLongToMapTL,
   paneTransform,
 } from "./helpers";
 import MapEngine from "../../engines/mapEngine/mapEngine";
 import { MAP_EL_ID, MAP_VIEWPORT_ID, MAP_OVERLAY_ID } from "./constants";
-import { ToolHandler, MapTool } from "./tools";
+import { MapTool } from "./tools";
 import PanTool from "./tools/panTool";
 import { LatLong } from "../../commonTypes";
 import { MapData } from "../../engines/mapEngine/data";
@@ -23,12 +20,6 @@ interface MapProps {
   mapEngine: MapEngine;
   latestUpdate: VesselUpdate.AsObject;
 }
-
-const initState = {
-  x: 0,
-  y: 0,
-  zoom: 1,
-};
 
 // TODO: We really should compress this proto on entry
 // and replace VesselUpdate.AsObject as the canonical world update.
@@ -68,13 +59,13 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
     mapEngine.data
   );
   const [viewport, setViewport] = useState<Viewport>(initialState);
-  const [tool, setTool] = useState<MapTool>(tools.pan);
+  const [tool] = useState<MapTool>(tools.pan);
 
-  const zoomIn = (event: React.MouseEvent) => {
+  const zoomIn = () => {
     setViewport(changeZoom(1, viewport));
   };
 
-  const zoomOut = (event: React.MouseEvent) => {
+  const zoomOut = () => {
     setViewport(changeZoom(-1, viewport));
   };
 
