@@ -22,6 +22,7 @@ class PropulsionSystem(vessel: Vessel, val descriptor: Systems.PropulsionSystem)
     override fun step(dt: Duration) {
         updateSpeed(dt)
         updatePosition(dt)
+        updateNoise()
     }
 
     private fun updateSpeed(dt: Duration) {
@@ -62,5 +63,9 @@ class PropulsionSystem(vessel: Vessel, val descriptor: Systems.PropulsionSystem)
                 .build()
 
         vessel.position = newPosition
+    }
+
+    private fun updateNoise() {
+        vessel.noiseLevel = descriptor.baseNoisePower + actualSpeedKnots * descriptor.noisePerKnotNoncavitating
     }
 }

@@ -53,12 +53,10 @@ pip_install(
     requirements = "//bloop:requirements.txt",
 )
 
-# Download the rules_docker repository at release v0.14.1
 http_archive(
     name = "io_bazel_rules_docker",
-    sha256 = "dc97fccceacd4c6be14e800b2a00693d5e8d07f69ee187babfd04a80a9f8e250",
-    strip_prefix = "rules_docker-0.14.1",
-    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.14.1/rules_docker-v0.14.1.tar.gz"],
+    strip_prefix = "rules_docker-972f3ebf800f45ed44853c735b1840fffdd6128b",
+    urls = ["https://github.com/bazelbuild/rules_docker/archive/972f3ebf800f45ed44853c735b1840fffdd6128b.tar.gz"],
 )
 
 load(
@@ -197,8 +195,55 @@ http_archive(
     urls = ["https://github.com/bazelbuild/rules_kotlin/archive/%s.zip" % rules_kotlin_version],
 )
 
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories")
+load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kotlin_repositories", "kt_register_toolchains")
 
-kotlin_repositories()  # if you want the default. Otherwise see custom kotlinc distribution below
+kotlin_repositories()
 
-register_toolchains("//:kotlin_toolchain")
+kt_register_toolchains()
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+
+RULES_JVM_EXTERNAL_TAG = "3.2"
+
+RULES_JVM_EXTERNAL_SHA = ""
+
+http_archive(
+    name = "rules_jvm_external",
+    sha256 = RULES_JVM_EXTERNAL_SHA,
+    strip_prefix = "rules_jvm_external-%s" % RULES_JVM_EXTERNAL_TAG,
+    url = "https://github.com/bazelbuild/rules_jvm_external/archive/%s.zip" % RULES_JVM_EXTERNAL_TAG,
+)
+
+load("@rules_jvm_external//:defs.bzl", "maven_install")
+
+maven_install(
+    artifacts = [
+        "org.gdal:gdal:jar:3.0.0",
+        "com.squareup.okhttp3:okhttp:4.6.0",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core:jar:1.3.6",
+    ],
+    repositories = [
+        "https://jcenter.bintray.com/",
+        "https://maven.google.com",
+        "https://repo1.maven.org/maven2",
+    ],
+)
+
+all_content = """filegroup(name = "all", srcs = glob(["**/*"]), visibility = ["//visibility:public"])"""
+
+http_archive(
+    name = "gdal",
+    build_file_content = all_content,
+    strip_prefix = "gdal-3.1.0/gdal",
+    urls = ["https://github.com/OSGeo/gdal/archive/v3.1.0.tar.gz"],
+)
+
+http_archive(
+    name = "rules_foreign_cc",
+    strip_prefix = "rules_foreign_cc-74b146dc87d37baa1919da1e8f7b8aafbd32acd9",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/74b146dc87d37baa1919da1e8f7b8aafbd32acd9.zip",
+)
+
+load("@rules_foreign_cc//:workspace_definitions.bzl", "rules_foreign_cc_dependencies")
+
+rules_foreign_cc_dependencies()

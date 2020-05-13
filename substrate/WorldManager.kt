@@ -3,18 +3,24 @@ package substrate
 import api.Actions
 import api.ScenarioOuterClass
 import api.Updates
+import okhttp3.*
+import substrate.sonar.Bathymetry
+import substrate.sonar.Bloop
+import substrate.sonar.SonarClient
+import java.io.IOException
 import java.time.Duration
 import java.time.Instant
-import java.time.temporal.TemporalAmount
 import java.util.concurrent.ConcurrentHashMap
 
-class WorldManager {
 
-    val worlds = ConcurrentHashMap<String, SimWorld>()
-    val lastAccessTimes = ConcurrentHashMap<String, Instant>()
+class WorldManager(bloopHost: String, bathyFile: String, private val bloopCallFrequencySeconds: Long) {
+
+    private val worlds = ConcurrentHashMap<String, SimWorld>()
+    private val lastAccessTimes = ConcurrentHashMap<String, Instant>()
+    private val sonarClient = SonarClient(Bloop.getBlockingStub(bloopHost), Bathymetry(bathyFile))
 
     fun maybeAdd(worldId: String, scenario: ScenarioOuterClass.Scenario) {
-        worlds.getOrPut(worldId, { SimWorld(scenario) })
+        worlds.getOrPut(worldId, { SimWorld(worldId, scenario, sonarClient, bloopCallFrequencySeconds) })
         lastAccessTimes[worldId] = Instant.now()
     }
 

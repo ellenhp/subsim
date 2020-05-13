@@ -34,6 +34,10 @@ message PropulsionSystem {
   uint32 max_speed_knots = 1;
   // The acceleration of this vessel, in knots per second.
   double knots_per_second = 2;
+  // Noise level of this system at rest.
+  double base_noise_power = 3;
+  // The additional amount of noise power generated per knot before cavitation.
+  double noise_per_knot_noncavitating = 4;
 }
 message MapSystem {
   // There isn't really anything to put here but it'll initialize things on

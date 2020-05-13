@@ -8,11 +8,14 @@ import api.Updates
 import java.time.Duration
 import java.time.temporal.TemporalAmount
 
-class Vessel(val uniqueId: String, val vesselDescriptor: VesselDescriptor, val spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation) {
+class Vessel(val uniqueId: String,
+             val vesselDescriptor: VesselDescriptor,
+             val spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation) {
 
     val systems : List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
     var position: Spatial.Position = if (spawnInfo.hasPosition()) spawnInfo.position else randomPositionWithinBounds(spawnInfo.bounds)
     var heading: Double = if (spawnInfo.hasHeadingBounds()) randomHeadingWithinBounds(spawnInfo.headingBounds) else spawnInfo.exactSpawnHeading.toDouble()
+    var noiseLevel = 0.0
 
     fun step(dt: Duration) {
         systems.forEach { it.step(dt) }
@@ -29,12 +32,29 @@ class Vessel(val uniqueId: String, val vesselDescriptor: VesselDescriptor, val s
         action.systemRequestsList.forEach { processSystemRequest(it) }
     }
 
+    fun processSonarContact(otherContact: Vessel, powerLevel: Double) {
+        println("$uniqueId heard ${otherContact.uniqueId} at power level $powerLevel")
+    }
+
     inline fun <reified T : VesselSystem> getSystem() : T {
         val matchingSystems = systems.filterIsInstance<T>()
         if (matchingSystems.size != 1) {
             throw SystemMatchingException(
                     "Vessel $uniqueId expected exactly one system of type ${T::class.java.name} but found ${matchingSystems.size}. " +
                             "Check the scenario proto for errors")
+        }
+        return matchingSystems[0]
+    }
+
+    inline fun <reified T : VesselSystem> maybeGetSystem() : T? {
+        val matchingSystems = systems.filterIsInstance<T>()
+        if (matchingSystems.size > 1) {
+            throw SystemMatchingException(
+                    "Vessel $uniqueId expected 0 or 1 systems of type ${T::class.java.name} but found ${matchingSystems.size}. " +
+                            "Check the scenario proto for errors")
+        }
+        if (matchingSystems.isEmpty()) {
+            return null;
         }
         return matchingSystems[0]
     }
