@@ -59,3 +59,9 @@ export const latLongToMapTL = (latLong: LatLong, mapData: MapData): TopLeft => {
       (mapData.bottomRight.lng - mapData.topLeft.lng),
   };
 };
+
+export const paneTransform = (viewport: Viewport) => {
+  const { zoom, x, y } = viewport;
+
+  return `scale(${zoom}) translate(${-x}px, ${-y}px)`;
+};
