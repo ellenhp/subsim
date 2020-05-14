@@ -1,10 +1,11 @@
 import React from "react";
 import BroadbandSource from "../../../../engines/sonarEngine/broadbandSource";
 
+/*  */
 interface DisplaySettings {
-  multiplier: number;
   gain: number;
   contrast: number;
+  multiplier: number;
 }
 
 interface BroadbandWaterfallProps {
@@ -16,6 +17,17 @@ const H_RES = 1000;
 const V_RES = 300;
 const SCOPE_IN_SECONDS = 10;
 const INPUT_MULTIPLIER = 1000;
+const UPDATE_INTERVAL_MS = (SCOPE_IN_SECONDS * 1000) / V_RES;
+
+const gameEpoch = Date.now(); // TODO<< FIX THIS SHIT.
+
+const timeToSampleIdx = (atTime: number) => {
+  return Math.floor((atTime - gameEpoch) / UPDATE_INTERVAL_MS);
+};
+
+const sampleIdxToTime = (sample: number) => {
+  return Math.floor(sample * UPDATE_INTERVAL_MS + gameEpoch);
+};
 
 const initCanvas = (
   source: BroadbandSource,
@@ -25,28 +37,37 @@ const initCanvas = (
   canvasElement.style.backgroundColor = "#001300";
   const ctx = canvasElement.getContext("2d");
 
+  let prevSampleCount = 0;
+
   const backBuffer = document.createElement("canvas");
   const backBufferCtx = backBuffer.getContext("2d");
   backBuffer.width = H_RES;
   backBuffer.height = V_RES;
   // TODO: Fix this
-  const timer = setInterval(drawWaterfall, (SCOPE_IN_SECONDS * 1000) / V_RES);
+  const timer = setInterval(drawWaterfall, UPDATE_INTERVAL_MS);
 
-  let count = 0;
   let samples: number[] = Array(H_RES).fill(0);
   function drawWaterfall() {
-    for (var i = 0; i < H_RES; i++) {
-      const bearing = (i * 360) / H_RES;
-      const activation = Math.min(
-        Math.pow(source.sample(bearing) * INPUT_MULTIPLIER, contrast) * gain,
-        1
-      );
-      samples[i] += activation / multiplier;
-    }
-    count++;
-    if (count % multiplier === 0) {
-      drawLine(samples);
-      samples = Array(H_RES).fill(0);
+    prevSampleCount = Math.max(
+      prevSampleCount,
+      timeToSampleIdx(Date.now() - SCOPE_IN_SECONDS * multiplier * 1000),
+      0
+    );
+    while (prevSampleCount < timeToSampleIdx(Date.now())) {
+      for (var i = 0; i < H_RES; i++) {
+        const bearing = (i * 360) / H_RES;
+        const sample = source.sample(bearing, sampleIdxToTime(prevSampleCount));
+        const activation = Math.min(
+          Math.pow(sample * INPUT_MULTIPLIER, contrast) * gain,
+          1
+        );
+        samples[i] += activation / multiplier;
+      }
+      prevSampleCount++;
+      if (prevSampleCount % multiplier === 0) {
+        drawLine(samples);
+        samples = Array(H_RES).fill(0);
+      }
     }
   }
 

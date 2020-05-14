@@ -112,7 +112,7 @@ export default class BroadbandSource {
     return this.snapshots[0];
   }
 
-  // Bearing is always 0 - 360
+  // Bearing is always 0 - 360, sample is in ms since epoch
   sample(bearing: number, sampleTime?: number | undefined) {
     const snapshot =
       sampleTime === undefined
