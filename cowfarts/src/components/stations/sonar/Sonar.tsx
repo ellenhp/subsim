@@ -2,24 +2,22 @@ import React, { useState } from "react";
 import { StationComponent, StationProps } from "..";
 //import Waterfall from "./ElemSingletonMount";
 import "./Sonar.css";
-import BroadbandWaterfall from "./BroadbandWaterfall";
-
-type WaterfallTypes = "short" | "medium" | "long";
+import BroadbandSwitcher from "./BroadbandSwitcher";
 
 const Sonar: StationComponent = (props: StationProps) => {
-  const {
-    broadbandShort,
-    broadbandMedium,
-    broadbandLong,
-  } = props.engines.sonarEngine.waterfalls;
-
   return (
     <>
-      <h1>Sonar</h1>
-      <div className="waterfall-wrapper">
-        <BroadbandWaterfall screen={broadbandShort} />
-        <BroadbandWaterfall screen={broadbandMedium} />
-        <BroadbandWaterfall screen={broadbandLong} />
+      <div className="waterfall-bay">
+        <BroadbandSwitcher
+          engine={props.engines.sonarEngine}
+          defaultTerm={"short"}
+        />
+      </div>
+      <div className="waterfall-bay">
+        <BroadbandSwitcher
+          engine={props.engines.sonarEngine}
+          defaultTerm={"medium"}
+        />
       </div>
     </>
   );
