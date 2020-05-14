@@ -162,6 +162,32 @@ k8s_object(
     template = ":service.yaml",
 )
 
+k8s_objects(
+    name = "dev",
+    objects = [
+        ":dev-deployment",
+        ":dev-service",
+    ],
+    visibility = ["//k8s:__subpackages__"],
+)
+
+k8s_object(
+    name = "dev-deployment",
+    cluster = "mass-dev",
+    images = {
+        "gcr.io/mass-276203/bloop:dev": "//bloop:image",
+    },
+    kind = "deployment",
+    template = ":deployment.yaml",
+)
+
+k8s_object(
+    name = "dev-service",
+    cluster = "mass-dev",
+    kind = "service",
+    template = ":service.yaml",
+)
+
 container_push(
     name = "publish",
     format = "Docker",

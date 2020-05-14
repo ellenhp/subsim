@@ -5,4 +5,5 @@ genrule(
     ]) + ["Makefile"],
     outs = ["bellhop.exe"],
     cmd = "cd acoustics/bellhop ; make ; cp ./bellhop.exe ../../$(RULEDIR)",
+    visibility = ["//visibility:public"],
 )

@@ -1,4 +1,3 @@
-load("@io_bazel_rules_kotlin//kotlin:kotlin.bzl", "kt_jvm_binary", "kt_jvm_import", "kt_jvm_library")
 load("@io_bazel_rules_docker//kotlin:image.bzl", "kt_jvm_image")
 load("@io_bazel_rules_k8s//k8s:object.bzl", "k8s_object")
 load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
@@ -7,26 +6,7 @@ load("@io_bazel_rules_docker//docker/package_managers:download_pkgs.bzl", "downl
 load("@io_bazel_rules_docker//docker/package_managers:install_pkgs.bzl", "install_pkgs")
 load("@rules_jvm_external//:defs.bzl", "artifact")
 
-kt_jvm_binary(
-    name = "substrate",
-    srcs = glob(["*.kt"]),
-    main_class = "substrate.MainKt",
-    runtime_deps = [
-        "@com_github_jetbrains_kotlin//:kotlin-stdlib-jdk8",
-        "@grpc_java//netty",
-    ],
-    deps = [
-        "//mass/api:java_mass_grpc",
-        "//substrate/sonar",
-        "//substrate/vessel",
-        "@com_github_jetbrains_kotlin//:kotlin-stdlib-jdk8",
-        "@grpc_java//api",
-        "@grpc_java//protobuf",
-        "@grpc_java//stub",
-        "@maven//:com_squareup_okhttp3_okhttp",
-        "@maven//:org_jetbrains_kotlinx_kotlinx_coroutines_core",
-    ],
-)
+package(default_visibility = ["//k8s:__subpackages__"])
 
 kt_jvm_image(
     name = "image",
@@ -45,8 +25,6 @@ kt_jvm_image(
         "@grpc_java//protobuf",
         "@grpc_java//stub",
         "@maven//:com_squareup_okhttp3_okhttp",
-        #        "@maven//:org_jetbrains_kotlin_kotlin_stdlib",
-        #        "@maven//:org_jetbrains_kotlin_kotlin_stdlib_common",
         artifact(
             "org.jetbrains.kotlinx:kotlinx-coroutines-core",
             repository_name = "maven",
@@ -78,6 +56,14 @@ k8s_objects(
     ],
 )
 
+k8s_objects(
+    name = "dev",
+    objects = [
+        ":dev-deployment",
+        ":dev-service",
+    ],
+)
+
 k8s_object(
     name = "prod-deployment",
     cluster = "gke_mass-276203_us-central1-c_milky",
@@ -89,8 +75,25 @@ k8s_object(
 )
 
 k8s_object(
+    name = "dev-deployment",
+    cluster = "mass-dev",
+    images = {
+        "gcr.io/mass-276203/mass:dev": "//substrate:image",
+    },
+    kind = "deployment",
+    template = ":deployment.yaml",
+)
+
+k8s_object(
     name = "prod-service",
     cluster = "gke_mass-276203_us-central1-c_milky",
+    kind = "service",
+    template = ":service.yaml",
+)
+
+k8s_object(
+    name = "dev-service",
+    cluster = "mass-dev",
     kind = "service",
     template = ":service.yaml",
 )
