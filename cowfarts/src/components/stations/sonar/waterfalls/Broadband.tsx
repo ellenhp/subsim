@@ -39,13 +39,8 @@ const initCanvas = (
 
   let prevSampleCount = 0;
 
-  const backBuffer = document.createElement("canvas");
-  const backBufferCtx = backBuffer.getContext("2d");
-  backBuffer.width = H_RES;
-  backBuffer.height = V_RES;
-  // TODO: Fix this
+  const imageData = ctx.createImageData(H_RES, V_RES);
   const timer = setInterval(drawWaterfall, UPDATE_INTERVAL_MS);
-
   let samples: number[] = Array(H_RES).fill(0);
   function drawWaterfall() {
     prevSampleCount = Math.max(
@@ -73,21 +68,15 @@ const initCanvas = (
 
   function drawLine(samples: number[]) {
     // Move the old backbuffer data down by one pixel.
-    backBufferCtx.drawImage(backBuffer, 0, 1);
+    imageData.data.copyWithin(H_RES * 4, 0);
 
-    backBufferCtx.fillStyle = "black";
-    backBufferCtx.fillRect(0, 0, 1000, 1);
-
-    // Fill in the new shit.
-    backBufferCtx.fillStyle = "green";
-    for (var i = 0; i < samples.length; i++) {
-      backBufferCtx.globalAlpha = samples[i];
-      backBufferCtx.fillRect(i, 0, 1, 1);
+    // copy in
+    for (let i = 0; i < samples.length; i++) {
+      imageData.data[i * 4 + 1] = Math.floor(samples[i] * 256);
+      imageData.data[i * 4 + 3] = 255;
     }
-    backBufferCtx.globalAlpha = 1;
 
-    // Copy the backbuffer to the canvas.
-    ctx.drawImage(backBuffer, 0, 0, canvasElement.width, canvasElement.height);
+    ctx.putImageData(imageData, 0, 0, 0, 0, H_RES, V_RES);
   }
 };
 
