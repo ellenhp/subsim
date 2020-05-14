@@ -92,10 +92,11 @@ message TmaSystemRequest {
     // The designation to delete.
     string designation = 1;
   }
-  // Any of these subrequests can be populated, and you could even combine them
-  // if that's what your heart truly desires.
-  TmaAddContactSubrequest add_contact_request = 1;
-  TmaTakeBearingSubrequest take_bearing_request = 2;
-  TmaMergeContactSubrequest merge_contact_request = 3;
-  TmaDeleteContactSubrequest tma_delete_contact_request = 4;
+  // Any of these subrequests can be populated.
+  oneof request {
+    TmaAddContactSubrequest add_contact_request = 1;
+    TmaTakeBearingSubrequest take_bearing_request = 2;
+    TmaMergeContactSubrequest merge_contact_request = 3;
+    TmaDeleteContactSubrequest delete_contact_request = 4;
+  }
 }
