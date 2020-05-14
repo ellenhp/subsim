@@ -59,6 +59,7 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   mapSystem.setMapSystem(map);
 
   const hull = new HullSystem();
+  hull.setDraftFeet(10);
   const hullSystem = new VesselSystem();
   hullSystem.setHullSystem(hull);
 
