@@ -1,6 +1,7 @@
 import { Pipe } from "../../util/pipe";
 import noise from "noisejs";
 import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
+import { normalDistribution } from "../../util/math";
 
 type PointSource = {
   bearing: number;
@@ -42,7 +43,7 @@ const NOISE_ANGLE_SCALE_VERTICAL = 0.2;
 const POINT_DISTORTION_SCALE = 20;
 const POINT_DISTORTION_MULTIPLIER = 5;
 // How wide the signal is spread to
-const POINT_SPREAD = 10;
+const POINT_SPREAD = 5;
 
 const WHERE_PERLIN_SEAM_IS = 180;
 
@@ -50,8 +51,9 @@ const WHERE_PERLIN_SEAM_IS = 180;
  * If a signal is offset from sample pos by bearingOffset, what should be the
  * observed offset gain here? Area under this curve should be 1.
  */
+
 const offsetGain = (bearingOffset: number) => {
-  return Math.max(1 - bearingOffset / POINT_SPREAD, 0) / POINT_SPREAD;
+  return normalDistribution(bearingOffset / POINT_SPREAD) / POINT_SPREAD;
 };
 
 function getSonarUpdate(update: VesselUpdate.AsObject) {
@@ -69,7 +71,7 @@ export default class BroadbandSource {
     worldStream.listen((update) => {
       const sonarUpdate = getSonarUpdate(update);
       const newSnapshot = {
-        noiseLevel: 0.003,
+        noiseLevel: 0.001,
         explosionLevel: 0,
         bearing: 0,
         timestamp: -1, // lolol
@@ -163,7 +165,14 @@ export default class BroadbandSource {
             (bearing * POINT_DISTORTION_SCALE) / 360,
             (time * NOISE_SCALE_VERTICAL) / 1000
           );
-        const bearingOffset = Math.abs(bearingNoise + bearing - pointBearing);
+
+        // Find shortest between bearings 1 and 2.
+        const bearingOne = pointBearing;
+        const bearingTwo = bearingNoise + bearing;
+        const bearingOffset = Math.min(
+          (bearingOne - bearingTwo + 360) % 360,
+          (bearingTwo - bearingOne + 360) % 360
+        );
         return avgFreqVolume * offsetGain(bearingOffset);
       }
     );
