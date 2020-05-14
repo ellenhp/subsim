@@ -9,5 +9,5 @@ export const getGameHash = (): GameId | undefined => {
   if (typeof scenarioId !== "string" || typeof vesselId !== "string") {
     return undefined;
   }
-  return { scenarioId, vesselId };
+  return { scenarioId: scenarioId.slice(1), vesselId };
 };
