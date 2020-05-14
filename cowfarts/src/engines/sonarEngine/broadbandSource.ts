@@ -18,6 +18,20 @@ type SoundSnapshot = {
   timestamp: number;
 };
 
+function memo(
+  func: (time: number) => SoundSnapshot
+): (time: number) => SoundSnapshot {
+  const map: { [key: number]: SoundSnapshot } = {};
+  return function memo(time) {
+    if (map[time]) {
+      return map[time];
+    }
+    const snapshot = func(time);
+    map[time] = snapshot;
+    return snapshot;
+  };
+}
+
 const NOISE_SCALE_HORIZONTAL = 20;
 const NOISE_SCALE_VERTICAL = 1;
 // aaa
@@ -43,17 +57,11 @@ export default class BroadbandSource {
 
     worldStream.listen((update) => {
       const sonarUpdate = getSonarUpdate(update);
-      if (
-        JSON.stringify(sonarUpdate) ===
-        JSON.stringify(this.getCurrentSnapshot())
-      ) {
-        return;
-      }
-      this.snapshots.push({
+      const newSnapshot = {
         noiseLevel: 0.008,
         explosionLevel: 0,
         bearing: 0,
-        timestamp: Date.now(),
+        timestamp: -1, // lolol
         pointSources: sonarUpdate.contactsList.map((contact) => {
           return {
             bearing: contact.bearing,
@@ -65,7 +73,17 @@ export default class BroadbandSource {
             ],
           };
         }),
-      });
+      };
+      if (
+        JSON.stringify(newSnapshot) ===
+        JSON.stringify(this.getCurrentSnapshot())
+      ) {
+        return;
+      }
+      // set the timestamp!
+      newSnapshot.timestamp: Date.now();
+
+      this.snapshots.push(newSnapshot);
     });
   }
 
@@ -77,30 +95,13 @@ export default class BroadbandSource {
   pointDistortion: any;
 
   /* Shouldn't have a default here. */
-  snapshots: Array<SoundSnapshot> = [
-    {
-      pointSources: [
-        /*{
-          bearing: 180,
-          freqs: [{ freq: 100, volume: 0.5 }],
-        },
-        {
-          bearing: 120,
-          freqs: [{ freq: 100, volume: 0.2 }],
-        },*/
-      ],
-      noiseLevel: 0.5,
-      explosionLevel: 0,
-      bearing: 0,
-      timestamp: 0,
-    },
-  ];
+  snapshots: Array<SoundSnapshot> = [];
 
   getCurrentSnapshot(): SoundSnapshot {
     return this.snapshots[this.snapshots.length - 1];
   }
 
-  getSnapshotAtTime(time: number) {
+  getSnapshotAtTime = memo((time: number) => {
     // lol O(n)
     for (let i = this.snapshots.length - 1; i > 0; i--) {
       const snapshot = this.snapshots[i];
@@ -110,10 +111,13 @@ export default class BroadbandSource {
     }
     // default to earliest snapshot
     return this.snapshots[0];
-  }
+  });
 
   // Bearing is always 0 - 360, sample is in ms since epoch
   sample(bearing: number, sampleTime?: number | undefined) {
+    if (!this.snapshots.length) {
+      return 0;
+    }
     const snapshot =
       sampleTime === undefined
         ? this.getCurrentSnapshot()

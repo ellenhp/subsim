@@ -1,23 +1,26 @@
 import React, { useState } from "react";
-import { StationComponent } from "..";
+import { StationComponent, StationProps } from "..";
 //import Waterfall from "./ElemSingletonMount";
 import "./Sonar.css";
-import BroadbandWaterfall from "./waterfalls/Broadband";
+import BroadbandWaterfall from "./BroadbandWaterfall";
 
 type WaterfallTypes = "short" | "medium" | "long";
 
-const Sonar: StationComponent = ({ engines: { sonarEngine } }) => {
+const Sonar: StationComponent = (props: StationProps) => {
+  const {
+    broadbandShort,
+    broadbandMedium,
+    broadbandLong,
+  } = props.engines.sonarEngine.waterfalls;
+
   return (
     <h1>
       Sonar
-      <BroadbandWaterfall
-        source={sonarEngine.broadbandSource}
-        displaySettings={{
-          multiplier: 4,
-          contrast: 1,
-          gain: 0.08,
-        }}
-      />
+      <div className="waterfall-wrapper">
+        <BroadbandWaterfall imagePipe={broadbandShort} />
+        <BroadbandWaterfall imagePipe={broadbandMedium} />
+        <BroadbandWaterfall imagePipe={broadbandLong} />
+      </div>
     </h1>
   );
 };

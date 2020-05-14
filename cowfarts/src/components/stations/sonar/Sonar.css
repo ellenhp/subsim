@@ -1,10 +1,10 @@
-.waterfall {
-  height: 400px;
-  width: 400px;
+.broadband-waterfall {
+  height: 300px;
+  width: 300px;
 }
 
 .waterfall-wrapper {
-  width: 400px;
+  display: flex;
 }
 
 .waterfall-switcher {
