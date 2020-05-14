@@ -4,10 +4,9 @@ import api.Actions
 import api.ScenarioOuterClass
 import api.Updates
 import io.grpc.StatusRuntimeException
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import substrate.sonar.SonarClient
 import substrate.vessel.HullSystem
+import substrate.vessel.SonarSystem
 import substrate.vessel.Vessel
 import substrate.vessel.VesselInstantiationException
 import java.time.Duration
@@ -73,13 +72,21 @@ class SimWorld(
             // We have called bloop for this pair in the last bloopCallFrequencySeconds.
             return
         }
+        if (vesselPair.second.maybeGetSystem<SonarSystem>() === null) {
+            // If the second vessel in the pair can't hear, then there's no point calling bloop.
+            return
+        }
 
         lastBloopCallTime[vesselPair] = Instant.now()
 
-        var firstDepth = vesselPair.first.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
-        var secondDepth = vesselPair.second.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
+        val firstDepth = vesselPair.first.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
+        val secondDepth = vesselPair.second.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
 
-        sonarClient.propagate(vesselPair.first.position, vesselPair.second.position, firstDepth, secondDepth) {
+        sonarClient.propagate(
+                from = vesselPair.first.position,
+                to = vesselPair.second.position,
+                fromDepthFeet = firstDepth,
+                toDepthFeet = secondDepth) {
             vesselPair.second.processSonarContact(vesselPair.first, it * vesselPair.first.noiseLevel)
         }
     }
