@@ -44,6 +44,8 @@ const POINT_DISTORTION_MULTIPLIER = 5;
 // How wide the signal is spread to
 const POINT_SPREAD = 10;
 
+const WHERE_PERLIN_SEAM_IS = 180;
+
 /*
  * If a signal is offset from sample pos by bearingOffset, what should be the
  * observed offset gain here? Area under this curve should be 1.
@@ -133,14 +135,18 @@ export default class BroadbandSource {
         : this.getSnapshotAtTime(sampleTime);
     const time = sampleTime === undefined ? Date.now() : sampleTime;
 
+    // Workaround for perlin noise not being generated on a cylinder
+    const bearingForBackgroundNoise = (bearing + WHERE_PERLIN_SEAM_IS) % 360;
     const noiseBearingDeviation =
       this.pointDistortion.perlin2(
-        (bearing * NOISE_ANGLE_SCALE_HORIZONTAL) / 360,
+        (bearingForBackgroundNoise * NOISE_ANGLE_SCALE_HORIZONTAL) / 360,
         (time * NOISE_ANGLE_SCALE_VERTICAL) / 1000
       ) * NOISE_ANGLE_SPREAD;
     const backgroundNoise =
       (this.noiseSource.perlin2(
-        ((bearing + noiseBearingDeviation) * NOISE_SCALE_HORIZONTAL) / 360,
+        ((bearingForBackgroundNoise + noiseBearingDeviation) *
+          NOISE_SCALE_HORIZONTAL) /
+          360,
         (time * NOISE_SCALE_VERTICAL) / 1000
       ) /
         2 +

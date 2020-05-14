@@ -14,14 +14,14 @@ const Sonar: StationComponent = (props: StationProps) => {
   } = props.engines.sonarEngine.waterfalls;
 
   return (
-    <h1>
-      Sonar
+    <>
+      <h1>Sonar</h1>
       <div className="waterfall-wrapper">
-        <BroadbandWaterfall imagePipe={broadbandShort} />
-        <BroadbandWaterfall imagePipe={broadbandMedium} />
-        <BroadbandWaterfall imagePipe={broadbandLong} />
+        <BroadbandWaterfall screen={broadbandShort} />
+        <BroadbandWaterfall screen={broadbandMedium} />
+        <BroadbandWaterfall screen={broadbandLong} />
       </div>
-    </h1>
+    </>
   );
 };
 

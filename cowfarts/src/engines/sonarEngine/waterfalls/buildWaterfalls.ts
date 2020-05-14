@@ -7,22 +7,26 @@ import { ElemSingleton, show, hide } from "../../../util/elemSingleton";
 import BroadbandSource from "../broadbandSource";
 import { Pipe } from "../../../util/pipe";
 
-export const H_RES = 1000;
-export const V_RES = 300;
-const SCOPE_IN_SECONDS = 10;
-const INPUT_MULTIPLIER = 1000;
-
 interface DisplaySettings {
   gain: number;
   contrast: number;
   multiplier: number;
 }
 
-const H_RES = 1000;
-const V_RES = 300;
-const SCOPE_IN_SECONDS = 10;
+export interface BroadbandScreen {
+  timeScopeInSeconds: number;
+  leftBearing: number;
+  data: Pipe<ImageData>;
+}
+
+export const H_RES = 1000;
+export const V_RES = 300;
+const LEFT_BEARING = 180;
+
+// What is the scope of a screen, under multiplier of 1?
+const BASE_SCOPE_SECONDS = 10;
 const INPUT_MULTIPLIER = 1000;
-const UPDATE_INTERVAL_MS = (SCOPE_IN_SECONDS * 1000) / V_RES;
+const UPDATE_INTERVAL_MS = (BASE_SCOPE_SECONDS * 1000) / V_RES;
 
 const gameEpoch = Date.now(); // TODO<< FIX THIS SHIT.
 
@@ -37,7 +41,7 @@ const sampleIdxToTime = (sample: number) => {
 const createBroadbandWaterfall = (
   source: BroadbandSource,
   { multiplier, gain, contrast }: DisplaySettings
-): Pipe<ImageData> => {
+): BroadbandScreen => {
   const pipe = new Pipe<ImageData>();
 
   let prevSampleCount = 0;
@@ -49,12 +53,13 @@ const createBroadbandWaterfall = (
   function drawWaterfall() {
     prevSampleCount = Math.max(
       prevSampleCount,
-      timeToSampleIdx(Date.now() - SCOPE_IN_SECONDS * multiplier * 1000),
+      timeToSampleIdx(Date.now() - BASE_SCOPE_SECONDS * multiplier * 1000),
       0
     );
     while (prevSampleCount < timeToSampleIdx(Date.now())) {
       for (var i = 0; i < H_RES; i++) {
-        const bearing = (i * 360) / H_RES;
+        const bearing = ((i * 360) / H_RES + LEFT_BEARING) % 360;
+
         const sample = source.sample(bearing, sampleIdxToTime(prevSampleCount));
         const activation = Math.min(
           Math.pow(sample * INPUT_MULTIPLIER, contrast) * gain,
@@ -82,7 +87,11 @@ const createBroadbandWaterfall = (
     }
     pipe.fire(imageData);
   }
-  return pipe;
+  return {
+    timeScopeInSeconds: BASE_SCOPE_SECONDS * multiplier,
+    leftBearing: LEFT_BEARING,
+    data: pipe,
+  };
 };
 
 const buildWaterfalls = (broadbandSource: BroadbandSource) => ({
