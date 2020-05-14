@@ -39,7 +39,19 @@ const TimeAndBearingIndicator = ({
   timeAndBearing: TimeAndBearing;
 }) => (
   <div className="time-and-bearing-indicator">
-    <div>{bearing.toFixed(1)}°</div>
+    <div className="tiny-bearing-indicator">
+      <div className="tiny-bearing-text">{bearing.toFixed(1)}°</div>
+      <div
+        className="tiny-bearing-pointer"
+        style={{
+          transform: `translate(0, -50%) rotate(${
+            Math.round(bearing) + 270
+          }deg)`,
+        }}
+      >
+        ➤
+      </div>
+    </div>
     <div>{formatSecondsAgo(timeAgoSeconds)}</div>
   </div>
 );

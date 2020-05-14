@@ -10,11 +10,40 @@
 }
 
 .time-and-bearing-indicator {
+  font-size: 10px;
   font-family: sans-serif;
   position: absolute;
   color: lightgreen;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 4px;
-  bottom: 0;
-  right: 0;
+  text-align: center;
+  bottom: 4px;
+  right: 4px;
+}
+
+.tiny-bearing-indicator {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.9);
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  height: 60px;
+  width: 60px;
+  border: 1px green solid;
+}
+
+.tiny-bearing-pointer {
+  position: absolute;
+  width: 30px;
+  text-align: right;
+  display: block;
+  transform-origin: left center;
+  color: lightgreen;
+  top: 50%;
+  left: 50%;
+  font-size: 12px;
+}
+
+.tiny-bearing-text {
+  text-align: center;
+  line-height: 60px;
+  height: 60px;
 }
