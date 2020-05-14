@@ -81,7 +81,7 @@ export default class BroadbandSource {
         return;
       }
       // set the timestamp!
-      newSnapshot.timestamp: Date.now();
+      newSnapshot.timestamp = Date.now();
 
       this.snapshots.push(newSnapshot);
     });
