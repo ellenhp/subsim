@@ -41,7 +41,16 @@ const NOISE_ANGLE_SCALE_VERTICAL = 0.2;
 // ---
 const POINT_DISTORTION_SCALE = 20;
 const POINT_DISTORTION_MULTIPLIER = 5;
-const POINT_DISTORTION_SPREAD = 10;
+// How wide the signal is spread to
+const POINT_SPREAD = 10;
+
+/*
+ * If a signal is offset from sample pos by bearingOffset, what should be the
+ * observed offset gain here? Area under this curve should be 1.
+ */
+const offsetGain = (bearingOffset: number) => {
+  return Math.max(1 - bearingOffset / POINT_SPREAD, 0) / POINT_SPREAD;
+};
 
 function getSonarUpdate(update: VesselUpdate.AsObject) {
   return update.systemUpdatesList.filter((system) => system.sonarUpdate)[0]
@@ -58,7 +67,7 @@ export default class BroadbandSource {
     worldStream.listen((update) => {
       const sonarUpdate = getSonarUpdate(update);
       const newSnapshot = {
-        noiseLevel: 0.008,
+        noiseLevel: 0.003,
         explosionLevel: 0,
         bearing: 0,
         timestamp: -1, // lolol
@@ -141,19 +150,15 @@ export default class BroadbandSource {
       ({ bearing: pointBearing, freqs }) => {
         const avgFreqVolume =
           freqs.reduce((acc, { volume }) => volume + acc, 0) / freqs.length;
-        const bearingOffset = Math.abs(
+
+        const bearingNoise =
           POINT_DISTORTION_MULTIPLIER *
-            this.pointDistortion.perlin2(
-              (bearing * POINT_DISTORTION_SCALE) / 360,
-              (time * NOISE_SCALE_VERTICAL) / 1000
-            ) +
-            bearing -
-            pointBearing
-        );
-        return (
-          avgFreqVolume *
-          Math.max(1 - bearingOffset / POINT_DISTORTION_SPREAD, 0)
-        );
+          this.pointDistortion.perlin2(
+            (bearing * POINT_DISTORTION_SCALE) / 360,
+            (time * NOISE_SCALE_VERTICAL) / 1000
+          );
+        const bearingOffset = Math.abs(bearingNoise + bearing - pointBearing);
+        return avgFreqVolume * offsetGain(bearingOffset);
       }
     );
     return backgroundNoise + pointNoises.reduce((a, b) => a + b, 0);
