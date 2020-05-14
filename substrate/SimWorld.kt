@@ -13,13 +13,12 @@ import java.time.Duration
 import java.time.Instant
 
 class SimWorld(
-        val uniqueId: String,
-        val scenario: ScenarioOuterClass.Scenario,
-        val sonarClient: SonarClient,
+        scenario: ScenarioOuterClass.Scenario,
+        private val sonarClient: SonarClient,
         private val bloopCallFrequencySeconds: Long) {
     private val vesselTypes : Map<String, ScenarioOuterClass.VesselDescriptor> = scenario.vesselDescriptorsList.map { it.uniqueId to it }.toMap()
-    val vessels: MutableList<Vessel>
-    val lastBloopCallTime: MutableMap<Pair<Vessel, Vessel>, Instant> = HashMap()
+    private val vessels: MutableList<Vessel>
+    private val lastBloopCallTime: MutableMap<Pair<Vessel, Vessel>, Instant> = HashMap()
 
     init {
         vessels = scenario.vesselsList.map {
@@ -79,8 +78,8 @@ class SimWorld(
 
         lastBloopCallTime[vesselPair] = Instant.now()
 
-        val firstDepth = vesselPair.first.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
-        val secondDepth = vesselPair.second.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 0.0
+        val firstDepth = vesselPair.first.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 1.0
+        val secondDepth = vesselPair.second.maybeGetSystem<HullSystem>()?.actualDepthFeet ?: 1.0
 
         sonarClient.propagate(
                 from = vesselPair.first.position,
