@@ -43,7 +43,7 @@ class WorldManager(bloopHost: String, bathyFile: String, private val bloopCallFr
     }
 
     fun stepAll(dt: Duration) {
-        val cutoffTime = Instant.now().minus(Duration.ofHours(6))
+        val cutoffTime = Instant.now().minus(Duration.ofMinutes(10))
         worlds.keys.filter { lastAccessTimes[it]?.isBefore(cutoffTime) == true }.forEach { worlds.remove(it) }
         worlds.values.forEach { it.step(dt) }
     }
