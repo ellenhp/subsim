@@ -49,6 +49,8 @@ message SystemRequest {
     PropulsionSystemRequest propulsion_request = 3;
     // Map requests.
     MapSystemRequest map_request = 4;
+    // TMA requests.
+    TmaSystemRequest tma_request = 5;
   }
 }
 
@@ -69,4 +71,31 @@ message PropulsionSystemRequest {
 
 message MapSystemRequest {
   // Eventually put marking and removing POIs in here.
+}
+
+message TmaSystemRequest {
+  // A sub-request to add a new TMA contact.
+  message TmaAddContactSubrequest {
+    // Nothing to configure.
+  }
+  message TmaTakeBearingSubrequest {
+    // The conatct designation (S1, S2, S3) to take the bearing for.
+    string designation = 1;
+    // The bearing to take, in degrees (0-360) referenced from true north.
+    float bearing_degrees = 2;
+  }
+  message TmaMergeContactSubrequest {
+    // The designations to merge.
+    repeated string designations = 2;
+  }
+  message TmaDeleteContactSubrequest {
+    // The designation to delete.
+    string designation = 1;
+  }
+  // Any of these subrequests can be populated, and you could even combine them
+  // if that's what your heart truly desires.
+  TmaAddContactSubrequest add_contact_request = 1;
+  TmaTakeBearingSubrequest take_bearing_request = 2;
+  TmaMergeContactSubrequest merge_contact_request = 3;
+  TmaDeleteContactSubrequest tma_delete_contact_request = 4;
 }
