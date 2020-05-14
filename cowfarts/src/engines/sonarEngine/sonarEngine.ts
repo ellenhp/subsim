@@ -1,15 +1,16 @@
-import BroadbandSource from "./broadbandSource";
 import { ElemSingleton } from "../../util/elemSingleton";
 import { Pipe } from "../../util/pipe";
 import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
 import buildWaterfalls from "./waterfalls/buildWaterfalls";
+import BroadbandSource from "./broadbandSource";
 
 export interface SonarEngine {
   broadbandSource: BroadbandSource;
+
   waterfalls: {
-    broadbandShort: ElemSingleton<HTMLCanvasElement>;
-    broadbandMedium: ElemSingleton<HTMLCanvasElement>;
-    broadbandLong: ElemSingleton<HTMLCanvasElement>;
+    broadbandShort: Pipe<ImageData>;
+    broadbandMedium: Pipe<ImageData>;
+    broadbandLong: Pipe<ImageData>;
   };
 }
 

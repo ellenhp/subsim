@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import { GameConnection, createNewGame } from "../game";
+import React, { Component } from "react";
+import { GameConnection, createNewGame, joinGame } from "../game";
 import InGame from "./InGame";
 import TitleScreen from "./TitleScreen";
 import "./App.css";
+import { setGameHash, getGameHash } from "../util/url";
+import { GameId } from "../commonTypes";
 
 type AppState =
   | {
@@ -11,35 +13,72 @@ type AppState =
   | {
       status: "joiningGame";
       scenarioId: string;
-      vesselId: "user";
+      vesselId: string;
     }
   | {
       status: "inGame";
       activeGame: GameConnection;
     };
 
-const App = () => {
-  const [appState, setAppState] = useState<AppState>({
-    status: "titleScreen",
-  });
+class App extends React.Component<{}> {
+  constructor(props: {}) {
+    super(props);
+    this.state = {
+      status: "titleScreen",
+    };
+    const currentGameId = getGameHash();
+    if (currentGameId) {
+      this.state = {
+        status: "joiningGame",
+        scenarioId: currentGameId.scenarioId,
+        vesselId: currentGameId.vesselId,
+      };
+      // Todo, promisify this.
+      const game = joinGame(currentGameId);
 
-  const createGame = () => {
+      this.state = {
+        status: "inGame",
+        activeGame: game,
+      };
+    }
+  }
+
+  state: AppState;
+
+  joinGame = (id: GameId) => {
     // Todo, promisify this.
-    const game = createNewGame();
-    setAppState({
+    const game = joinGame(id);
+
+    this.setState(() => ({
       status: "inGame",
       activeGame: game,
-    });
+    }));
   };
 
-  switch (appState.status) {
-    case "inGame":
-      return <InGame game={appState.activeGame} />;
-    case "titleScreen":
-      return <TitleScreen createGame={createGame} />;
-    default:
-      return <div>Joining...</div>;
+  createGame = () => {
+    // Todo, promisify this.
+    const game = createNewGame();
+    setGameHash({
+      scenarioId: game.scenarioId,
+      vesselId: game.vesselId,
+    });
+
+    this.setState(() => ({
+      status: "inGame",
+      activeGame: game,
+    }));
+  };
+
+  render() {
+    switch (this.state.status) {
+      case "inGame":
+        return <InGame game={this.state.activeGame} />;
+      case "titleScreen":
+        return <TitleScreen createGame={this.createGame} />;
+      default:
+        return <div>Joining...</div>;
+    }
   }
-};
+}
 
 export default App;

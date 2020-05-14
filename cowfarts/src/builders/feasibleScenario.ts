@@ -94,7 +94,7 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   headingBounds.setLeftBound(10);
   headingBounds.setLeftBound(11);
 
-  // Building Enemy Spawn info
+  // Building Enemy Spawn info (NEAR)
   const enemyNePos = new Position();
   enemyNePos.setLat(47.632545);
   enemyNePos.setLng(-122.474061);
@@ -110,6 +110,23 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   const enemySpawnInfo = new SpawnedVessel.SpawnInformation();
   enemySpawnInfo.setBounds(enemySpawnBounds);
   enemySpawnInfo.setHeadingBounds(headingBounds);
+
+  // Building Enemy Spawn Info (FAR + QUIET)
+  const enemyFarNePos = new Position();
+  enemyFarNePos.setLat(47.897931);
+  enemyFarNePos.setLng(-122.478928);
+
+  const enemyFarSwPos = new Position();
+  enemyFarSwPos.setLat(47.839432);
+  enemyFarSwPos.setLng(-122.390979);
+
+  const enemyFarSpawnBounds = new Bounds();
+  enemyFarSpawnBounds.setNorthEast(enemyFarNePos);
+  enemyFarSpawnBounds.setSouthWest(enemyFarSwPos);
+
+  const enemyFarSpawnInfo = new SpawnedVessel.SpawnInformation();
+  enemyFarSpawnInfo.setBounds(enemyFarSpawnBounds);
+  enemyFarSpawnInfo.setHeadingBounds(headingBounds);
 
   const playerFaction = new Faction();
   playerFaction.setPlayerControlled(true);
@@ -131,6 +148,13 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   enemyVessel.setSpawnInfo(enemySpawnInfo);
   enemyVessel.setFaction(enemyFaction);
 
+  // Far one!
+  const enemyFarVessel = new SpawnedVessel();
+  enemyFarVessel.setVesselDescriptorId(vesselId);
+  enemyFarVessel.setUniqueId(v4());
+  enemyFarVessel.setSpawnInfo(enemyFarSpawnInfo);
+  enemyFarVessel.setFaction(enemyFaction);
+
   const endCondition = new EndCondition();
   endCondition.setFactionEliminated(playerFaction);
   endCondition.setWinningFaction(enemyFaction);
@@ -151,6 +175,7 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   scenario.addVesselDescriptors(vesselDescriptor);
   scenario.addVessels(playerVessel);
   scenario.addVessels(enemyVessel);
+  scenario.addVessels(enemyFarVessel);
   scenario.addEndConditions(endCondition);
   scenario.setScenarioBounds(scnBounds);
 

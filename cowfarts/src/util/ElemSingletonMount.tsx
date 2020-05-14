@@ -1,5 +1,5 @@
 import React from "react";
-import { ElemSingleton } from "../../../util/elemSingleton";
+import { ElemSingleton } from "./elemSingleton";
 
 interface ElemSingletonMountProps {
   elem: ElemSingleton<HTMLElement>;

@@ -11,8 +11,11 @@ import {
   SteeringSystemRequest,
 } from "./__protogen__/mass/api/actions_pb";
 import { Pipe } from "./util/pipe";
+import { GameId } from "./commonTypes";
+import { Scenario } from "./__protogen__/mass/api/scenario_pb";
 
 import buildNewFeasibleScenario from "./builders/feasibleScenario";
+import { setGameHash } from "./util/url";
 
 const client = new MassBackendClient("http://35.224.26.74");
 
@@ -25,20 +28,27 @@ export interface GameConnection {
   ) => Promise<DoActionResponse.AsObject>;
 }
 
-export function createNewGame(): GameConnection {
-  const scenarioId = v4();
-  const playerId = "user";
+export function joinGame(id: GameId): GameConnection {
+  return connectToGame(id);
+}
 
+export function createNewGame(): GameConnection {
+  const gameId = {
+    scenarioId: v4(),
+    vesselId: "user",
+  };
+  const scenario = buildNewFeasibleScenario(gameId.vesselId);
+  return connectToGame(gameId, scenario);
+}
+
+function connectToGame(id: GameId, scenario?: Scenario): GameConnection {
+  const { scenarioId, vesselId } = id;
   const connectionReq = new ConnectRequest();
-  connectionReq.setVesselUniqueId(playerId);
+  connectionReq.setVesselUniqueId(vesselId);
   connectionReq.setScenarioId(scenarioId);
-  connectionReq.setScenario(buildNewFeasibleScenario(playerId));
+  connectionReq.setScenario(buildNewFeasibleScenario(vesselId));
 
   const worldEvents = new Pipe<VesselUpdate.AsObject>();
-
-  // The reason we're wrapping this in a pipe is so that
-  // we can reconnect if necessary...
-  console.log(connectionReq.toObject());
 
   var deadline = new Date();
   deadline.setSeconds(deadline.getSeconds() + 600);
@@ -65,7 +75,7 @@ export function createNewGame(): GameConnection {
 
   return {
     scenarioId,
-    vesselId: playerId,
+    vesselId,
     worldEvents,
     performAction,
   };

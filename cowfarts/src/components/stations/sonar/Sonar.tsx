@@ -1,29 +1,25 @@
 import React, { useState } from "react";
-import { StationComponent } from "..";
-import Waterfall from "./ElemSingletonMount";
+import { StationComponent, StationProps } from "..";
+//import Waterfall from "./ElemSingletonMount";
 import "./Sonar.css";
+import BroadbandWaterfall from "./BroadbandWaterfall";
 
 type WaterfallTypes = "short" | "medium" | "long";
 
-const Sonar: StationComponent = ({ engines: { sonarEngine } }) => {
-  const [waterfallType, setWaterfallType] = useState<WaterfallTypes>("short");
-
-  const waterfall = {
-    short: sonarEngine.waterfalls.broadbandShort,
-    medium: sonarEngine.waterfalls.broadbandMedium,
-    long: sonarEngine.waterfalls.broadbandLong,
-  }[waterfallType];
+const Sonar: StationComponent = (props: StationProps) => {
+  const {
+    broadbandShort,
+    broadbandMedium,
+    broadbandLong,
+  } = props.engines.sonarEngine.waterfalls;
 
   return (
     <h1>
       Sonar
       <div className="waterfall-wrapper">
-        <Waterfall key={waterfallType} className="waterfall" elem={waterfall} />
-        <div className="waterfall-switcher">
-          <button onClick={() => setWaterfallType("short")}>Short</button>
-          <button onClick={() => setWaterfallType("medium")}>Medium</button>
-          <button onClick={() => setWaterfallType("long")}>Long</button>
-        </div>
+        <BroadbandWaterfall imagePipe={broadbandShort} />
+        <BroadbandWaterfall imagePipe={broadbandMedium} />
+        <BroadbandWaterfall imagePipe={broadbandLong} />
       </div>
     </h1>
   );

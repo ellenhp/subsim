@@ -9,3 +9,24 @@
 .in-game .station-wrapper {
   flex-grow: 1;
 }
+
+.game-debug-info {
+  position: absolute;
+  text-align: right;
+  top: 10px;
+  right: 10px;
+}
+
+.game-debug-info .contents {
+  position: relative;
+  text-align: left;
+  width: 500px;
+  background-color: white;
+  border: 1px solid blue;
+  right: 0;
+  display: none;
+}
+
+.game-debug-info:hover .contents {
+  display: block;
+}
