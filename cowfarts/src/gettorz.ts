@@ -10,6 +10,11 @@ export const getRequestedHeading = (update: VesselUpdate.AsObject) => {
     .steeringUpdate.requestedHeadingDegrees;
 };
 
+export const getCurrentHeading = (update: VesselUpdate.AsObject) => {
+  return update.systemUpdatesList.filter((system) => system.steeringUpdate)[0]
+    .steeringUpdate.actualHeadingDegrees;
+};
+
 export const getRequestedDepth = (update: VesselUpdate.AsObject) => {
   return update.systemUpdatesList.filter((system) => system.divingUpdate)[0]
     .divingUpdate.requestedDepthFeet;

@@ -1,0 +1,40 @@
+.steering-dial {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: wheat;
+  border: 1px black solid;
+  position: relative;
+}
+
+.dial-hand {
+  width: 45%;
+  height: 0;
+  top: 50%;
+  left: 50%;
+  text-align: right;
+  line-height: 0;
+  transform-origin: left center;
+  position: absolute;
+  border: 1px dotted black;
+}
+
+.actual-bearing {
+  border: 1px solid black;
+}
+
+.requested-bearing {
+  transition: transform 0.1s;
+}
+
+.dial-center {
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border: 1px solid black;
+}
