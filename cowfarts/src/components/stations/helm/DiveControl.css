@@ -1,0 +1,83 @@
+.depth-controller {
+  position: relative;
+  width: 400px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+  padding: 8px;
+}
+
+.depth-controller-clickarea {
+  margin: auto;
+  height: 200px;
+  padding: 10px;
+  width: 20px;
+}
+
+.depth-controller-line {
+  border: 1px green dotted;
+  border-right: 0;
+  height: 100%;
+  width: 0px;
+  position: relative;
+  margin: auto;
+}
+
+.depth-controller-line::before {
+  font-size: 0;
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -10px;
+  width: 20px;
+  border-top: 1px solid green;
+}
+
+.depth-controller-line::after {
+  font-size: 0;
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -10px;
+  width: 20px;
+  border-top: 1px solid green;
+}
+
+.depth-indicator {
+  position: absolute;
+  height: 20px;
+  margin-top: -10px;
+  width: 150px;
+  top: 0;
+}
+
+.depth-indicator:not(.current-depth-indicator) {
+  left: 0;
+}
+
+.depth-indicator.current-depth-indicator {
+  text-align: right;
+  right: 0;
+}
+
+.depth-indicator:not(.current-depth-indicator)::before, .current-depth-indicator::after {
+  vertical-align: middle;
+  display: inline-block;
+  font-size: 0;
+  content: ' ';
+  width: 16px;
+}
+
+.current-depth-indicator::after {
+  border-bottom: 1px solid green;
+}
+
+.requested-depth-indicator::before {
+  border-bottom: 1px dotted green;
+}
+
+.never-exceed-depth-indicator::before {
+  border-bottom: 1px solid orange;
+}
+
+.crush-depth-indicator::before {
+  border-bottom: 1px solid red;
+}

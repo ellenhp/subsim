@@ -14,3 +14,8 @@ export const getRequestedDepth = (update: VesselUpdate.AsObject) => {
   return update.systemUpdatesList.filter((system) => system.divingUpdate)[0]
     .divingUpdate.requestedDepthFeet;
 };
+
+export const getCurrentDepth = (update: VesselUpdate.AsObject) => {
+  return update.systemUpdatesList.filter((system) => system.hullUpdate)[0]
+    .hullUpdate.actualDepthFeet;
+};

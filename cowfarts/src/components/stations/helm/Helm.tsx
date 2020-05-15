@@ -15,13 +15,13 @@ const Helm: StationComponent = ({
     <div className={"helm-station"}>
       <h1>Helm</h1>
 
-      {
+      {/*
         <Map
           className="helm-map"
           mapEngine={mapEngine}
           latestUpdate={latestUpdate}
         />
-      }
+      */}
       <PropulsionControl game={game} latestUpdate={latestUpdate} />
       <SteeringControl game={game} latestUpdate={latestUpdate} />
       <DivingControl game={game} latestUpdate={latestUpdate} />
