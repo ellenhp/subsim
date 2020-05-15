@@ -99,6 +99,8 @@ message TmaSystemRequest {
       Position position = 1;
       // The speed the vessel is going in this solution, in knots.
       uint32 speed_knots = 2;
+      // The heading of the vessel in this solution.
+      uint32 heading_degrees = 3;
     }
     // The designation to upload a solution for.
     string designation = 1;
