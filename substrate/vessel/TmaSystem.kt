@@ -35,6 +35,10 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
         }
     }
 
+    fun getContactList(): List<Updates.TmaSystemUpdate.TmaContact> {
+        return contacts.values.toList()
+    }
+
     private fun addContact(addContactRequest: Actions.TmaSystemRequest.TmaAddContactSubrequest) {
         synchronized(lock) {
             val designation = "S$nextSonarDesignationNumber"
@@ -88,6 +92,7 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
             contacts[uploadSolutionRequest.designation] = builder.setSolution(
                     Updates.TmaSystemUpdate.TmaContact.Solution.newBuilder()
                     .setEpochMillis(Instant.now().toEpochMilli())
+                    .setHeadingDegrees(uploadSolutionRequest.solution.headingDegrees)
                     .setPosition(uploadSolutionRequest.solution.position)
                     .setSpeedKnots(uploadSolutionRequest.solution.speedKnots)).build()
         }
