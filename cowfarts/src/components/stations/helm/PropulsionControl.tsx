@@ -18,11 +18,11 @@ const PropulsionControl = ({ game, latestUpdate }: PropulsionControlProps) => {
   };
 
   return (
-    <>
+    <div className="basic-controller helm-card">
       <span>Requested speed: {speed}</span>
       <button onClick={modSpeed(1)}>Faster!</button>
       <button onClick={modSpeed(-1)}>Slower!</button>
-    </>
+    </div>
   );
 };
 

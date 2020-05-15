@@ -55,50 +55,48 @@ const DivingControl = ({ game, latestUpdate }: DivingControlProps) => {
   };
 
   return (
-    <div>
-      <div className="depth-controller">
-        Dive controller
-        <div
-          className="depth-controller-clickarea"
-          onClick={handleDepthControllerClick}
-        >
-          <div className="depth-controller-line">
-            <div
-              className="depth-indicator never-exceed-depth-indicator"
-              style={neverExceedDepthStyle}
-            >
-              Never-Exceed
-            </div>
-            <div
-              className="depth-indicator crush-depth-indicator"
-              style={crushDepthStyle}
-            >
-              Crush Depth
-            </div>
-            <div
-              className="depth-indicator seafloor-depth-indicator"
-              style={seafloorDepthStyle}
-            >
-              Sea Floor (est.)
-            </div>
-            <div
-              className="depth-indicator current-depth-indicator"
-              style={currentDepthStyle}
-            >
-              Current ({Math.round(currentDepth)} feet)
-            </div>
-            <div
-              className="depth-indicator requested-depth-indicator"
-              style={requestedDepthStyle}
-            >
-              Requested ({Math.round(requestedDepth)} feet)
-            </div>
+    <div className="helm-card depth-controller">
+      Dive controller
+      <div
+        className="depth-controller-clickarea"
+        onClick={handleDepthControllerClick}
+      >
+        <div className="depth-controller-line">
+          <div
+            className="depth-indicator never-exceed-depth-indicator"
+            style={neverExceedDepthStyle}
+          >
+            Never-Exceed
+          </div>
+          <div
+            className="depth-indicator crush-depth-indicator"
+            style={crushDepthStyle}
+          >
+            Crush Depth
+          </div>
+          <div
+            className="depth-indicator seafloor-depth-indicator"
+            style={seafloorDepthStyle}
+          >
+            Sea Floor (est.)
+          </div>
+          <div
+            className="depth-indicator current-depth-indicator"
+            style={currentDepthStyle}
+          >
+            Current ({Math.round(currentDepth)} feet)
+          </div>
+          <div
+            className="depth-indicator requested-depth-indicator"
+            style={requestedDepthStyle}
+          >
+            Requested ({Math.round(requestedDepth)} feet)
           </div>
         </div>
-        <div>
-          <button onClick={modDepth(1)}>Fine Tune +</button>
-          <button onClick={modDepth(-1)}>Fine Tune -</button>
-        </div>
+      </div>
+      <div>
+        <button onClick={modDepth(1)}>Fine Tune +</button>
+        <button onClick={modDepth(-1)}>Fine Tune -</button>
       </div>
     </div>
   );
