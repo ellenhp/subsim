@@ -1,6 +1,5 @@
 .depth-controller {
   position: relative;
-  width: 300px;
   height: calc(100vh - 32px);
   display: flex;
   flex-direction: column;
