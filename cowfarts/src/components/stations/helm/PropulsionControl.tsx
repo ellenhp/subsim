@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { GameConnection } from "../../../game";
-import { requestSpeed } from "../../../game";
 import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
 import { getRequestedSpeed } from "../../../gettorz";
+import { requestSpeed } from "../../../gameActions";
 
 interface PropulsionControlProps {
   game: GameConnection;

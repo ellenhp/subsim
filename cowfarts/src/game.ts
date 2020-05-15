@@ -80,36 +80,3 @@ function connectToGame(id: GameId, scenario?: Scenario): GameConnection {
     performAction,
   };
 }
-
-export function requestSpeed(game: GameConnection, speed: number) {
-  const speedRequest = new DoActionRequest();
-
-  const speedSystemsRequest = new PropulsionSystemRequest();
-  speedSystemsRequest.setSpeedKnots(speed);
-  const systemsRequest = new SystemRequest();
-  systemsRequest.setPropulsionRequest(speedSystemsRequest);
-
-  speedRequest.setScenarioId(game.scenarioId);
-  speedRequest.setVesselId(game.vesselId);
-  speedRequest.setSystemRequestsList([systemsRequest]);
-
-  client.doAction(speedRequest, {}, (response) => {});
-}
-
-export function requestHeading(game: GameConnection, heading: number) {
-  if (heading < 0 || heading >= 360) {
-    throw `${heading} IS NOT A VALID HEADING`;
-  }
-  const headingRequest = new DoActionRequest();
-
-  const steeringSystemRequest = new SteeringSystemRequest();
-  steeringSystemRequest.setHeadingDegrees(heading);
-  const systemsRequest = new SystemRequest();
-  systemsRequest.setSteeringRequest(steeringSystemRequest);
-
-  headingRequest.setScenarioId(game.scenarioId);
-  headingRequest.setVesselId(game.vesselId);
-  headingRequest.setSystemRequestsList([systemsRequest]);
-
-  client.doAction(headingRequest, {}, (response) => {});
-}

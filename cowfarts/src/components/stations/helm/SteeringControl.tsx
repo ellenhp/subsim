@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { GameConnection } from "../../../game";
-import { requestHeading } from "../../../game";
+import { requestHeading } from "../../../gameActions";
 import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
 import { getRequestedHeading } from "../../../gettorz";
 

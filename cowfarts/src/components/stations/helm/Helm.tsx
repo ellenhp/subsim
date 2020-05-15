@@ -4,6 +4,7 @@ import PropulsionControl from "./PropulsionControl";
 import SteeringControl from "./SteeringControl";
 import Map from "../../map/Map";
 import "./Helm.css";
+import DivingControl from "./DiveControl";
 
 const Helm: StationComponent = ({
   game,
@@ -23,6 +24,7 @@ const Helm: StationComponent = ({
       }
       <PropulsionControl game={game} latestUpdate={latestUpdate} />
       <SteeringControl game={game} latestUpdate={latestUpdate} />
+      <DivingControl game={game} latestUpdate={latestUpdate} />
     </div>
   );
 };
