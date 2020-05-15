@@ -13,19 +13,16 @@ const Helm: StationComponent = ({
 }) => {
   return (
     <div className="helm-station">
-      <div className="helm-station-inner">
-        <DivingControl game={game} latestUpdate={latestUpdate} />
-
-        <div className="helm-map-wrapper card">
-          <Map
-            className="helm-map"
-            mapEngine={mapEngine}
-            latestUpdate={latestUpdate}
-          />
-        </div>
-        <PropulsionControl game={game} latestUpdate={latestUpdate} />
-        <SteeringControl game={game} latestUpdate={latestUpdate} />
+      <DivingControl game={game} latestUpdate={latestUpdate} />
+      <div className="helm-map-wrapper card">
+        <Map
+          className="helm-map"
+          mapEngine={mapEngine}
+          latestUpdate={latestUpdate}
+        />
       </div>
+      <PropulsionControl game={game} latestUpdate={latestUpdate} />
+      <SteeringControl game={game} latestUpdate={latestUpdate} />
     </div>
   );
 };
