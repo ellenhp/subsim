@@ -1,18 +1,21 @@
 load("@io_bazel_rules_k8s//k8s:objects.bzl", "k8s_objects")
 
 k8s_objects(
-  name = "prod",
-  objects = [
-    "//envoy:prod",
-    "//mass:prod",
-    "//static:prod",
-    "//bloop:prod",
-    ":ingress"
-  ]
+    name = "prod",
+    objects = [
+        "//envoy:prod",
+        "//substrate:prod",
+        "//static:prod",
+        "//bloop:prod",
+    ],
 )
 
-k8s_object(
-  name = "entrypoint",
-  kind = "ingress",
-  template = ":ingress.yaml",
+k8s_objects(
+    name = "dev",
+    objects = [
+        "//envoy:dev",
+        "//substrate:dev",
+        "//static:dev",
+        "//bloop:dev",
+    ],
 )

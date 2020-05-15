@@ -49,6 +49,8 @@ message SystemUpdate {
     HullSystemUpdate hull_update = 5;
     // Sonar system update.
     SonarSystemUpdate sonar_update = 6;
+    // TMA update.
+    TmaSystemUpdate tma_update = 7;
   }
 }
 
@@ -103,4 +105,35 @@ message SonarSystemUpdate {
   repeated SonarArrayUpdate array_updates = 1;
   // The depth below the keel, in feet.
   uint32 depth_below_keel_feet = 2;
+}
+
+message TmaSystemUpdate {
+  message TmaContact {
+    message Bearing {
+      // The bearing of the contact at this moment in time, in degrees (0-360)
+      // relative to true north.
+      float bearing_degrees = 1;
+      // The position this bearing was taken from.
+      Position location = 2;
+      // The time this bearing was taken, in milliseconds since the epoch in
+      // UTC.
+      uint64 epoch_millis = 3;
+    }
+    message Solution {
+      // The time this solution was uploaded.
+      uint64 epoch_millis = 1;
+      // The position of the contact at the time the solution was uploaded.
+      Position position = 2;
+      // The speed the vessel is going in this solution, in knots.
+      uint32 speed_knots = 3;
+    }
+    // Designation (e.g. S1, S2, S3)
+    string designation = 1;
+    // The bearings taken for this contact.
+    repeated Bearing bearings = 2;
+    // The solution for this contact, if any.
+    Solution solution = 3;
+  }
+  // The list of contacts stored in this TMA system.
+  repeated TmaContact contacts = 1;
 }

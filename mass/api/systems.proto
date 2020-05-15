@@ -57,6 +57,9 @@ message SonarSystem {
   }
   repeated SonarArray sonar_arrays = 1;
 }
+message TmaSystem {
+  // Manual TMA, nothing to configure really.
+}
 
 message VesselSystem {
   oneof system {
@@ -66,5 +69,6 @@ message VesselSystem {
     MapSystem map_system = 4;
     HullSystem hull_system = 5;
     SonarSystem sonar_system = 6;
+    TmaSystem tma_system = 7;
   }
 }

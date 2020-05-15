@@ -1,6 +1,7 @@
 import { Pipe } from "../../util/pipe";
 import noise from "noisejs";
 import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
+import { normalDistribution } from "../../util/math";
 
 type PointSource = {
   bearing: number;
@@ -41,7 +42,19 @@ const NOISE_ANGLE_SCALE_VERTICAL = 0.2;
 // ---
 const POINT_DISTORTION_SCALE = 20;
 const POINT_DISTORTION_MULTIPLIER = 5;
-const POINT_DISTORTION_SPREAD = 10;
+// How wide the signal is spread to
+const POINT_SPREAD = 5;
+
+const WHERE_PERLIN_SEAM_IS = 180;
+
+/*
+ * If a signal is offset from sample pos by bearingOffset, what should be the
+ * observed offset gain here? Area under this curve should be 1.
+ */
+
+const offsetGain = (bearingOffset: number) => {
+  return normalDistribution(bearingOffset / POINT_SPREAD) / POINT_SPREAD;
+};
 
 function getSonarUpdate(update: VesselUpdate.AsObject) {
   return update.systemUpdatesList.filter((system) => system.sonarUpdate)[0]
@@ -58,7 +71,7 @@ export default class BroadbandSource {
     worldStream.listen((update) => {
       const sonarUpdate = getSonarUpdate(update);
       const newSnapshot = {
-        noiseLevel: 0.008,
+        noiseLevel: 0.001,
         explosionLevel: 0,
         bearing: 0,
         timestamp: -1, // lolol
@@ -81,7 +94,7 @@ export default class BroadbandSource {
         return;
       }
       // set the timestamp!
-      newSnapshot.timestamp: Date.now();
+      newSnapshot.timestamp = Date.now();
 
       this.snapshots.push(newSnapshot);
     });
@@ -124,14 +137,18 @@ export default class BroadbandSource {
         : this.getSnapshotAtTime(sampleTime);
     const time = sampleTime === undefined ? Date.now() : sampleTime;
 
+    // Workaround for perlin noise not being generated on a cylinder
+    const bearingForBackgroundNoise = (bearing + WHERE_PERLIN_SEAM_IS) % 360;
     const noiseBearingDeviation =
       this.pointDistortion.perlin2(
-        (bearing * NOISE_ANGLE_SCALE_HORIZONTAL) / 360,
+        (bearingForBackgroundNoise * NOISE_ANGLE_SCALE_HORIZONTAL) / 360,
         (time * NOISE_ANGLE_SCALE_VERTICAL) / 1000
       ) * NOISE_ANGLE_SPREAD;
     const backgroundNoise =
       (this.noiseSource.perlin2(
-        ((bearing + noiseBearingDeviation) * NOISE_SCALE_HORIZONTAL) / 360,
+        ((bearingForBackgroundNoise + noiseBearingDeviation) *
+          NOISE_SCALE_HORIZONTAL) /
+          360,
         (time * NOISE_SCALE_VERTICAL) / 1000
       ) /
         2 +
@@ -141,19 +158,22 @@ export default class BroadbandSource {
       ({ bearing: pointBearing, freqs }) => {
         const avgFreqVolume =
           freqs.reduce((acc, { volume }) => volume + acc, 0) / freqs.length;
-        const bearingOffset = Math.abs(
+
+        const bearingNoise =
           POINT_DISTORTION_MULTIPLIER *
-            this.pointDistortion.perlin2(
-              (bearing * POINT_DISTORTION_SCALE) / 360,
-              (time * NOISE_SCALE_VERTICAL) / 1000
-            ) +
-            bearing -
-            pointBearing
+          this.pointDistortion.perlin2(
+            (bearing * POINT_DISTORTION_SCALE) / 360,
+            (time * NOISE_SCALE_VERTICAL) / 1000
+          );
+
+        // Find shortest between bearings 1 and 2.
+        const bearingOne = pointBearing;
+        const bearingTwo = bearingNoise + bearing;
+        const bearingOffset = Math.min(
+          (bearingOne - bearingTwo + 360) % 360,
+          (bearingTwo - bearingOne + 360) % 360
         );
-        return (
-          avgFreqVolume *
-          Math.max(1 - bearingOffset / POINT_DISTORTION_SPREAD, 0)
-        );
+        return avgFreqVolume * offsetGain(bearingOffset);
       }
     );
     return backgroundNoise + pointNoises.reduce((a, b) => a + b, 0);

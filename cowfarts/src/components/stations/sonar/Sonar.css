@@ -3,14 +3,8 @@
   width: 300px;
 }
 
-.waterfall-wrapper {
-  display: flex;
-}
-
-.waterfall-switcher {
-  display: flex;
-}
-
-.waterfall-switcher button {
-  flex-grow: 1;
+.waterfall-bay {
+  padding: 8px;
+  margin: 4px;
+  border: 1px gray dotted;
 }

@@ -1,0 +1,48 @@
+.broadband-waterfall {
+  height: 300px;
+  width: 300px;
+  background-color: #001100;
+  cursor: crosshair;
+}
+
+.broadband-waterfall-wrapper {
+  position: relative;
+}
+
+.time-and-bearing-indicator {
+  font-size: 10px;
+  font-family: sans-serif;
+  position: absolute;
+  color: lightgreen;
+  text-align: center;
+  bottom: 4px;
+  right: 4px;
+}
+
+.tiny-bearing-indicator {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.9);
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  height: 60px;
+  width: 60px;
+}
+
+.tiny-bearing-pointer {
+  position: absolute;
+  width: 30px;
+  text-align: right;
+  display: block;
+  transform-origin: left center;
+  color: lightgreen;
+  top: 50%;
+  left: 50%;
+  font-size: 12px;
+}
+
+.tiny-bearing-text {
+  text-align: center;
+  line-height: 60px;
+  height: 60px;
+}

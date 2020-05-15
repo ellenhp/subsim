@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mass-envoy
@@ -23,4 +23,3 @@ spec:
           containerPort: 80
         - name: envoy-admin
           containerPort: 9901
-
