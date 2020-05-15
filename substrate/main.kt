@@ -3,9 +3,7 @@ package substrate
 import io.grpc.ServerBuilder
 import okhttp3.*
 import org.gdal.gdal.gdal
-import substrate.sonar.Bathymetry
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.OutputStream
 import java.time.Duration
 import java.time.Instant
@@ -21,6 +19,7 @@ fun main() {
     val worldManager = WorldManager(getBloopHost(), bathyFile, bloopCallFrequencySeconds = 5)
 
     val port = 50051
+    @Suppress("UNUSED_VARIABLE")
     val server = ServerBuilder.forPort(port)
             .addService(Server(worldManager))
             .build()

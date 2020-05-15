@@ -5,6 +5,7 @@ import BloopOuterClass
 import api.Spatial
 import io.grpc.stub.StreamObserver
 import substrate.utils.Utils
+import substrate.utils.Utils.Companion.distanceMeters
 import substrate.utils.Utils.Companion.toMeters
 import java.lang.Math.toRadians
 import kotlin.math.*
@@ -100,17 +101,5 @@ class SonarClient(val stub: BloopGrpc.BloopStub, val bathymetry: Bathymetry) {
             currentRange += bathymetryResolutionActual
         }
         return bathymetryBuilder.build()
-    }
-
-    private fun distanceMeters(pos1: Spatial.Position, pos2: Spatial.Position): Double {
-        // Mean radius of the earth
-        val radiusMeters = 6_371_008.8
-        val distMeters = 2 * radiusMeters *
-                asin(sqrt(
-                        sin((toRadians(pos2.lat) - toRadians(pos1.lat)) / 2).pow(2.0) +
-                                cos(toRadians(pos1.lat)) * cos(toRadians(pos2.lat)) *
-                                sin((toRadians(pos2.lng) - toRadians(pos1.lng)) / 2).pow(2.0)
-                ))
-        return distMeters
     }
 }

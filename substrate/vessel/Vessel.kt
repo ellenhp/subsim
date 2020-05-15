@@ -6,16 +6,18 @@ import api.ScenarioOuterClass.VesselDescriptor
 import api.Spatial
 import api.Updates
 import substrate.sonar.SonarClient
+import substrate.utils.Utils
+import java.lang.Math.toDegrees
 import java.time.Duration
-import java.time.temporal.TemporalAmount
 
 class Vessel(val uniqueId: String,
              val vesselDescriptor: VesselDescriptor,
              val spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation,
-             val sonarClient: SonarClient) {
+             val sonarClient: SonarClient,
+             val vesselSpawner: VesselSpawner) {
 
-    val systems : List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
     var position: Spatial.Position = if (spawnInfo.hasPosition()) spawnInfo.position else randomPositionWithinBounds(spawnInfo.bounds)
+    val systems : List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
     var heading: Double = if (spawnInfo.hasHeadingBounds()) randomHeadingWithinBounds(spawnInfo.headingBounds) else spawnInfo.exactSpawnHeading.toDouble()
     var noiseLevel = 0.0
     private var isDead = false
@@ -51,6 +53,10 @@ class Vessel(val uniqueId: String,
 
     fun kill() {
         isDead = true
+    }
+
+    fun bearingToDegrees(otherPosition: Spatial.Position): Double {
+        return (toDegrees(Utils.calculateBearingRadians(position, otherPosition)) + 360) % 360
     }
 
     inline fun <reified T : VesselSystem> getSystem() : T {
@@ -91,10 +97,11 @@ class Vessel(val uniqueId: String,
             systemDescriptor.hasDivingSystem() -> DivingSystem(this, systemDescriptor.divingSystem)
             systemDescriptor.hasSteeringSystem() -> SteeringSystem(this, systemDescriptor.steeringSystem)
             systemDescriptor.hasPropulsionSystem() -> PropulsionSystem(this, systemDescriptor.propulsionSystem)
-            systemDescriptor.hasMapSystem() -> MapSystem(this, systemDescriptor.mapSystem)
+            systemDescriptor.hasMapSystem() -> MapSystem(this)
             systemDescriptor.hasHullSystem() -> HullSystem(this, systemDescriptor.hullSystem)
             systemDescriptor.hasSonarSystem() -> SonarSystem(this, systemDescriptor.sonarSystem)
             systemDescriptor.hasTmaSystem() -> TmaSystem(this, systemDescriptor.tmaSystem)
+            systemDescriptor.hasWeaponSystem() -> WeaponSystem(this, systemDescriptor.weaponSystem)
             else -> throw VesselInstantiationException("No matching system for vessel descriptor ${vesselDescriptor.uniqueId}. Upgrade the server?")
         }
         return system
@@ -110,4 +117,8 @@ class Vessel(val uniqueId: String,
     private fun randomHeadingWithinBounds(bounds: Spatial.HeadingBounds): Double {
         return (bounds.leftBound + Math.random() * (bounds.rightBound - bounds.leftBound)) % 360
     }
+}
+
+interface VesselSpawner {
+    fun spawnVessel(vesselDescriptor: String, spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation): Vessel
 }
