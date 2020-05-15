@@ -10,6 +10,7 @@ proto_library(
     srcs = ["actions.proto"],
     deps = [
         ":chat_proto",
+        ":spatial_proto",
     ],
 )
 

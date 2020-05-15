@@ -82,6 +82,7 @@ class Vessel(val uniqueId: String,
             request.hasMapRequest() -> getSystem<MapSystem>().processRequest(request)
             request.hasPropulsionRequest() -> getSystem<PropulsionSystem>().processRequest(request)
             request.hasSteeringRequest() -> getSystem<SteeringSystem>().processRequest(request)
+            request.hasTmaRequest() -> getSystem<TmaSystem>().processRequest(request)
         }
     }
 
@@ -93,6 +94,7 @@ class Vessel(val uniqueId: String,
             systemDescriptor.hasMapSystem() -> MapSystem(this, systemDescriptor.mapSystem)
             systemDescriptor.hasHullSystem() -> HullSystem(this, systemDescriptor.hullSystem)
             systemDescriptor.hasSonarSystem() -> SonarSystem(this, systemDescriptor.sonarSystem)
+            systemDescriptor.hasTmaSystem() -> TmaSystem(this, systemDescriptor.tmaSystem)
             else -> throw VesselInstantiationException("No matching system for vessel descriptor ${vesselDescriptor.uniqueId}. Upgrade the server?")
         }
         return system

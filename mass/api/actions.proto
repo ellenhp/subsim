@@ -19,6 +19,7 @@ syntax = "proto3";
 package api;
 
 import "mass/api/chat.proto";
+import "mass/api/spatial.proto";
 
 message DoActionRequest {
   // A repeated field containing any requests to the vessel's systems. May be
@@ -92,10 +93,24 @@ message TmaSystemRequest {
     // The designation to delete.
     string designation = 1;
   }
-  // Any of these subrequests can be populated, and you could even combine them
-  // if that's what your heart truly desires.
-  TmaAddContactSubrequest add_contact_request = 1;
-  TmaTakeBearingSubrequest take_bearing_request = 2;
-  TmaMergeContactSubrequest merge_contact_request = 3;
-  TmaDeleteContactSubrequest tma_delete_contact_request = 4;
+  message TmaUploadSolutionSubrequest {
+    message Solution {
+      // The position of the contact at the time the solution was uploaded.
+      Position position = 1;
+      // The speed the vessel is going in this solution, in knots.
+      uint32 speed_knots = 2;
+    }
+    // The designation to upload a solution for.
+    string designation = 1;
+    // The solution itself.
+    Solution solution = 2;
+  }
+  // Any of these subrequests can be populated.
+  oneof request {
+    TmaAddContactSubrequest add_contact_request = 1;
+    TmaTakeBearingSubrequest take_bearing_request = 2;
+    TmaMergeContactSubrequest merge_contact_request = 3;
+    TmaDeleteContactSubrequest delete_contact_request = 4;
+    TmaUploadSolutionSubrequest upload_solution_request = 5;
+  }
 }
