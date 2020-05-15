@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { GameConnection } from "../../../game";
-import { requestSpeed } from "../../../game";
 import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
 import { getRequestedSpeed } from "../../../gettorz";
+import { requestSpeed } from "../../../gameActions";
 
 interface PropulsionControlProps {
   game: GameConnection;
@@ -18,11 +18,11 @@ const PropulsionControl = ({ game, latestUpdate }: PropulsionControlProps) => {
   };
 
   return (
-    <>
+    <div className="basic-controller helm-card">
       <span>Requested speed: {speed}</span>
       <button onClick={modSpeed(1)}>Faster!</button>
       <button onClick={modSpeed(-1)}>Slower!</button>
-    </>
+    </div>
   );
 };
 

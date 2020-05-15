@@ -58,7 +58,26 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
     latestUpdate.position,
     mapEngine.data
   );
-  const [viewport, setViewport] = useState<Viewport>(initialState);
+  let [viewport, setViewport] = useState<Viewport>(initialState);
+
+  // Nasty hack to shim in staying centered on player. Is v. gross and
+  // should be abstracted away. Viewport should not include zoom
+  const [isCenteredOnPlayer, setCenteredOnPlayer] = useState<boolean>(true);
+  if (isCenteredOnPlayer) {
+    viewport = getViewportWithPlayerInCenter(
+      viewport,
+      latestUpdate.position,
+      mapEngine.data
+    );
+  }
+
+  const focusViewport = (viewport: Viewport) => {
+    setViewport(viewport);
+    setCenteredOnPlayer(false);
+  };
+
+  // End nasty hack
+
   const [tool] = useState<MapTool>(tools.pan);
 
   const zoomIn = () => {
@@ -70,13 +89,7 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
   };
 
   const centerOnPlayer = () => {
-    setViewport(
-      getViewportWithPlayerInCenter(
-        viewport,
-        latestUpdate.position,
-        mapEngine.data
-      )
-    );
+    setCenteredOnPlayer(true);
   };
 
   const playerTL = localToGlobal(
@@ -91,13 +104,13 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
   };
 
   const mouseMove = (event: React.MouseEvent) =>
-    tool.mouseMove && tool.mouseMove(event, viewport, setViewport);
+    tool.mouseMove && tool.mouseMove(event, viewport, focusViewport);
   const mouseUp = (event: React.MouseEvent) =>
-    tool.mouseUp && tool.mouseUp(event, viewport, setViewport);
+    tool.mouseUp && tool.mouseUp(event, viewport, focusViewport);
   const mouseDown = (event: React.MouseEvent) =>
-    tool.mouseDown && tool.mouseDown(event, viewport, setViewport);
+    tool.mouseDown && tool.mouseDown(event, viewport, focusViewport);
   const mouseLeave = (event: React.MouseEvent) =>
-    tool.mouseLeave && tool.mouseLeave(event, viewport, setViewport);
+    tool.mouseLeave && tool.mouseLeave(event, viewport, focusViewport);
 
   return (
     <div
@@ -122,9 +135,11 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
       </div>
 
       <div className="map-zoom-buttons">
+        {!isCenteredOnPlayer && (
+          <button onClick={centerOnPlayer}>Center on Player</button>
+        )}
         <button onClick={zoomIn}>Zoom In</button>
         <button onClick={zoomOut}>Zoom Out</button>
-        <button onClick={centerOnPlayer}>Center on Player</button>
       </div>
     </div>
   );

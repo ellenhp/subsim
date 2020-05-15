@@ -4,6 +4,7 @@ import PropulsionControl from "./PropulsionControl";
 import SteeringControl from "./SteeringControl";
 import Map from "../../map/Map";
 import "./Helm.css";
+import DivingControl from "./DiveControl";
 
 const Helm: StationComponent = ({
   game,
@@ -11,18 +12,20 @@ const Helm: StationComponent = ({
   engines: { mapEngine },
 }) => {
   return (
-    <div className={"helm-station"}>
-      <h1>Helm</h1>
+    <div className="helm-station">
+      <div className="helm-station-inner">
+        <DivingControl game={game} latestUpdate={latestUpdate} />
 
-      {
-        <Map
-          className="helm-map"
-          mapEngine={mapEngine}
-          latestUpdate={latestUpdate}
-        />
-      }
-      <PropulsionControl game={game} latestUpdate={latestUpdate} />
-      <SteeringControl game={game} latestUpdate={latestUpdate} />
+        <div className="helm-map-wrapper helm-card">
+          <Map
+            className="helm-map"
+            mapEngine={mapEngine}
+            latestUpdate={latestUpdate}
+          />
+        </div>
+        <PropulsionControl game={game} latestUpdate={latestUpdate} />
+        <SteeringControl game={game} latestUpdate={latestUpdate} />
+      </div>
     </div>
   );
 };

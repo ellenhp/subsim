@@ -8,6 +8,7 @@
 
 .in-game .station-wrapper {
   flex-grow: 1;
+  background-color: lightslategray;
 }
 
 .game-debug-info {
@@ -29,4 +30,13 @@
 
 .game-debug-info:hover .contents {
   display: block;
+}
+
+/* Universal styles go here too!! */
+
+.card {
+  background-color: white;
+  margin: 8px;
+  padding: 8px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
 }

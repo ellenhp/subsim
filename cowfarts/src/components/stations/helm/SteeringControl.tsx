@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { GameConnection } from "../../../game";
-import { requestHeading } from "../../../game";
+import { requestHeading } from "../../../gameActions";
 import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
 import { getRequestedHeading } from "../../../gettorz";
 
@@ -18,11 +18,11 @@ const SteeringControl = ({ game, latestUpdate }: SteeringControlProps) => {
   };
 
   return (
-    <>
+    <div className="basic-controller helm-card">
       <span>Requested Heading: {heading}</span>
       <button onClick={modHeading(-5)}>Left!</button>
       <button onClick={modHeading(5)}>Right!</button>
-    </>
+    </div>
   );
 };
 
