@@ -1,0 +1,8 @@
+.broadband-switcher {
+  display: flex;
+}
+
+.switcher-radiogroup>label {
+  display: block;
+  white-space: nowrap;
+}
