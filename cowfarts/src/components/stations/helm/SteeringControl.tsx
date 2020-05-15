@@ -18,7 +18,7 @@ const SteeringControl = ({ game, latestUpdate }: SteeringControlProps) => {
   };
 
   return (
-    <div className="basic-controller helm-card">
+    <div className="basic-controller card">
       <span>Requested Heading: {heading}</span>
       <button onClick={modHeading(-5)}>Left!</button>
       <button onClick={modHeading(5)}>Right!</button>
