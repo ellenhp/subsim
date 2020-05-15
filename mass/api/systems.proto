@@ -60,6 +60,25 @@ message SonarSystem {
 message TmaSystem {
   // Manual TMA, nothing to configure really.
 }
+message WeaponSystem {
+  message Armament {
+    enum AmmoType {
+      AMMO_TYPE_UNKNOWN = 0;
+      TORPEDO = 1;
+    }
+    enum WeaponFeature {
+      WEAPON_FEATURE_UNKNOWN = 0;
+      HOMING = 1;
+      DELAYED_ACTIVATION = 2;
+    }
+    // The type (e.g. torpedo, missile)
+    AmmoType type = 1;
+    // The number available.
+    uint32 count = 2;
+    // The vessel descriptor to spawn when this weapon is fired.
+    string armament_vessel_descriptor = 3;
+  }
+}
 
 message VesselSystem {
   oneof system {
