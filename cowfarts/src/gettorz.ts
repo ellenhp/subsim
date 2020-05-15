@@ -19,3 +19,8 @@ export const getCurrentDepth = (update: VesselUpdate.AsObject) => {
   return update.systemUpdatesList.filter((system) => system.hullUpdate)[0]
     .hullUpdate.actualDepthFeet;
 };
+
+export const getMeasuredFeetBelowKeel = (update: VesselUpdate.AsObject) => {
+  return update.systemUpdatesList.filter((system) => system.sonarUpdate)[0]
+    .sonarUpdate.depthBelowKeelFeet;
+};

@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { GameConnection } from "../../../game";
 import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
-import { getRequestedDepth, getCurrentDepth } from "../../../gettorz";
+import {
+  getRequestedDepth,
+  getCurrentDepth,
+  getMeasuredFeetBelowKeel,
+} from "../../../gettorz";
 import { requestDepth } from "../../../gameActions";
 import "./DiveControl.css";
 
@@ -25,6 +29,7 @@ const DivingControl = ({ game, latestUpdate }: DivingControlProps) => {
 
   const currentDepth = getCurrentDepth(latestUpdate);
   const requestedDepth = getRequestedDepth(latestUpdate);
+  const seafloorDepth = getMeasuredFeetBelowKeel(latestUpdate) + currentDepth;
 
   const makeStyleForDepth = (depth: number) => ({
     top: `${(100 * depth) / MAX_INDICATOR_DEPTH}%`,
@@ -34,25 +39,30 @@ const DivingControl = ({ game, latestUpdate }: DivingControlProps) => {
   const currentDepthStyle = makeStyleForDepth(currentDepth);
   const neverExceedDepthStyle = makeStyleForDepth(neverExceedDepthFeet);
   const crushDepthStyle = makeStyleForDepth(crushDepthFeet);
+  const seafloorDepthStyle = makeStyleForDepth(seafloorDepth);
+
+  const handleDepthControllerClick = (event: React.MouseEvent) => {
+    const {
+      top,
+      bottom,
+    } = (event.currentTarget as HTMLElement).getBoundingClientRect();
+
+    const newDepth = Math.round(
+      (MAX_INDICATOR_DEPTH * (event.clientY - top)) / (bottom - top)
+    );
+    setDepth(newDepth);
+    requestDepth(game, newDepth);
+  };
 
   return (
     <div>
       <div className="depth-controller">
         Dive controller
-        <div className="depth-controller-clickarea">
+        <div
+          className="depth-controller-clickarea"
+          onClick={handleDepthControllerClick}
+        >
           <div className="depth-controller-line">
-            <div
-              className="depth-indicator current-depth-indicator"
-              style={currentDepthStyle}
-            >
-              Current ({Math.round(currentDepth)} feet)
-            </div>
-            <div
-              className="depth-indicator requested-depth-indicator"
-              style={requestedDepthStyle}
-            >
-              Requested ({Math.round(requestedDepth)} feet)
-            </div>
             <div
               className="depth-indicator never-exceed-depth-indicator"
               style={neverExceedDepthStyle}
@@ -65,12 +75,31 @@ const DivingControl = ({ game, latestUpdate }: DivingControlProps) => {
             >
               Crush Depth
             </div>
+            <div
+              className="depth-indicator seafloor-depth-indicator"
+              style={seafloorDepthStyle}
+            >
+              Sea Floor (est.)
+            </div>
+            <div
+              className="depth-indicator current-depth-indicator"
+              style={currentDepthStyle}
+            >
+              Current ({Math.round(currentDepth)} feet)
+            </div>
+            <div
+              className="depth-indicator requested-depth-indicator"
+              style={requestedDepthStyle}
+            >
+              Requested ({Math.round(requestedDepth)} feet)
+            </div>
           </div>
         </div>
+        <div>
+          <button onClick={modDepth(1)}>Fine Tune +</button>
+          <button onClick={modDepth(-1)}>Fine Tune -</button>
+        </div>
       </div>
-      <span>Requested depth: {depth}</span>
-      <button onClick={modDepth(1)}>Deeper!</button>
-      <button onClick={modDepth(-1)}>Shallower!</button>
     </div>
   );
 };

@@ -1,15 +1,16 @@
 .depth-controller {
   position: relative;
-  width: 400px;
+  width: 300px;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
   padding: 8px;
 }
 
 .depth-controller-clickarea {
-  margin: auto;
-  height: 200px;
-  padding: 10px;
+  margin: 10px auto;
+  height: 400px;
+  padding: 0 10px;
   width: 20px;
+  cursor: pointer;
 }
 
 .depth-controller-line {
@@ -42,20 +43,22 @@
 }
 
 .depth-indicator {
+  background-color: rgba(255, 255, 255, 0.8);
   position: absolute;
   height: 20px;
   margin-top: -10px;
   width: 150px;
   top: 0;
+  transition: top 0.4s;
 }
 
 .depth-indicator:not(.current-depth-indicator) {
-  left: 0;
+  left: 1px;
 }
 
 .depth-indicator.current-depth-indicator {
   text-align: right;
-  right: 0;
+  right: 1px;
 }
 
 .depth-indicator:not(.current-depth-indicator)::before, .current-depth-indicator::after {
@@ -73,6 +76,12 @@
 .requested-depth-indicator::before {
   border-bottom: 1px dotted green;
 }
+
+.seafloor-depth-indicator::before {
+  border-bottom: 1px solid green;
+}
+
+.seafloor-depth-indicator {}
 
 .never-exceed-depth-indicator::before {
   border-bottom: 1px solid orange;
