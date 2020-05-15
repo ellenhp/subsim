@@ -4,7 +4,6 @@ import api.Actions
 import api.Systems
 import api.Updates
 import java.time.Instant
-import java.util.concurrent.locks.Lock
 
 class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSystem(vessel) {
 
@@ -32,6 +31,7 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
             tmaRequest.hasTakeBearingRequest() -> takeBearing(tmaRequest.takeBearingRequest)
             tmaRequest.hasMergeContactRequest() -> mergeContact(tmaRequest.mergeContactRequest)
             tmaRequest.hasDeleteContactRequest() -> deleteContact(tmaRequest.deleteContactRequest)
+            tmaRequest.hasUploadSolutionRequest() -> uploadSolution(tmaRequest.uploadSolutionRequest)
         }
     }
 
@@ -78,6 +78,18 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
     private fun deleteContact(deleteContactRequest: Actions.TmaSystemRequest.TmaDeleteContactSubrequest) {
         synchronized(lock) {
             contacts.remove(deleteContactRequest.designation)
+        }
+    }
+
+    private fun uploadSolution(uploadSolutionRequest: Actions.TmaSystemRequest.TmaUploadSolutionSubrequest) {
+        synchronized(lock) {
+            val builder = contacts[uploadSolutionRequest.designation]?.toBuilder()
+                    ?: throw NoSuchContactException("Expected contact with name ${uploadSolutionRequest.designation}")
+            contacts[uploadSolutionRequest.designation] = builder.setSolution(
+                    Updates.TmaSystemUpdate.TmaContact.Solution.newBuilder()
+                    .setEpochMillis(Instant.now().toEpochMilli())
+                    .setPosition(uploadSolutionRequest.solution.position)
+                    .setSpeedKnots(uploadSolutionRequest.solution.speedKnots)).build()
         }
     }
 }
