@@ -7,13 +7,13 @@ import BroadbandSwitcher from "./BroadbandSwitcher";
 const Sonar: StationComponent = (props: StationProps) => {
   return (
     <>
-      <div className="waterfall-bay">
+      <div className="card">
         <BroadbandSwitcher
           engine={props.engines.sonarEngine}
           defaultTerm={"short"}
         />
       </div>
-      <div className="waterfall-bay">
+      <div className="card">
         <BroadbandSwitcher
           engine={props.engines.sonarEngine}
           defaultTerm={"medium"}
