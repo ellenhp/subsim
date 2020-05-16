@@ -90,7 +90,7 @@ const DivingControl = ({ game, latestUpdate }: DivingControlProps) => {
             className="depth-indicator requested-depth-indicator"
             style={requestedDepthStyle}
           >
-            Requested ({Math.round(requestedDepth)} feet)
+            Target ({Math.round(requestedDepth)} feet)
           </div>
         </div>
       </div>

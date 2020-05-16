@@ -73,8 +73,14 @@ const SteeringControl = ({ game, latestUpdate }: SteeringControlProps) => {
         <div className="actual-bearing dial-hand" style={currentHeadingStyle} />
         <div className="dial-center">
           <div className="dial-center-text">
-            <div>Requested: {requestedHeading}°</div>
-            <div>Actual: {currentHeading}°</div>
+            <div>
+              Target Course: <br />
+              {requestedHeading}°
+            </div>
+            <div>
+              Actual Course: <br />
+              {currentHeading}°
+            </div>
           </div>
         </div>
         {dialMarks}

@@ -1,0 +1,36 @@
+.propulsion-clickarea {
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+.propulsion-bar-wrapper {
+  padding: 8px 0;
+}
+
+.requested-speed-bar {
+  height: 10px;
+  background-color: lightslategray;
+  transition: width 0.3s;
+}
+
+.actual-speed-bar {
+  height: 10px;
+  background-color: green;
+  transition: width 0.3s;
+}
+
+.requested-speed, .actual-speed {
+  padding: 4px;
+  border-radius: 4px;
+  width: 50%;
+  display: block;
+  border: 1px dotted gray;
+}
+
+.requested-speed {
+  border-bottom-width: 0;
+}
+
+.actual-speed {
+  border-top-width: 0;
+}
