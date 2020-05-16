@@ -6,9 +6,16 @@ import {
   BroadbandScreen,
 } from "../../../engines/sonarEngine/waterfalls/buildWaterfalls";
 import "./BroadbandWaterfall.css";
+import { GameConnection } from "../../../game";
+import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
+import { getBearingsForContact } from "../../../gettorz";
+import { takeBearingForContact } from "../../../gameActions";
 
 interface BroadbandWaterfallProps {
   screen: BroadbandScreen;
+  game: GameConnection;
+  latestUpdate: VesselUpdate.AsObject;
+  contact?: string;
 }
 
 interface TimeAndBearing {
@@ -107,13 +114,59 @@ class BroadbandWaterfall extends React.Component<BroadbandWaterfallProps> {
     });
   };
 
+  handleClick = (event: React.MouseEvent) => {
+    const {
+      top,
+      left,
+      bottom,
+      right,
+    } = this.canvas.current.getBoundingClientRect();
+    const timeAndBearing = toTimeAndBearing(
+      {
+        x: (event.clientX - left) / (right - left),
+        y: (event.clientY - top) / (bottom - top),
+      },
+      this.props.screen
+    );
+    takeBearingForContact(
+      this.props.game,
+      timeAndBearing.bearing,
+      this.props.contact
+    );
+  };
+
   render() {
+    const contact = this.props.contact;
+    let takenBearings: any[] = [];
+    if (this.props.contact) {
+      const bearings = getBearingsForContact(this.props.latestUpdate, contact);
+      takenBearings = bearings.map((bearing) => {
+        const left =
+          (((bearing.bearingDegrees + this.props.screen.leftBearing) % 360) *
+            100) /
+          360;
+        const style = {
+          left: left + "%",
+          top:
+            ((Date.now() - bearing.epochMillis) * 100) /
+              (1000 * this.props.screen.timeScopeInSeconds) +
+            "%",
+        };
+        return (
+          <div className="taken-bearing" style={style}>
+            {contact}
+          </div>
+        );
+      });
+    }
+
     return (
       <div
         className="broadband-waterfall-wrapper"
         onMouseOver={this.handleMouseEnterOrMove}
         onMouseMove={this.handleMouseEnterOrMove}
         onMouseOut={this.handleMouseExit}
+        onClick={contact && this.handleClick}
       >
         <canvas
           className="broadband-waterfall"
@@ -121,6 +174,7 @@ class BroadbandWaterfall extends React.Component<BroadbandWaterfallProps> {
           height={V_RES}
           width={H_RES}
         />
+        {takenBearings}
         {this.state.mousePos && (
           <TimeAndBearingIndicator
             timeAndBearing={toTimeAndBearing(
@@ -128,6 +182,12 @@ class BroadbandWaterfall extends React.Component<BroadbandWaterfallProps> {
               this.props.screen
             )}
           />
+        )}
+        {this.props.contact && (
+          <div className="broadband-contact-info">
+            Showing bearings for {this.props.contact}. <br /> Click to take
+            bearing.
+          </div>
         )}
       </div>
     );

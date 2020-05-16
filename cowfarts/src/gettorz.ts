@@ -1,4 +1,5 @@
 import { VesselUpdate } from "./__protogen__/mass/api/updates_pb";
+import ContactManager from "./components/stations/sonar/ContactManager";
 
 export const getRequestedSpeed = (update: VesselUpdate.AsObject) => {
   return update.systemUpdatesList.filter((system) => system.propulsionUpdate)[0]
@@ -38,4 +39,20 @@ export const getMeasuredFeetBelowKeel = (update: VesselUpdate.AsObject) => {
 export const getContacts = (update: VesselUpdate.AsObject) => {
   return update.systemUpdatesList.filter((system) => system.tmaUpdate)[0]
     .tmaUpdate.contactsList;
+};
+
+export const getBearingsForContact = (
+  update: VesselUpdate.AsObject,
+  targetDesignation: string
+) => {
+  const bearingsForContact = update.systemUpdatesList
+    .filter((system) => system.tmaUpdate)[0]
+    .tmaUpdate.contactsList.filter(
+      (contact) => contact.designation === targetDesignation
+    )
+    .map((contact) => {
+      return contact.bearingsList || [];
+    })
+    .reduce((a, b) => a.concat(b), []);
+  return bearingsForContact;
 };

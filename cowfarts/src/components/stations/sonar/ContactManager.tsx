@@ -74,6 +74,7 @@ const ContactManager = React.memo(
           )}`
         )
       ) {
+        setSelectedContacts([]);
         deleteContactList(game, selectedContacts);
       }
     };
@@ -86,6 +87,7 @@ const ContactManager = React.memo(
           )}`
         )
       ) {
+        setSelectedContacts([]);
         mergeContacts(game, selectedContacts);
       }
     };

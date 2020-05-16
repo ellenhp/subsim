@@ -110,3 +110,27 @@ export function mergeContacts(game: GameConnection, contacts: string[]) {
 
   game.performAction(doActionRequest);
 }
+
+export function takeBearingForContact(
+  game: GameConnection,
+  bearing: number,
+  contact: string
+) {
+  if (bearing < 0 || bearing >= 360) {
+    throw `${bearing} IS NOT A VALID BEARING`;
+  }
+  const takeBearingRequest = new TmaSystemRequest.TmaTakeBearingSubrequest();
+  takeBearingRequest.setBearingDegrees(Math.floor(bearing));
+  takeBearingRequest.setDesignation(contact);
+
+  const tmaSystemRequest = new TmaSystemRequest();
+  tmaSystemRequest.setTakeBearingRequest(takeBearingRequest);
+  const systemsRequest = new SystemRequest();
+  systemsRequest.setTmaRequest(tmaSystemRequest);
+  const doActionRequest = new DoActionRequest();
+  doActionRequest.setScenarioId(game.scenarioId);
+  doActionRequest.setVesselId(game.vesselId);
+  doActionRequest.setSystemRequestsList([systemsRequest]);
+
+  game.performAction(doActionRequest);
+}

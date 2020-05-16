@@ -2,18 +2,25 @@
   height: 300px;
   width: 300px;
   background-color: #001100;
-  cursor: crosshair;
 }
 
 .broadband-waterfall-wrapper {
   position: relative;
+  color: lightgreen;
+  font-family: monospace;
+  font-size: 10px;
+  overflow: hidden;
+  cursor: crosshair;
+}
+
+.broadband-contact-info {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
 }
 
 .time-and-bearing-indicator {
-  font-size: 10px;
-  font-family: sans-serif;
   position: absolute;
-  color: lightgreen;
   text-align: center;
   bottom: 4px;
   right: 4px;
@@ -45,4 +52,21 @@
   text-align: center;
   line-height: 60px;
   height: 60px;
+}
+
+.taken-bearing {
+  position: absolute;
+  transform: translate(-50%, -2px);
+  padding: 2px;
+  cursor: crosshair;
+}
+
+.taken-bearing::before {
+  content: "";
+  margin: auto;
+  display: block;
+  height: 4px;
+  width: 4px;
+  border: 1px lightgreen solid;
+  border-radius: 50%;
 }

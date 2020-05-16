@@ -18,6 +18,8 @@ const Sonar: StationComponent = (props: StationProps) => {
           engine={props.engines.sonarEngine}
           defaultTerm={"short"}
           selectedContacts={selectedContacts}
+          game={props.game}
+          latestUpdate={props.latestUpdate}
         />
       </div>
       <div className="broadband-bay-2 card">
@@ -25,6 +27,8 @@ const Sonar: StationComponent = (props: StationProps) => {
           engine={props.engines.sonarEngine}
           defaultTerm={"medium"}
           selectedContacts={selectedContacts}
+          game={props.game}
+          latestUpdate={props.latestUpdate}
         />
       </div>
       <ContactManager
