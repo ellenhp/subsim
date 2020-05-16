@@ -79,7 +79,16 @@ message PropulsionSystemUpdate {
 }
 
 message MapSystemUpdate {
-  // This will eventually include map markers.
+  message MapContact {
+    // The designation, e.g. S1, M2.
+    string designation = 1;
+    // The position to plot the contact at.
+    Position position = 2;
+    // The heading to plot on the map, in degrees (0-360)
+    uint32 heading_degrees = 3;
+  }
+  // The contacts to plot.
+  repeated MapContact contacts = 1;
 }
 
 message HullSystemUpdate {
@@ -129,6 +138,8 @@ message TmaSystemUpdate {
       Position position = 2;
       // The speed the vessel is going in this solution, in knots.
       uint32 speed_knots = 3;
+      // The heading of the vessel in this solution, in degrees (0-360).
+      uint32 heading_degrees = 4;
     }
     // Designation (e.g. S1, S2, S3)
     string designation = 1;

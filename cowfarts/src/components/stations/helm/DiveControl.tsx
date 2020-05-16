@@ -55,7 +55,7 @@ const DivingControl = ({ game, latestUpdate }: DivingControlProps) => {
   };
 
   return (
-    <div className="helm-card depth-controller">
+    <div className="card depth-controller">
       Dive controller
       <div
         className="depth-controller-clickarea"

@@ -1,7 +1,13 @@
 package substrate.utils
 
 import api.Spatial
+<<<<<<< HEAD
 import kotlin.math.*
+=======
+import java.time.Duration
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 class Utils {
     companion object {
@@ -33,5 +39,29 @@ class Utils {
                     ))
         }
 
+        fun stepPosition(position: Spatial.Position, heading: Double, speedKnots: Double, dt: Duration): Spatial.Position {
+            // We'll need this later, compute it now for clarity :)
+            val absoluteLatitudeRadians = position.lat / 180 * Math.PI
+
+            // Determine the components of the velocity in a locally cartesian X-Y
+            // grid, in knots.
+            val headingRadians = heading / 180 * Math.PI
+            // A heading of zero is due north, so we need to use sin for X and cos for Y.
+            val xKnots = speedKnots * sin(headingRadians)
+            val yKnots = speedKnots * cos(headingRadians)
+
+            @Suppress("UnnecessaryVariable")
+            // One knot is 1 nmi / hr, which approximates to one minute of latitude / hr.
+            val latMinutesPerHour = yKnots;
+            // Longitudinal speed depends on our absolute latitude.
+            val lngMinutesPerHour = xKnots / cos(absoluteLatitudeRadians)
+
+            val dtHours = dt.toNanos().toDouble() / Duration.ofHours(1).toNanos()
+            val newPosition = Spatial.Position.newBuilder()
+                    .setLat(position.lat + dtHours * latMinutesPerHour / 60)
+                    .setLng(position.lng + dtHours * lngMinutesPerHour / 60)
+                    .build()
+            return newPosition
+        }
     }
 }
