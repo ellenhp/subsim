@@ -18,12 +18,12 @@ export const puget: MapData = {
   url:
     "https://storage.googleapis.com/artifacts.mass-276203.appspot.com/puget_chart.png",
   topLeft: {
-    lat: 48 + 2200 / 5872,
-    lng: -123 - 2020 / 3952,
+    lat: 48.373980978,
+    lng: −123.512917933,
   },
   bottomRight: {
-    lat: 48.5 - 6230 / 5782,
-    lng: -122.25 + 3537 / 3952,
+    lat: 45.993206522,
+    lng: −121.665400203,
   },
   height: 5570,
   width: 8426,
