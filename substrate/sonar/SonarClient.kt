@@ -22,7 +22,7 @@ class SonarClient(val stub: BloopGrpc.BloopStub, val bathymetry: Bathymetry) {
         val rangeOffsets = (-100..100).map { it * 7 }
         val ranges = rangeOffsets.map { distance.toFloat() + it.toFloat() }.filter { it > 0 }
         // Pad the distance by 100m because bellhop likes having information beyond the endpoints.
-        val bathymetricProfile = bathymetricProfile(distance + 100, from, to)
+        val bathymetricProfile = bathymetricProfile(ranges.max()!! + 100.0, from, to)
 
         val request = BloopOuterClass.PropagateRequest.newBuilder()
                 .setBathymetry(bathymetricProfile)
