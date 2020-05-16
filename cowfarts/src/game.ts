@@ -17,7 +17,6 @@ import { Scenario } from "./__protogen__/mass/api/scenario_pb";
 import buildNewFeasibleScenario from "./builders/feasibleScenario";
 import { setGameHash } from "./util/url";
 
-console.log(JSON.stringify(process.env.BACKEND));
 const client = new MassBackendClient(process.env.BACKEND || location.origin);
 
 export interface GameConnection {
