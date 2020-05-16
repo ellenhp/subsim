@@ -22,9 +22,9 @@ export const puget: MapData = {
     lng: -123.512917933,
   },
   bottomRight: {
-    lat: 45.993206522,
-    lng: -121.665400203,
+    lat: 46.935801631,
+    lng: -122.103596758,
   },
-  height: 5570,
-  width: 8426,
+  width: 5570,
+  height: 8426,
 };
