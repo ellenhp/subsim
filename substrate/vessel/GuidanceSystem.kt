@@ -3,6 +3,8 @@ package substrate.vessel
 import api.*
 import substrate.utils.Utils
 import java.time.Duration
+import java.time.Instant
+import kotlin.math.roundToInt
 
 class GuidanceSystem(vessel: Vessel, val descriptor: Systems.GuidanceSystem) : VesselSystem(vessel) {
 
@@ -10,7 +12,7 @@ class GuidanceSystem(vessel: Vessel, val descriptor: Systems.GuidanceSystem) : V
     var enableDistanceFeet = Int.MAX_VALUE
     private val initialPosition = vessel.position
     private var enabled = false
-    private var last
+    private var lastPing = Instant.now()
 
     override fun getSystemUpdate(): Updates.SystemUpdate {
         return Updates.SystemUpdate.newBuilder().build()
@@ -23,7 +25,19 @@ class GuidanceSystem(vessel: Vessel, val descriptor: Systems.GuidanceSystem) : V
         if (!enabled) {
             return
         }
-        val contacts = vessel.getSystem<SonarSystem>().contacts
 
+        if (lastPing.isBefore(Instant.now().minusSeconds(7))) {
+            lastPing = Instant.now()
+            val contacts = vessel.getSystem<SonarSystem>().contacts
+            val sortedContacts = contacts.map { Pair(
+                    it.value / (45 + vessel.bearingToDegrees(it.key.position)),
+                    it.key
+            )}.sortedByDescending { it.first }
+
+            sortedContacts.firstOrNull()?.let {
+                vessel.getSystem<SteeringSystem>().requestedHeadingDegrees =
+                        vessel.bearingToDegrees(it.second.position).roundToInt()
+            }
+        }
     }
 }

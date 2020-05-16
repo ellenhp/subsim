@@ -27,7 +27,7 @@ class WeaponSystem(vessel: Vessel, private val descriptor: Systems.WeaponSystem)
     }
 
     private fun fireWeapon(fireWeaponRequest: Actions.WeaponSystemRequest.FireWeaponRequest) {
-        val weapon = vessel.vesselSpawner.spawnVessel(fireWeaponRequest.weapon.weaponVesselDescriptor,
+        val weapon = vessel.simWorldInterface.spawnVessel(fireWeaponRequest.weapon.weaponVesselDescriptor,
                 ScenarioOuterClass.SpawnedVessel.SpawnInformation.newBuilder()
                         .setExactSpawnHeading(0)
                         .setPosition(vessel.position)

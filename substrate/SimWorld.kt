@@ -14,7 +14,7 @@ import kotlin.collections.HashMap
 class SimWorld(
         scenario: ScenarioOuterClass.Scenario,
         private val sonarClient: SonarClient,
-        private val bloopCallFrequencySeconds: Long) : VesselSpawner {
+        private val bloopCallFrequencySeconds: Long) : SimWorldInterface {
     private val vesselTypes : Map<String, ScenarioOuterClass.VesselDescriptor> = scenario.vesselDescriptorsList.map { it.uniqueId to it }.toMap()
     private val vessels: MutableList<Vessel>
     private val lastBloopCallTime: MutableMap<Pair<Vessel, Vessel>, Instant> = HashMap()
@@ -25,7 +25,7 @@ class SimWorld(
             if (descriptor === null) {
                 throw VesselInstantiationException("Vessel descriptor ${it.vesselDescriptorId} not defined in scenario")
             }
-            Vessel(it.uniqueId, descriptor, it.spawnInfo, sonarClient)
+            Vessel(it.uniqueId, descriptor, it.spawnInfo, sonarClient, this)
         }.toMutableList()
     }
 
@@ -34,9 +34,10 @@ class SimWorld(
         maybeCalculateSonarPropagation()
     }
 
-    fun maybeCalculateSonarPropagation() {
-        val pairs = (0 until vessels.size).map { sourceIdx: Int ->
-            (0 until vessels.size).map { receiveIndex -> Pair<Vessel, Vessel>(vessels[sourceIdx], vessels[receiveIndex]) }
+    private fun maybeCalculateSonarPropagation() {
+        val aliveVessels = getAllVessels()
+        val pairs = (aliveVessels.indices).map { sourceIdx: Int ->
+            (aliveVessels.indices).map { receiveIndex -> Pair(aliveVessels[sourceIdx], aliveVessels[receiveIndex]) }
         }.flatten().filter { it.first !== it.second }
 
         pairs.forEach {
@@ -64,9 +65,13 @@ class SimWorld(
                         ?: throw VesselInstantiationException("Vessel descriptor $vesselDescriptor not defined in scenario"),
                 spawnInfo = spawnInfo,
                 sonarClient = sonarClient,
-                vesselSpawner = this)
+                simWorldInterface = this)
         vessels.add(vessel)
         return vessel
+    }
+
+    override fun getAllVessels(): List<Vessel> {
+        return vessels.filter(Vessel::isAlive).toList()
     }
 
     private fun getMatchingVessel(vesselId: String): Vessel {

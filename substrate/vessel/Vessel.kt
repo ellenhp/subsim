@@ -14,10 +14,10 @@ class Vessel(val uniqueId: String,
              val vesselDescriptor: VesselDescriptor,
              val spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation,
              val sonarClient: SonarClient,
-             val vesselSpawner: VesselSpawner) {
+             val simWorldInterface: SimWorldInterface) {
 
     var position: Spatial.Position = if (spawnInfo.hasPosition()) spawnInfo.position else randomPositionWithinBounds(spawnInfo.bounds)
-    val systems : List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
+    val systems: List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
     var heading: Double = if (spawnInfo.hasHeadingBounds()) randomHeadingWithinBounds(spawnInfo.headingBounds) else spawnInfo.exactSpawnHeading.toDouble()
     var noiseLevel = 0.0
     private var isDead = false
@@ -55,8 +55,16 @@ class Vessel(val uniqueId: String,
         isDead = true
     }
 
+    fun isAlive(): Boolean {
+        return !isDead
+    }
+
     fun bearingToDegrees(otherPosition: Spatial.Position): Double {
         return (toDegrees(Utils.calculateBearingRadians(position, otherPosition)) + 360) % 360
+    }
+
+    fun distanceToFeet(otherPosition: Spatial.Position): Double {
+        return Utils.toFeet(Utils.distanceMeters(position, otherPosition)).toDouble()
     }
 
     inline fun <reified T : VesselSystem> getSystem() : T {
@@ -119,6 +127,7 @@ class Vessel(val uniqueId: String,
     }
 }
 
-interface VesselSpawner {
+interface SimWorldInterface {
     fun spawnVessel(vesselDescriptor: String, spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation): Vessel
+    fun getAllVessels(): List<Vessel>
 }

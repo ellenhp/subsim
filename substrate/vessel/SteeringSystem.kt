@@ -10,7 +10,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sign
 
 class SteeringSystem(vessel: Vessel, val descriptor: Systems.SteeringSystem) : VesselSystem(vessel) {
-    private var requestedHeadingDegrees = 0
+    var requestedHeadingDegrees = 0
 
     override fun getSystemUpdate(): Updates.SystemUpdate {
         return Updates.SystemUpdate.newBuilder().setSteeringUpdate(Updates.SteeringSystemUpdate
