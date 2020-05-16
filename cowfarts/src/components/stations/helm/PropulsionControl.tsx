@@ -34,7 +34,7 @@ const PropulsionControl = ({ game, latestUpdate }: PropulsionControlProps) => {
       Propulsion Controller
       <div className="propulsion-bar-wrapper">
         <span className="requested-speed">
-          Requested: ({requestedSpeed}kts)
+          Target Speed: {requestedSpeed}kts
         </span>
         <div className="propulsion-clickarea" onClick={onClickAreaClick}>
           <div
@@ -46,7 +46,7 @@ const PropulsionControl = ({ game, latestUpdate }: PropulsionControlProps) => {
             style={{ width: `${(100 * actualSpeed) / maxSpeed}%` }}
           />
         </div>
-        <span className="actual-speed">Actual: ({actualSpeed}kts)</span>
+        <span className="actual-speed">Actual Speed: {actualSpeed}kts</span>
       </div>
       <button onClick={modSpeed(1)}>Faster!</button>
       <button onClick={modSpeed(-1)}>Slower!</button>
