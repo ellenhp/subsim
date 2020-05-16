@@ -98,17 +98,17 @@ const buildWaterfalls = (broadbandSource: BroadbandSource) => ({
   broadbandShort: createBroadbandWaterfall(broadbandSource, {
     multiplier: 4,
     contrast: 1,
-    gain: 0.5,
+    gain: 0.1,
   }),
   broadbandMedium: createBroadbandWaterfall(broadbandSource, {
     multiplier: 16,
     contrast: 2,
-    gain: 0.8,
+    gain: 0.035,
   }),
   broadbandLong: createBroadbandWaterfall(broadbandSource, {
     multiplier: 64,
-    contrast: 3,
-    gain: 1.7,
+    contrast: 4,
+    gain: 0.004,
   }),
 });
 

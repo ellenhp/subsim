@@ -47,6 +47,8 @@ const POINT_SPREAD = 5;
 
 const WHERE_PERLIN_SEAM_IS = 180;
 
+const noiseLevel = 0.005;
+
 /*
  * If a signal is offset from sample pos by bearingOffset, what should be the
  * observed offset gain here? Area under this curve should be 1.
@@ -71,7 +73,7 @@ export default class BroadbandSource {
     worldStream.listen((update) => {
       const sonarUpdate = getSonarUpdate(update);
       const newSnapshot = {
-        noiseLevel: 0.001,
+        noiseLevel: noiseLevel,
         explosionLevel: 0,
         bearing: 0,
         timestamp: -1, // lolol
