@@ -18,8 +18,9 @@ class SonarClient(val stub: BloopGrpc.BloopStub, val bathymetry: Bathymetry) {
                   lossHandler: (List<Pair<Float, Float>>) -> Unit) {
         val distance = distanceMeters(from, to)
         // -700 meters to 700 meters, in increments of 7 meters. Good enough to buffer 15 seconds of delta range
-        // between an ADCAP and a Los Angeles class sub trying to do a head-on collision at max speed.
-        val ranges = (-100..100).map { it.toFloat() * 7 }
+        // between an ADCAP and a Los Angeles class sub trying to do a head-on collision at presumed max speeds.
+        val rangeOffsets = (-100..100).map { it * 7 }
+        val ranges = rangeOffsets.map { distance.toFloat() + it.toFloat() }.filter { it > 0 }
         // Pad the distance by 100m because bellhop likes having information beyond the endpoints.
         val bathymetricProfile = bathymetricProfile(distance + 100, from, to)
 
