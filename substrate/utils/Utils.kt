@@ -1,13 +1,8 @@
 package substrate.utils
 
 import api.Spatial
-<<<<<<< HEAD
 import kotlin.math.*
-=======
 import java.time.Duration
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
 
 class Utils {
     companion object {
