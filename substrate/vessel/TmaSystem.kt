@@ -27,7 +27,7 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
         }
         val tmaRequest = request.tmaRequest
         when {
-            tmaRequest.hasAddContactRequest() -> addContact(tmaRequest.addContactRequest)
+            tmaRequest.hasAddContactRequest() -> addContact()
             tmaRequest.hasTakeBearingRequest() -> takeBearing(tmaRequest.takeBearingRequest)
             tmaRequest.hasMergeContactRequest() -> mergeContact(tmaRequest.mergeContactRequest)
             tmaRequest.hasDeleteContactRequest() -> deleteContact(tmaRequest.deleteContactRequest)
@@ -39,7 +39,7 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
         return contacts.values.toList()
     }
 
-    private fun addContact(addContactRequest: Actions.TmaSystemRequest.TmaAddContactSubrequest) {
+    private fun addContact() {
         synchronized(lock) {
             val designation = "S$nextSonarDesignationNumber"
             nextSonarDesignationNumber += 1

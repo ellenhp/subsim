@@ -18,6 +18,8 @@
 syntax = "proto3";
 package api;
 
+import "mass/api/weapons.proto";
+
 message SteeringSystem {
   // The number of degrees this system can turn per second.
   double degrees_per_second = 1;
@@ -46,6 +48,9 @@ message MapSystem {
 message HullSystem {
   // The draft of the vessel while surfaced.
   uint32 draft_feet = 1;
+  // The sonar return of this vessel. 1 is defined as "average" since I'm a
+  // dummy who doesn't know how to units.
+  float sonar_return = 2;
 }
 message SonarSystem {
   message SonarArray {
@@ -60,6 +65,19 @@ message SonarSystem {
 message TmaSystem {
   // Manual TMA, nothing to configure really.
 }
+message WeaponSystem {
+  // The armament carried by this weapon system.
+  repeated Armament armament = 1;
+}
+message SelfDestructSystem {
+  // The kill radius of this explosive system, in feet.
+  uint32 kill_radius_feet = 1;
+  // The radius at which this explosie system will trigger, in feet.
+  uint32 trigger_radius_feet = 2;
+}
+message GuidanceSystem {
+  // Configuration of the homing system happens at fire-time.
+}
 
 message VesselSystem {
   oneof system {
@@ -70,5 +88,8 @@ message VesselSystem {
     HullSystem hull_system = 5;
     SonarSystem sonar_system = 6;
     TmaSystem tma_system = 7;
+    WeaponSystem weapon_system = 8;
+    SelfDestructSystem self_destruct_system = 9;
+    GuidanceSystem homing_system = 10;
   }
 }

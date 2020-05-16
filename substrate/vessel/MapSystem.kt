@@ -1,12 +1,11 @@
 package substrate.vessel
 
-import api.Systems
 import api.Updates
 import substrate.utils.Utils.Companion.stepPosition
 import java.time.Duration
 import java.time.Instant
 
-class MapSystem(vessel: Vessel, mapSystem: Systems.MapSystem) : VesselSystem(vessel) {
+class MapSystem(vessel: Vessel) : VesselSystem(vessel) {
     override fun getSystemUpdate(): Updates.SystemUpdate {
         val tmaContacts = vessel.maybeGetSystem<TmaSystem>()?.getContactList() ?: listOf()
         val mapContacts = tmaContacts.filter { it.hasSolution() }.map {

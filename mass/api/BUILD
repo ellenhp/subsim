@@ -11,6 +11,7 @@ proto_library(
     deps = [
         ":chat_proto",
         ":spatial_proto",
+        ":weapons_proto",
     ],
 )
 
@@ -104,6 +105,9 @@ ts_proto_library(
 proto_library(
     name = "systems_proto",
     srcs = ["systems.proto"],
+    deps = [
+        ":weapons_proto",
+    ],
 )
 
 java_proto_library(
@@ -122,6 +126,7 @@ proto_library(
     deps = [
         ":chat_proto",
         ":spatial_proto",
+        ":weapons_proto",
     ],
 )
 
@@ -133,4 +138,20 @@ java_proto_library(
 ts_proto_library(
     name = "ts_updates_proto",
     proto = ":updates_proto",
+)
+
+proto_library(
+    name = "weapons_proto",
+    srcs = ["weapons.proto"],
+    deps = [],
+)
+
+java_proto_library(
+    name = "java_weapons_proto",
+    deps = [":weapons_proto"],
+)
+
+ts_proto_library(
+    name = "ts_weapons_proto",
+    proto = ":weapons_proto",
 )

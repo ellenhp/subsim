@@ -1,10 +1,8 @@
 package substrate.utils
 
 import api.Spatial
+import kotlin.math.*
 import java.time.Duration
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
 
 class Utils {
     companion object {
@@ -23,6 +21,17 @@ class Utils {
 
         fun toFeet(meters: Double): Float {
             return meters.toFloat() * 3.28084f
+        }
+
+        fun distanceMeters(pos1: Spatial.Position, pos2: Spatial.Position): Double {
+            // Mean radius of the earth
+            val radiusMeters = 6_371_008.8
+            return 2 * radiusMeters *
+                    asin(sqrt(
+                            sin((Math.toRadians(pos2.lat) - Math.toRadians(pos1.lat)) / 2).pow(2.0) +
+                                    cos(Math.toRadians(pos1.lat)) * cos(Math.toRadians(pos2.lat)) *
+                                    sin((Math.toRadians(pos2.lng) - Math.toRadians(pos1.lng)) / 2).pow(2.0)
+                    ))
         }
 
         fun stepPosition(position: Spatial.Position, heading: Double, speedKnots: Double, dt: Duration): Spatial.Position {
@@ -49,7 +58,5 @@ class Utils {
                     .build()
             return newPosition
         }
-
-
     }
 }

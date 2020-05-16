@@ -14,6 +14,10 @@ class SonarSystem(vessel: Vessel, private val sonarSystem: Systems.SonarSystem) 
     private val contactNoiseLevels = ConcurrentHashMap<Vessel, Double>()
     private val contactLastSeenTimes = ConcurrentHashMap<Vessel, Instant>()
 
+    val contacts: Map<Vessel, Double> get() {
+        return contactNoiseLevels.toMap()
+    }
+
     override fun getSystemUpdate(): Updates.SystemUpdate {
         val seaFloorDepthFeet = vessel.sonarClient.bathymetry.getDepthFeet(vessel.position.lat, vessel.position.lng)
         return Updates.SystemUpdate.newBuilder()

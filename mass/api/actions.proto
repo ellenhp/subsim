@@ -20,6 +20,7 @@ package api;
 
 import "mass/api/chat.proto";
 import "mass/api/spatial.proto";
+import "mass/api/weapons.proto";
 
 message DoActionRequest {
   // A repeated field containing any requests to the vessel's systems. May be
@@ -52,6 +53,8 @@ message SystemRequest {
     MapSystemRequest map_request = 4;
     // TMA requests.
     TmaSystemRequest tma_request = 5;
+    // Weapon requests.
+    WeaponSystemRequest weapon_request = 6;
   }
 }
 
@@ -115,4 +118,26 @@ message TmaSystemRequest {
     TmaDeleteContactSubrequest delete_contact_request = 4;
     TmaUploadSolutionSubrequest upload_solution_request = 5;
   }
+}
+
+message WeaponSystemRequest {
+  message FireWeaponRequest {
+    enum GuidanceMode {
+      GUIDANCE_MODE_UNKNOWN = 0;
+      NONE = 1;
+      ACTIVE = 2;
+      PASSIVE = 3;
+    }
+    // The weapon to fire.
+    Weapon weapon = 1;
+    // The direction to fire in, relative to true north.
+    uint32 heading_degrees = 2;
+    // The enablement distance, if supported by this weapon, in feet.
+    uint32 enable_distance_feet = 3;
+    // The speed this torpedo should travel at, in knots.
+    uint32 speed_knots = 4;
+    // The type of guidance in use.
+    GuidanceMode guidance_mode = 5;
+  }
+  FireWeaponRequest fire_weapon_request = 1;
 }

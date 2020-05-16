@@ -20,6 +20,7 @@ package api;
 
 import "mass/api/chat.proto";
 import "mass/api/spatial.proto";
+import "mass/api/weapons.proto";
 
 message VesselUpdate {
   // Repeated field containing updates to various vessel systems.
@@ -51,6 +52,8 @@ message SystemUpdate {
     SonarSystemUpdate sonar_update = 6;
     // TMA update.
     TmaSystemUpdate tma_update = 7;
+    // Weapon update.
+    WeaponSystemUpdate weapon_update = 8;
   }
 }
 
@@ -147,4 +150,9 @@ message TmaSystemUpdate {
   }
   // The list of contacts stored in this TMA system.
   repeated TmaContact contacts = 1;
+}
+
+message WeaponSystemUpdate {
+  // The armament currently carried by this weapon system.
+  repeated Armament armament = 1;
 }
