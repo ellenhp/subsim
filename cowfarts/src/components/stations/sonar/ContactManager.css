@@ -1,0 +1,24 @@
+.contact-selector {
+  display: flex;
+}
+
+.contact-selector > select {
+  width: 100px;
+  flex-grow: 1;
+}
+
+.contact-control-buttons {
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
+
+.dzi {
+  display: flex;
+  padding: 5px 0;
+  font-size: 12px;
+}
+.dzi > hr {
+  flex-grow: 1;
+}

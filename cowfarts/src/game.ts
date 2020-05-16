@@ -6,16 +6,12 @@ import { VesselUpdate } from "./__protogen__/mass/api/updates_pb";
 import {
   DoActionRequest,
   DoActionResponse,
-  SystemRequest,
-  PropulsionSystemRequest,
-  SteeringSystemRequest,
 } from "./__protogen__/mass/api/actions_pb";
 import { Pipe } from "./util/pipe";
 import { GameId } from "./commonTypes";
 import { Scenario } from "./__protogen__/mass/api/scenario_pb";
 
 import buildNewFeasibleScenario from "./builders/feasibleScenario";
-import { setGameHash } from "./util/url";
 
 const client = new MassBackendClient(process.env.BACKEND || location.origin);
 

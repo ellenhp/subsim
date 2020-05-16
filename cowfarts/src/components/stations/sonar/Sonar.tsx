@@ -4,23 +4,35 @@ import { StationComponent, StationProps } from "..";
 import "./Sonar.css";
 import BroadbandSwitcher from "./BroadbandSwitcher";
 import ContactManager from "./ContactManager";
+import { getContacts } from "../../../gettorz";
 
 const Sonar: StationComponent = (props: StationProps) => {
+  const [selectedContacts, setSelectedContacts] = useState<>(
+    getContacts(props.latestUpdate).map((contact) => contact.designation)
+  );
+
   return (
     <div className="sonar-station">
       <div className="broadband-bay-1 card">
         <BroadbandSwitcher
           engine={props.engines.sonarEngine}
           defaultTerm={"short"}
+          selectedContacts={selectedContacts}
         />
       </div>
       <div className="broadband-bay-2 card">
         <BroadbandSwitcher
           engine={props.engines.sonarEngine}
           defaultTerm={"medium"}
+          selectedContacts={selectedContacts}
         />
       </div>
-      <ContactManager game={props.game} latestUpdate={props.latestUpdate} />
+      <ContactManager
+        game={props.game}
+        latestUpdate={props.latestUpdate}
+        selectedContacts={selectedContacts}
+        setSelectedContacts={setSelectedContacts}
+      />
     </div>
   );
 };

@@ -75,14 +75,34 @@ export function createContact(game: GameConnection) {
   game.performAction(doActionRequest);
 }
 
-export function deleteContact(game: GameConnection, contactName: string) {
-  const addContactRequest = new TmaSystemRequest.TmaAddContactSubrequest();
+export function deleteContactList(game: GameConnection, contacts: string[]) {
+  const requests = contacts.map((contact) => {
+    const deleteContactRequest = new TmaSystemRequest.TmaDeleteContactSubrequest();
+    deleteContactRequest.setDesignation(contact);
+
+    const tmaSystemRequest = new TmaSystemRequest();
+    tmaSystemRequest.setDeleteContactRequest(deleteContactRequest);
+    const systemsRequest = new SystemRequest();
+    systemsRequest.setTmaRequest(tmaSystemRequest);
+    return systemsRequest;
+  });
+
+  const doActionRequest = new DoActionRequest();
+  doActionRequest.setScenarioId(game.scenarioId);
+  doActionRequest.setVesselId(game.vesselId);
+  doActionRequest.setSystemRequestsList(requests);
+
+  game.performAction(doActionRequest);
+}
+
+export function mergeContacts(game: GameConnection, contacts: string[]) {
+  const mergeContactRequest = new TmaSystemRequest.TmaMergeContactSubrequest();
+  mergeContactRequest.setDesignationsList(contacts);
 
   const tmaSystemRequest = new TmaSystemRequest();
-  tmaSystemRequest.setAddContactRequest(addContactRequest);
+  tmaSystemRequest.setMergeContactRequest(mergeContactRequest);
   const systemsRequest = new SystemRequest();
   systemsRequest.setTmaRequest(tmaSystemRequest);
-
   const doActionRequest = new DoActionRequest();
   doActionRequest.setScenarioId(game.scenarioId);
   doActionRequest.setVesselId(game.vesselId);

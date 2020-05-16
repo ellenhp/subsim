@@ -22,6 +22,7 @@ import {
   VesselSystem,
   HullSystem,
   SonarSystem,
+  TmaSystem,
 } from "../__protogen__/mass/api/systems_pb";
 import { Pipe } from "../util/pipe";
 import {
@@ -72,6 +73,10 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   const sonarSystem = new VesselSystem();
   sonarSystem.setSonarSystem(sonar);
 
+  const tma = new TmaSystem();
+  const tmaSystem = new VesselSystem();
+  tmaSystem.setTmaSystem(tma);
+
   const vesselDescriptor = new VesselDescriptor();
   vesselDescriptor.setUniqueId(vesselId);
   vesselDescriptor.setType(0);
@@ -81,6 +86,7 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   vesselDescriptor.addSystems(mapSystem);
   vesselDescriptor.addSystems(hullSystem);
   vesselDescriptor.addSystems(sonarSystem);
+  vesselDescriptor.addSystems(tmaSystem);
 
   const playerSpawn = new Position();
   playerSpawn.setLat(47.603);
