@@ -34,3 +34,8 @@ export const getMeasuredFeetBelowKeel = (update: VesselUpdate.AsObject) => {
   return update.systemUpdatesList.filter((system) => system.sonarUpdate)[0]
     .sonarUpdate.depthBelowKeelFeet;
 };
+
+export const getContacts = (update: VesselUpdate.AsObject) => {
+  return update.systemUpdatesList.filter((system) => system.tmaUpdate)[0]
+    .tmaUpdate.contactsList;
+};

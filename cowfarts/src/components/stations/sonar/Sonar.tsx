@@ -3,6 +3,7 @@ import { StationComponent, StationProps } from "..";
 //import Waterfall from "./ElemSingletonMount";
 import "./Sonar.css";
 import BroadbandSwitcher from "./BroadbandSwitcher";
+import ContactManager from "./ContactManager";
 
 const Sonar: StationComponent = (props: StationProps) => {
   return (
@@ -19,6 +20,7 @@ const Sonar: StationComponent = (props: StationProps) => {
           defaultTerm={"medium"}
         />
       </div>
+      <ContactManager game={props.game} latestUpdate={props.latestUpdate} />
     </div>
   );
 };
