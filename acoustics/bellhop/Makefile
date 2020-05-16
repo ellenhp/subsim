@@ -1,6 +1,7 @@
 
 EXECUTABLES = bellhop.exe
-FC = gfortran -funroll-all-loops -static-libgfortran  -fomit-frame-pointer -static -ffast-math
+FC = gfortran -ffast-math
+
 
 BELLHOP_OBJECTS   = angleMod.o ArrMod.o bdryMod.o   bellhopMod.o sspMod.o ReflectMod.o                       WriteRay.o              influence.o                           ReadEnvironmentBell.o bellhop.o libmisc.a
 BELLHOP_LIBS = -Lmisc
