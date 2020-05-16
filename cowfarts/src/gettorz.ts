@@ -5,6 +5,11 @@ export const getRequestedSpeed = (update: VesselUpdate.AsObject) => {
     .propulsionUpdate.requestedSpeedKnots;
 };
 
+export const getActualSpeed = (update: VesselUpdate.AsObject) => {
+  return update.systemUpdatesList.filter((system) => system.propulsionUpdate)[0]
+    .propulsionUpdate.actualSpeedKnots;
+};
+
 export const getRequestedHeading = (update: VesselUpdate.AsObject) => {
   return update.systemUpdatesList.filter((system) => system.steeringUpdate)[0]
     .steeringUpdate.requestedHeadingDegrees;
