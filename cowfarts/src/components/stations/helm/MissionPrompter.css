@@ -1,0 +1,12 @@
+.mission-briefing {
+  display: flex;
+  flex-direction: column;
+}
+
+.mission-briefing>pre {
+  background: black;
+  color: wheat;
+  padding: 16px;
+  overflow-y: scroll;
+  flex-grow: 1;
+}
