@@ -6,6 +6,7 @@ import api.Spatial
 import io.grpc.stub.StreamObserver
 import substrate.utils.Utils
 import substrate.utils.Utils.Companion.distanceMeters
+import substrate.utils.Utils.Companion.toFeet
 import substrate.utils.Utils.Companion.toMeters
 import java.lang.Math.toRadians
 import kotlin.math.*
@@ -13,22 +14,28 @@ import kotlin.math.*
 
 class SonarClient(val stub: BloopGrpc.BloopStub, val bathymetry: Bathymetry) {
     
-    fun propagate(from: Spatial.Position, to: Spatial.Position, fromDepthFeet: Double, toDepthFeet: Double, lossHandler: (Float) -> Unit) {
+    fun propagate(from: Spatial.Position, to: Spatial.Position, fromDepthFeet: Double, toDepthFeet: Double,
+                  lossHandler: (List<Pair<Float, Float>>) -> Unit) {
         val distance = distanceMeters(from, to)
+        // -700 meters to 700 meters, in increments of 7 meters. Good enough to buffer 15 seconds of delta range
+        // between an ADCAP and a Los Angeles class sub trying to do a head-on collision at max speed.
+        val ranges = (-100..100).map { it.toFloat() * 7 }
         // Pad the distance by 100m because bellhop likes having information beyond the endpoints.
         val bathymetricProfile = bathymetricProfile(distance + 100, from, to)
 
         val request = BloopOuterClass.PropagateRequest.newBuilder()
                 .setBathymetry(bathymetricProfile)
                 .addDepths(toMeters(toDepthFeet))
-                .addRanges(distance.toFloat())
+                .addAllRanges(ranges)
                 .setSourceDepth(toMeters(fromDepthFeet))
                 .setFrequency(200)
                 .setSsp(soundSpeedProfile())
                 .build()
         stub.propagate(request, object: StreamObserver<BloopOuterClass.PropagateResponse> {
             override fun onNext(response: BloopOuterClass.PropagateResponse) {
-                lossHandler(response.loss.getPoints(0).loss)
+                lossHandler(response.loss.pointsList.map {
+                    Pair(toFeet(it.rangeMeters.toDouble()), it.loss)
+                })
             }
 
             override fun onError(t: Throwable) {

@@ -10,6 +10,7 @@ import java.time.Duration
 import java.time.Instant
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 
 class SimWorld(
         scenario: ScenarioOuterClass.Scenario,
@@ -101,8 +102,17 @@ class SimWorld(
                 from = vesselPair.first.position,
                 to = vesselPair.second.position,
                 fromDepthFeet = firstDepth,
-                toDepthFeet = secondDepth) {
-            vesselPair.second.processSonarContact(vesselPair.first, it * vesselPair.first.noiseLevel)
+                toDepthFeet = secondDepth) {lossList ->
+            vesselPair.second.processSonarContact(SonarSystem.PropagationResult(
+                    vesselPair.first,
+                    lossList.map {
+                        Pair(it.first.roundToInt(),
+                        SonarSystem.PropagationValues(
+                                it.second * vesselPair.first.noiseLevel,
+                                vesselPair.first.getSystem<HullSystem>().sonarReturn * it.second * it.second)
+                        )
+                    }
+            ))
         }
     }
 }

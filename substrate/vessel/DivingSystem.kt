@@ -25,7 +25,7 @@ class DivingSystem(vessel: Vessel, val descriptor: Systems.DivingSystem) : Vesse
 
     override fun processRequest(request: Actions.SystemRequest) {
         val draftFeet = vessel.getSystem<HullSystem>().draftFeet
-        if (request.divingRequest.depthFeet in draftFeet..descriptor.maxDepthFeet) {
+        if (request.divingRequest.depthFeet >= draftFeet && request.divingRequest.depthFeet <= descriptor.maxDepthFeet) {
             requestedDepthFeet = request.divingRequest.depthFeet.toDouble()
         }
     }
