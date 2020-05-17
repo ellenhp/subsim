@@ -16,7 +16,7 @@ fun main() {
     gdal.AllRegister();
     val bathyFile = "/tmp/puget_sound.tiff"
     downloadBathymetry(bathyFile)
-    val worldManager = WorldManager(getBloopHost(), bathyFile, bloopCallFrequencySeconds = 5)
+    val worldManager = WorldManager(getBloopHost(), bathyFile, bloopCallFrequencySeconds = 15)
 
     val port = 50051
     @Suppress("UNUSED_VARIABLE")

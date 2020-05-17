@@ -7,6 +7,8 @@ kt_jvm_library(
     deps = [
         "//mass/api:java_actions_proto",
         "//mass/api:java_mass_grpc",
+        "//mass/api:java_systems_proto",
+        "//mass/api:java_updates_proto",
         "//mass/api:java_weapons_proto",
         "//substrate/sonar",
         "//substrate/utils",
