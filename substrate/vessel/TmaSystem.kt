@@ -56,7 +56,7 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
                     ?: throw NoSuchContactException("Expected to find contact with designation ${request.designation}")
             builder.addBearings(Updates.TmaSystemUpdate.TmaContact.Bearing.newBuilder()
                     .setBearingDegrees(request.bearingDegrees)
-                    .setEpochMillis(Instant.now().toEpochMilli())
+                    .setEpochMillis(request.epochMillis)
                     .setLocation(vessel.position))
             contacts[request.designation] = builder.build()
         }
