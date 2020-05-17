@@ -28,4 +28,5 @@ export interface MapTool {
   mouseLeave?: ToolHandler<React.MouseEvent>;
   overlay?: OverlayComponent;
   backgroundFilter?: string;
+  hideContactIcons?: boolean;
 }

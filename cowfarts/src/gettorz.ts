@@ -74,3 +74,8 @@ export const getTmaSolutionForContact = (
     })[0];
   return bearingsForContact;
 };
+
+export const getMapContacts = (update: VesselUpdate.AsObject) => {
+  return update.systemUpdatesList.filter((system) => system.mapUpdate)[0]
+    .mapUpdate.contactsList;
+};

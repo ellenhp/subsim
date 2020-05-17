@@ -488,4 +488,5 @@ export default class TmaTool extends PanTool implements MapTool {
   backgroundFilter = "invert(1) brightness(0.2)";
 
   overlay = TmaOverlay;
+  hideContactIcons = true;
 }

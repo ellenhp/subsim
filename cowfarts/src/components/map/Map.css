@@ -63,6 +63,42 @@
   border: 1px solid blue;
 }
 
+.map-contact-icon {
+  width: 14px;
+  height: 14px;
+  text-align: center;
+  vertical-align: bottom;
+  border: 2px solid red;
+  color: red;
+  position: absolute;
+  top: -11px;
+  left: -11px;
+  font-size: 22px;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.map-contact-icon::after {
+  position: relative;
+  height: 0;
+  top: -10px;
+  font-size: 15px;
+  content: "";
+  border: 1px solid red;
+}
+
+.map-contact-label {
+  position: absolute;
+  font-family: monospace;
+  font-size: 12pt;
+  padding: 2px;
+  top: 20px;
+  left: -10px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  color: red;
+  border: red dotted 1px;
+}
+
 .map-overlay {
   position: absolute;
   transform: translate(0, 0);
@@ -78,7 +114,7 @@
   right: 8px;
 }
 
-.map-tool-switcher > button {
+.map-tool-switcher>button {
   background-color: black;
   color: white;
   font-size: 15px;

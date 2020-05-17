@@ -16,6 +16,7 @@ import TmaTool from "./tools/tmaTool";
 import { LatLong } from "../../commonTypes";
 import { MapData } from "../../engines/mapEngine/data";
 import { GameConnection } from "../../game";
+import { getMapContacts } from "../../gettorz";
 
 type ToolList = {
   pan: MapTool;
@@ -150,6 +151,31 @@ const Map = ({
 
   const Overlay = tool.overlay;
 
+  const ContactIcons = () => (
+    <>
+      {getMapContacts(latestUpdate).map((mapContact) => {
+        const contactTL = localToGlobal(
+          latLongToMapTL(mapContact.position, mapEngine.data),
+          viewport
+        );
+        const mapContactStyle = {
+          transform: `translate(${contactTL.left}px, ${contactTL.top}px) rotate(${mapContact.headingDegrees}deg)`,
+        };
+        const mapContactLabelStyle = {
+          transform: `translate(${contactTL.left}px, ${contactTL.top}px)`,
+        };
+        return (
+          <div className="map-contact-wrapper">
+            <div className="map-contact-icon" style={mapContactStyle}></div>
+            <div className="map-contact-label" style={mapContactLabelStyle}>
+              {mapContact.designation}
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
+
   return (
     <div
       className={"map-viewport " + className}
@@ -164,6 +190,7 @@ const Map = ({
           <img src={mapEngine.mapImageEl.src} />
         </div>
         <div className="map-overlay" id={MAP_OVERLAY_ID}>
+          {!tool.hideContactIcons && <ContactIcons />}
           <div className="map-player-icon" style={playerIconStyle} />
           {Overlay && (
             <Overlay
