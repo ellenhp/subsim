@@ -21,6 +21,35 @@
   position: absolute;
   top: 0;
   left: 0;
+  border-bottom: 1px cyan solid;
+}
+
+.tma-solution-bar::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(100%, -50%);
+  color: cyan;
+}
+
+.tma-head-handle {
+  position: absolute;
+  right: 0px;
+  width: 8px;
+  height: 8px;
+  border: cyan solid;
+  border-width: 2px 2px 0 0;
+  transform: translate(50%, -50%) rotate(45deg);
+}
+
+.tma-head-handle-clicktarget {
+  position: absolute;
+  cursor: pointer;
+  height: 32px;
+  width: 32px;
+  right: 0;
+  border-radius: 50%;
+  transform: translate(50%, -50%);
 }
 
 .tma-drag-handle {
@@ -28,7 +57,7 @@
   height: 8px;
   width: 8px;
   background-color: darkslategray;
-  border: 1px lightblue solid;
+  border: 1px cyan solid;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
@@ -40,6 +69,13 @@
   width: 32px;
   border-radius: 50%;
   transform: translate(-50%, -50%);
+}
+
+.tma-bearing-tick {
+  position: absolute;
+  height: 12px;
+  top: -6px;
+  border-left: 1px cyan solid;
 }
 
 /* clicktarget hack for the fact that I don't want to deal with adding a static

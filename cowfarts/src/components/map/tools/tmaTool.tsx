@@ -1,3 +1,6 @@
+// This is a beast of a file
+// Beware all ye who entereth here
+
 import React, { useState } from "react";
 import PanTool from "./panTool";
 import { MapTool, OverlayComponent } from ".";
@@ -19,6 +22,7 @@ import { MapData } from "../../../engines/mapEngine/data";
 import { TmaSystemUpdate } from "../../../__protogen__/mass/api/updates_pb";
 import { LatLong } from "../../../commonTypes";
 import { GameConnection } from "../../../game";
+import { TmaSystem } from "../../../__protogen__/mass/api/systems_pb";
 
 /* Solution Overlay */
 interface SolutionOverlayProps {
@@ -28,6 +32,7 @@ interface SolutionOverlayProps {
   solution: TmaSystemUpdate.TmaContact.Solution.AsObject;
   game: GameConnection;
   contact: string;
+  bearings: Array<TmaSystemUpdate.TmaContact.Bearing.AsObject>;
 }
 
 type DragState =
@@ -47,13 +52,19 @@ const SolutionOverlay = ({
   mapData,
   game,
   contact,
+  bearings,
 }: SolutionOverlayProps) => {
   const [dragState, setDragState] = useState<DragState>({
     status: "dropped",
   });
 
+  const earliestBearingTime = bearings[bearings.length - 1].epochMillis;
+  const latestBearingTime = bearings[0].epochMillis;
+
   const position =
     dragState.status === "dragging" ? dragState.latLong : solution.position;
+
+  const heading = solution.headingDegrees;
 
   const { top, left } = localToGlobal(
     latLongToMapTL(position, mapData),
@@ -123,8 +134,22 @@ const SolutionOverlay = ({
     setDragState({ status: "dropped" });
   };
 
+  /*
+    Some notes about styling!
+    - Head of TMA solution handle should be last taken bearing line + 
+      SOME_CONSTANT pixels
+    - Tail of TMA solution should be earliest relevant bearing.
+    - This head should be draggable, while keeping tail steady
+    - Same with tail being draggable, while keeping heading steady
+    - We should have a dotted line to actual position, if outside of the handle
+    - This is a doozy
+  */
+
   const solutionBarStyle = {
-    transform: `translate(${left}px, ${top}px)`,
+    transform: `translate(${left}px, ${top}px) rotate(${
+      (heading + 270) % 360
+    }deg)`,
+    width: "100px",
   };
 
   // If i were good, I'd figure out a clean way these
@@ -138,8 +163,18 @@ const SolutionOverlay = ({
           width: "1000px",
         }
       : {};
+
+  const bearingTicks = bearings.map((bearing) => {
+    const percentage =
+      (100 * (bearing.epochMillis - earliestBearingTime)) /
+      (latestBearingTime - earliestBearingTime);
+    return (
+      <div className="tma-bearing-tick" style={{ left: `${percentage}%` }} />
+    );
+  });
   return (
     <div className="tma-solution-bar" style={solutionBarStyle}>
+      {bearingTicks}
       <div className="tma-drag-handle" />
       <div
         className="tma-drag-handle-clicktarget"
@@ -149,11 +184,15 @@ const SolutionOverlay = ({
         onMouseLeave={stopDrag}
         style={dragHandleStyleHackWhileDragging}
       />
+      <div className="tma-head-handle"></div>
+      <div className="tma-head-handle-clicktarget" />
     </div>
   );
 };
 
 /* End Solution Bar */
+
+const maxTmaBearings = 5;
 
 const TmaOverlay: OverlayComponent = ({
   latestUpdate,
@@ -162,14 +201,21 @@ const TmaOverlay: OverlayComponent = ({
   viewport,
   tmaTarget,
 }) => {
-  // AAAAAA THIS IS REALLY NOT GOOD
+  // We REALLY should not pass down TMA target this deeply
   const contact = tmaTarget;
 
   if (!contact) {
     return <></>;
   }
 
-  const bearings = getBearingsForContact(latestUpdate, contact);
+  const bearings = getBearingsForContact(latestUpdate, contact)
+    .sort((a, b) => b.epochMillis - a.epochMillis)
+    .slice(0, maxTmaBearings);
+
+  if (!bearings.length) {
+    return <></>;
+  }
+
   const solution = getTmaSolutionForContact(latestUpdate, contact);
 
   let tmaInitialClickOverlay = undefined;
@@ -218,6 +264,7 @@ const TmaOverlay: OverlayComponent = ({
         mapData={mapData}
         viewport={viewport}
         solution={solution}
+        bearings={bearings}
       />
     );
   }
