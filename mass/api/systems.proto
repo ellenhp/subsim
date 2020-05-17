@@ -74,6 +74,8 @@ message SelfDestructSystem {
   uint32 kill_radius_feet = 1;
   // The radius at which this explosie system will trigger, in feet.
   uint32 trigger_radius_feet = 2;
+  // The time before this device will self-destruct, in seconds. Useful for noisemakers/decoys.
+  uint32 self_destruct_timer_seconds = 3;
 }
 message GuidanceSystem {
   // Configuration of the homing system happens at fire-time.

@@ -22,6 +22,7 @@ message Weapon {
   enum AmmoType {
     AMMO_TYPE_UNKNOWN = 0;
     TORPEDO = 1;
+    COUNTERMEASURE = 2;
   }
   // The type (e.g. torpedo, missile)
   AmmoType type = 1;
