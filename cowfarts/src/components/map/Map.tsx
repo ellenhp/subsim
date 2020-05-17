@@ -12,13 +12,27 @@ import MapEngine from "../../engines/mapEngine/mapEngine";
 import { MAP_EL_ID, MAP_VIEWPORT_ID, MAP_OVERLAY_ID } from "./constants";
 import { MapTool } from "./tools";
 import PanTool from "./tools/panTool";
+import TmaTool from "./tools/tmaTool";
 import { LatLong } from "../../commonTypes";
 import { MapData } from "../../engines/mapEngine/data";
+import { GameConnection } from "../../game";
+
+type ToolList = {
+  pan: MapTool;
+  tma: MapTool;
+};
+
+const tools: ToolList = {
+  pan: new PanTool(),
+  tma: new TmaTool(),
+};
 
 interface MapProps {
   className?: string;
   mapEngine: MapEngine;
+  game: GameConnection;
   latestUpdate: VesselUpdate.AsObject;
+  forceTool?: keyof ToolList;
 }
 
 // TODO: We really should compress this proto on entry
@@ -43,11 +57,13 @@ const getViewportWithPlayerInCenter = (
   };
 };
 
-const tools = {
-  pan: new PanTool(),
-};
-
-const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
+const Map = ({
+  className,
+  mapEngine,
+  latestUpdate,
+  forceTool,
+  game,
+}: MapProps) => {
   // Thank god that this is just math
   const initialState = getViewportWithPlayerInCenter(
     {
@@ -78,7 +94,14 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
 
   // End nasty hack
 
-  const [tool] = useState<MapTool>(tools.pan);
+  let [tool, setTool] = useState<MapTool>(tools.pan);
+
+  if (forceTool) {
+    tool = tools[forceTool];
+    setTool = () => {
+      throw "dont force tool and set tool";
+    };
+  }
 
   const zoomIn = () => {
     setViewport(changeZoom(1, viewport));
@@ -112,6 +135,28 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
   const mouseLeave = (event: React.MouseEvent) =>
     tool.mouseLeave && tool.mouseLeave(event, viewport, focusViewport);
 
+  const mapPaneStyle = {
+    transform: paneTransform(viewport),
+    filter: "",
+  };
+
+  if (tool.backgroundFilter) {
+    mapPaneStyle.filter = tool.backgroundFilter;
+  }
+
+  let toolSwitcher;
+  if (!forceTool) {
+    // This should really be refactored
+    toolSwitcher = (
+      <div className="map-tool-switcher">
+        <button onClick={() => setTool(tools.pan)}>Pan</button>
+        <button onClick={() => setTool(tools.tma)}>TMA</button>
+      </div>
+    );
+  }
+
+  const Overlay = tool.overlay;
+
   return (
     <div
       className={"map-viewport " + className}
@@ -122,17 +167,23 @@ const Map = ({ className, mapEngine, latestUpdate }: MapProps) => {
       id={MAP_VIEWPORT_ID}
     >
       <div className="map-viewport-center">
-        <div
-          className="map-pane"
-          style={{ transform: paneTransform(viewport) }}
-          id={MAP_EL_ID}
-        >
+        <div className="map-pane" style={mapPaneStyle} id={MAP_EL_ID}>
           <img src={mapEngine.mapImageEl.src} />
         </div>
         <div className="map-overlay" id={MAP_OVERLAY_ID}>
+          {Overlay && (
+            <Overlay
+              game={game}
+              latestUpdate={latestUpdate}
+              mapData={mapEngine.data}
+              viewport={viewport}
+            />
+          )}
           <div className="map-player-icon" style={playerIconStyle} />
         </div>
       </div>
+
+      {toolSwitcher}
 
       <div className="map-zoom-buttons">
         {!isCenteredOnPlayer && (

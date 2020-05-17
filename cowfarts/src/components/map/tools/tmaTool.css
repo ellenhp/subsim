@@ -1,0 +1,18 @@
+.tma-bearing-line {
+  position: absolute;
+  transform-origin: left;
+  width: 100000px;
+  /* now life is getting weirder */
+  border-bottom: 1px dashed greenyellow;
+}
+
+.tma-bearing-line::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  border-radius: 50%;
+  border: 1px solid greenyellow;
+}

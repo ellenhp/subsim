@@ -5,13 +5,12 @@ import "./MapStation.css";
 
 const MapStation: StationComponent = (props) => {
   return (
-    <>
-      <Map
-        className="map-station-map"
-        mapEngine={props.engines.mapEngine}
-        latestUpdate={props.latestUpdate}
-      />
-    </>
+    <Map
+      className="map-station-map"
+      mapEngine={props.engines.mapEngine}
+      latestUpdate={props.latestUpdate}
+      game={props.game}
+    />
   );
 };
 

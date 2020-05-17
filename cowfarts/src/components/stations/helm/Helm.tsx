@@ -17,8 +17,10 @@ const Helm: StationComponent = ({
       <DivingControl game={game} latestUpdate={latestUpdate} />
       <div className="helm-map-wrapper card">
         <Map
+          forceTool="pan"
           className="helm-map"
           mapEngine={mapEngine}
+          game={game}
           latestUpdate={latestUpdate}
         />
       </div>
