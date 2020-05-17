@@ -57,7 +57,7 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
             builder.addBearings(Updates.TmaSystemUpdate.TmaContact.Bearing.newBuilder()
                     .setBearingDegrees(request.bearingDegrees)
                     .setEpochMillis(request.epochMillis)
-                    .setLocation(vessel.position))
+                    .setLocation(vessel.positionBuffer.getNearestPositionAt(Instant.ofEpochMilli(request.epochMillis))))
             contacts[request.designation] = builder.build()
         }
     }
