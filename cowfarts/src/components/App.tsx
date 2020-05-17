@@ -55,9 +55,9 @@ class App extends React.Component<{}> {
     }));
   };
 
-  createGame = () => {
+  createGame = (id: GameId) => {
     // Todo, promisify this.
-    const game = createNewGame();
+    const game = createNewGame(id);
     setGameHash({
       scenarioId: game.scenarioId,
       vesselId: game.vesselId,
@@ -74,7 +74,9 @@ class App extends React.Component<{}> {
       case "inGame":
         return <InGame game={this.state.activeGame} />;
       case "titleScreen":
-        return <TitleScreen createGame={this.createGame} />;
+        return (
+          <TitleScreen createGame={this.createGame} joinGame={this.joinGame} />
+        );
       default:
         return <div>Joining...</div>;
     }

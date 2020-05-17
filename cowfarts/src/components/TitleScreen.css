@@ -1,0 +1,13 @@
+.title-screen {
+  height: 100vh;
+  background-color: lightslategray;
+}
+
+.title-screen header {
+  background-color
+}
+
+.title-screen article {
+  width: 500px;
+  margin: 10px auto;
+}
