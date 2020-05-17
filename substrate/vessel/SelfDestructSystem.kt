@@ -15,6 +15,7 @@ class SelfDestructSystem(vessel: Vessel, val descriptor: Systems.SelfDestructSys
 
     override fun step(dt: Duration) {
         maybeBlowUp()
+        maybeRunDownTimer()
     }
 
     private fun maybeRunDownTimer() {
