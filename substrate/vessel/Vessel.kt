@@ -39,8 +39,11 @@ class Vessel(val uniqueId: String,
                 it.step(dt)
             }
         }
-        // Add the position to the buffer for later use.
-        positionBuffer.addPosition(position)
+        if (lastPositionStoredInstant.plusSeconds(1).isBefore(Instant.now())) {
+            // Add the position to the buffer for later use.
+            positionBuffer.addPosition(position)
+            lastPositionStoredInstant = Instant.now()
+        }
     }
 
     fun getUpdate(): Updates.VesselUpdate {
