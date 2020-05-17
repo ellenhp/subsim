@@ -1,56 +1,35 @@
-import { v4 } from "uuid";
+import {v4} from 'uuid';
 
-import { MassBackendClient } from "../__protogen__/mass/api/MassServiceClientPb";
-import { ConnectRequest } from "../__protogen__/mass/api/mass_pb";
-import {
-  VesselDescriptor,
-  Scenario,
-  SpawnedVessel,
-  Faction,
-  EndCondition,
-} from "../__protogen__/mass/api/scenario_pb";
-import { VesselUpdate } from "../__protogen__/mass/api/updates_pb";
-import {
-  DoActionRequest,
-  DoActionResponse,
-} from "../__protogen__/mass/api/actions_pb";
-import {
-  SteeringSystem,
-  DivingSystem,
-  PropulsionSystem,
-  MapSystem,
-  VesselSystem,
-  HullSystem,
-  SonarSystem,
-} from "../__protogen__/mass/api/systems_pb";
-import { Pipe } from "../util/pipe";
-import {
-  Bounds,
-  Position,
-  HeadingBounds,
-} from "../__protogen__/mass/api/spatial_pb";
+import {DoActionRequest, DoActionResponse,} from '../__protogen__/mass/api/actions_pb';
+import {ConnectRequest} from '../__protogen__/mass/api/mass_pb';
+import {MassBackendClient} from '../__protogen__/mass/api/MassServiceClientPb';
+import {EndCondition, Faction, Scenario, SpawnedVessel, VesselDescriptor,} from '../__protogen__/mass/api/scenario_pb';
+import {Bounds, HeadingBounds, Position,} from '../__protogen__/mass/api/spatial_pb';
+import {DivingSystem, HullSystem, MapSystem, PropulsionSystem, SonarSystem, SteeringSystem, VesselSystem,} from '../__protogen__/mass/api/systems_pb';
+import {VesselUpdate} from '../__protogen__/mass/api/updates_pb';
+import {Pipe} from '../util/pipe';
 
 function buildNewFeasibleScenario(playerId: string): Scenario {
-  const vesselId = v4();
+  const submarineDescriptorId = v4();
 
   // Systems for the player
 
   const steering = new SteeringSystem();
-  steering.setDegreesPerSecond(10);
+  steering.setDegreesPerSecond(4);
   const steeringSystem = new VesselSystem();
   steeringSystem.setSteeringSystem(steering);
 
   const diving = new DivingSystem();
-  diving.setFeetPerSecond(10);
+  diving.setFeetPerSecond(3);
   diving.setMaxDepthFeet(1000);
   const divingSystem = new VesselSystem();
   divingSystem.setDivingSystem(diving);
 
   const propulsion = new PropulsionSystem();
-  propulsion.setKnotsPerSecond(2);
-  propulsion.setMaxSpeedKnots(30);
+  propulsion.setKnotsPerSecond(1);
+  propulsion.setMaxSpeedKnots(33);
   propulsion.setBaseNoisePower(10);
-  propulsion.setNoisePerKnotNoncavitating(3);
+  propulsion.setNoisePerKnotNoncavitating(2);
   const propulsionSystem = new VesselSystem();
   propulsionSystem.setPropulsionSystem(propulsion);
 
@@ -59,12 +38,12 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   mapSystem.setMapSystem(map);
 
   const hull = new HullSystem();
-  hull.setDraftFeet(10);
+  hull.setDraftFeet(31);
   const hullSystem = new VesselSystem();
   hullSystem.setHullSystem(hull);
 
   const sonarArray = new SonarSystem.SonarArray();
-  sonarArray.setUniqueId("fore");
+  sonarArray.setUniqueId('fore');
   sonarArray.setNoiseFloor(0);
 
   const sonar = new SonarSystem();
@@ -72,15 +51,15 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
   const sonarSystem = new VesselSystem();
   sonarSystem.setSonarSystem(sonar);
 
-  const vesselDescriptor = new VesselDescriptor();
-  vesselDescriptor.setUniqueId(vesselId);
-  vesselDescriptor.setType(0);
-  vesselDescriptor.addSystems(steeringSystem);
-  vesselDescriptor.addSystems(divingSystem);
-  vesselDescriptor.addSystems(propulsionSystem);
-  vesselDescriptor.addSystems(mapSystem);
-  vesselDescriptor.addSystems(hullSystem);
-  vesselDescriptor.addSystems(sonarSystem);
+  const submarine = new VesselDescriptor();
+  submarine.setUniqueId(submarineDescriptorId);
+  submarine.setType(2);
+  submarine.addSystems(steeringSystem);
+  submarine.addSystems(divingSystem);
+  submarine.addSystems(propulsionSystem);
+  submarine.addSystems(mapSystem);
+  submarine.addSystems(hullSystem);
+  submarine.addSystems(sonarSystem);
 
   const playerSpawn = new Position();
   playerSpawn.setLat(47.603);
@@ -130,11 +109,11 @@ function buildNewFeasibleScenario(playerId: string): Scenario {
 
   const playerFaction = new Faction();
   playerFaction.setPlayerControlled(true);
-  playerFaction.setName("player");
+  playerFaction.setName('player');
 
   const enemyFaction = new Faction();
   enemyFaction.setPlayerControlled(true);
-  enemyFaction.setName("enemy");
+  enemyFaction.setName('enemy');
 
   const playerVessel = new SpawnedVessel();
   playerVessel.setVesselDescriptorId(vesselId);
