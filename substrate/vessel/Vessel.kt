@@ -9,6 +9,7 @@ import substrate.sonar.SonarClient
 import substrate.utils.Utils
 import java.lang.Math.toDegrees
 import java.time.Duration
+import java.time.Instant
 
 class Vessel(val uniqueId: String,
              val vesselDescriptor: VesselDescriptor,
@@ -18,8 +19,10 @@ class Vessel(val uniqueId: String,
 
     var position: Spatial.Position = if (spawnInfo.hasPosition()) spawnInfo.position else randomPositionWithinBounds(spawnInfo.bounds)
     val systems: List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
+    val positionBuffer = PositionBuffer(Duration.ofMinutes(30))
     var heading: Double = if (spawnInfo.hasHeadingBounds()) randomHeadingWithinBounds(spawnInfo.headingBounds) else spawnInfo.exactSpawnHeading.toDouble()
     var noiseLevel = 0.0
+    private var lastPositionStoredInstant = Instant.now()
     private var isDead = false
 
     init {
@@ -35,6 +38,11 @@ class Vessel(val uniqueId: String,
             if (!isDead) {
                 it.step(dt)
             }
+        }
+        if (lastPositionStoredInstant.plusSeconds(1).isBefore(Instant.now())) {
+            // Add the position to the buffer for later use.
+            positionBuffer.addPosition(position)
+            lastPositionStoredInstant = Instant.now()
         }
     }
 
