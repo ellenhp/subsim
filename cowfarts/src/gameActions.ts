@@ -116,6 +116,7 @@ export function mergeContacts(game: GameConnection, contacts: string[]) {
 export function takeBearingForContact(
   game: GameConnection,
   bearing: number,
+  time: epochMillis,
   contact: string
 ) {
   if (bearing < 0 || bearing >= 360) {
@@ -124,6 +125,7 @@ export function takeBearingForContact(
   const takeBearingRequest = new TmaSystemRequest.TmaTakeBearingSubrequest();
   takeBearingRequest.setBearingDegrees(Math.floor(bearing));
   takeBearingRequest.setDesignation(contact);
+  takeBearingRequest.setEpochMillis(Math.round(time));
 
   const tmaSystemRequest = new TmaSystemRequest();
   tmaSystemRequest.setTakeBearingRequest(takeBearingRequest);

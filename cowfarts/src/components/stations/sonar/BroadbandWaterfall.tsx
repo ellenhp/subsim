@@ -131,6 +131,7 @@ class BroadbandWaterfall extends React.Component<BroadbandWaterfallProps> {
     takeBearingForContact(
       this.props.game,
       timeAndBearing.bearing,
+      Date.now() - timeAndBearing.timeAgoSeconds * 1000,
       this.props.contact
     );
   };
