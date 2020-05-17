@@ -74,7 +74,8 @@ message SelfDestructSystem {
   uint32 kill_radius_feet = 1;
   // The radius at which this explosie system will trigger, in feet.
   uint32 trigger_radius_feet = 2;
-  // The time before this device will self-destruct, in seconds. Useful for noisemakers/decoys.
+  // The time before this device will self-destruct, in seconds. Useful for
+  // noisemakers/decoys.
   uint32 self_destruct_timer_seconds = 3;
 }
 message GuidanceSystem {
@@ -92,6 +93,6 @@ message VesselSystem {
     TmaSystem tma_system = 7;
     WeaponSystem weapon_system = 8;
     SelfDestructSystem self_destruct_system = 9;
-    GuidanceSystem homing_system = 10;
+    GuidanceSystem guidance_system = 10;
   }
 }
