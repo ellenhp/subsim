@@ -32,12 +32,18 @@ class WeaponSystem(vessel: Vessel, private val descriptor: Systems.WeaponSystem)
                         .setExactSpawnHeading((vessel.heading.toInt() + 45) % 360)
                         .setPosition(vessel.position)
                         .build())
+        weapon.maybeGetSystem<SelfDestructSystem>()?.let {
+            it.enableDistanceFeet = fireWeaponRequest.enableDistanceFeet
+        }
         weapon.maybeGetSystem<GuidanceSystem>()?.let {
             it.enableDistanceFeet = fireWeaponRequest.enableDistanceFeet
             it.guidanceType = fireWeaponRequest.guidanceMode
         }
         weapon.maybeGetSystem<PropulsionSystem>()?.let {
             it.requestedSpeedKnots = it.maxSpeedKnots
+        }
+        weapon.maybeGetSystem<SteeringSystem>()?.let {
+            it.requestedHeadingDegrees = fireWeaponRequest.headingDegrees
         }
     }
 }

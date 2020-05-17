@@ -8,6 +8,9 @@ import java.time.Instant
 
 class SelfDestructSystem(vessel: Vessel, val descriptor: Systems.SelfDestructSystem) : VesselSystem(vessel) {
     val startTime = Instant.now()
+    var enableDistanceFeet = 0
+    val startPosition = vessel.position
+    var enabled = false
 
     override fun getSystemUpdate(): Updates.SystemUpdate {
         return Updates.SystemUpdate.newBuilder().build()
@@ -27,9 +30,21 @@ class SelfDestructSystem(vessel: Vessel, val descriptor: Systems.SelfDestructSys
     }
 
     private fun maybeBlowUp() {
-        if (descriptor.triggerRadiusFeet > 0) {
+        // Allow the weapons system to configure the torpedo.
+        if (Duration.between(startTime, Instant.now()).seconds <= 1) {
+            return
+        }
+        if (enableDistanceFeet == 0) {
+            enabled = true
+        }
+        if (vessel.distanceToFeet(startPosition) > enableDistanceFeet) {
+            enabled = true
+        }
+        if (enabled && descriptor.triggerRadiusFeet > 0) {
             val triggeringVessels = vessel.simWorldInterface.getAllVessels().filter {
                 vessel.distanceToFeet(it.position) < descriptor.triggerRadiusFeet
+            }.filter {
+                it.uniqueId != vessel.uniqueId
             }
             if (triggeringVessels.isEmpty()) {
                 return

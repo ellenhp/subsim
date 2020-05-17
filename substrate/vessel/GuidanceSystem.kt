@@ -15,7 +15,7 @@ class GuidanceSystem(vessel: Vessel, val descriptor: Systems.GuidanceSystem) : V
     var enableDistanceFeet = Int.MAX_VALUE
     private val initialPosition = vessel.position
     private var enabled = false
-    private var lastPing = Instant.now()
+    private var lastPing = Instant.ofEpochMilli(0)
 
     override fun getSystemUpdate(): Updates.SystemUpdate {
         return Updates.SystemUpdate.newBuilder().build()
@@ -29,18 +29,20 @@ class GuidanceSystem(vessel: Vessel, val descriptor: Systems.GuidanceSystem) : V
             return
         }
 
-        if (lastPing.isBefore(Instant.now().minusSeconds(7))) {
+        if (Duration.between(lastPing, Instant.now()).seconds > 7) {
+            println("${vessel.uniqueId} pinging")
             lastPing = Instant.now()
             val contacts = vessel.getSystem<SonarSystem>().contacts
             val sortedContacts = contacts.map {
                 val bearing = vessel.bearingToDegrees(it.key.position)
                 val deltaHeading = min(bearing, 360 - bearing)
                 Pair(getSonarValueToSortByForMode(it.value) / (15 + deltaHeading), it.key)
-            }.sortedByDescending { it.first }
-
-            sortedContacts.firstOrNull()?.let {
+            }.filter { it.first > 0 }.sortedByDescending { it.first }
+            val targetedContact = sortedContacts.firstOrNull()
+            if (targetedContact !== null) {
+                println("${vessel.uniqueId} picked ${targetedContact.second.uniqueId} because it has a sort key of ${targetedContact.first}")
                 vessel.getSystem<SteeringSystem>().requestedHeadingDegrees =
-                        vessel.bearingToDegrees(it.second.position).roundToInt()
+                        vessel.bearingToDegrees(targetedContact.second.position).roundToInt()
             }
         }
     }
