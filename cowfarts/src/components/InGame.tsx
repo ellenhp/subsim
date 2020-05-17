@@ -15,12 +15,29 @@ interface InGameProps {
   game: GameConnection;
 }
 
+interface InGameState {
+  latestUpdate?: VesselUpdate.AsObject;
+  currentStation: Station;
+  // some small structureless data about what the station should land on
+  // when loaded. Means something different
+  stationFocusData: {
+    [key in Station]: string;
+  };
+}
+
 class InGame extends React.Component<InGameProps> {
-  constructor(props) {
+  constructor(props: InGameProps) {
     super(props);
     this.game = props.game;
     this.state = {
       currentStation: Station.HELM,
+      stationFocusData: {
+        helm: "",
+        map: "",
+        tma: "",
+        sonar: "",
+        weapons: "",
+      },
     };
     this.game.worldEvents.listen((update) => {
       this.setState({ latestUpdate: update });
@@ -29,13 +46,24 @@ class InGame extends React.Component<InGameProps> {
     this.sonarEngine = buildSonarEngine(this.game.worldEvents);
     this.mapEngine = new MapEngine("puget");
   }
-  state: {
-    latestUpdate?: VesselUpdate.AsObject;
-    currentStation: Station;
-  };
+  state: InGameState;
   game: GameConnection;
   sonarEngine: SonarEngine;
   mapEngine: MapEngine;
+
+  changeStation = (station: Station) => {
+    this.setState((state) => ({ ...state, currentStation: station }));
+  };
+
+  changeStationFocusData = (station: Station, focusData: string) => {
+    this.setState((state: InGameState) => ({
+      ...state,
+      stationFocusData: {
+        ...state.stationFocusData,
+        [station]: focusData,
+      },
+    }));
+  };
 
   render() {
     const CurrentStation = stationMapping[this.state.currentStation];
@@ -58,6 +86,7 @@ class InGame extends React.Component<InGameProps> {
                   sonarEngine: this.sonarEngine,
                   mapEngine: this.mapEngine,
                 }}
+                changeStation={this.cha}
                 latestUpdate={this.state.latestUpdate}
               />
             )

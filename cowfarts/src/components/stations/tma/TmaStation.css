@@ -1,0 +1,29 @@
+.tma-station {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+
+.tma-station-map {
+  flex-grow: 1;
+}
+
+.tma-station-header {
+  padding: 8px;
+}
+
+.no-target-indicator {
+  font-size: 30px;
+  font-family: monospace;
+  text-align: center;
+  white-space: nowrap;
+  color: greenyellow;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 20px;
+  border: 1px dotted greenyellow;
+  background-color: rgba(0, 20, 0, 0.8);
+  transform: translate(-50%, -50%);
+}

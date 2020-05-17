@@ -15,7 +15,7 @@ const { w, a, d } = WASD;
 
 const order: Station[] = [
   Station.HELM,
-  Station.RADAR,
+  Station.TMA,
   Station.SONAR,
   Station.WEAPONS,
   Station.MAP,

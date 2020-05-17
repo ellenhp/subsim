@@ -144,7 +144,7 @@ const Map = ({
     mapPaneStyle.filter = tool.backgroundFilter;
   }
 
-  let toolSwitcher;
+  /*let toolSwitcher;
   if (!forceTool) {
     // This should really be refactored
     toolSwitcher = (
@@ -153,7 +153,7 @@ const Map = ({
         <button onClick={() => setTool(tools.tma)}>TMA</button>
       </div>
     );
-  }
+  }*/
 
   const Overlay = tool.overlay;
 
@@ -171,6 +171,7 @@ const Map = ({
           <img src={mapEngine.mapImageEl.src} />
         </div>
         <div className="map-overlay" id={MAP_OVERLAY_ID}>
+          <div className="map-player-icon" style={playerIconStyle} />
           {Overlay && (
             <Overlay
               game={game}
@@ -179,11 +180,10 @@ const Map = ({
               viewport={viewport}
             />
           )}
-          <div className="map-player-icon" style={playerIconStyle} />
         </div>
       </div>
 
-      {toolSwitcher}
+      {/*toolSwitcher*/}
 
       <div className="map-zoom-buttons">
         {!isCenteredOnPlayer && (

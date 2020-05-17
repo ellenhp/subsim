@@ -12,8 +12,8 @@ const TmaOverlay: OverlayComponent = ({
   viewport,
 }) => {
   // AAAAAA NOT GOOD
-  const [contact, setContact] = useState("S1");
-  const bearings = getBearingsForContact(latestUpdate, contact);
+  const [contact, setContact] = useState<string | undefined>(undefined);
+  const bearings = contact ? getBearingsForContact(latestUpdate, contact) : [];
 
   return (
     <>
