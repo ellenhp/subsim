@@ -110,6 +110,12 @@ message TmaSystemRequest {
     // The solution itself.
     Solution solution = 2;
   }
+  message TmaDeleteBearingSubrequest {
+    // The designation to delete a bearing for.
+    string designation = 1;
+    // The timestamp of the bearing to delete, in millis since the epoch, UTC.
+    uint64 epoch_millis = 2;
+  }
   // Any of these subrequests can be populated.
   oneof request {
     TmaAddContactSubrequest add_contact_request = 1;
@@ -117,6 +123,7 @@ message TmaSystemRequest {
     TmaMergeContactSubrequest merge_contact_request = 3;
     TmaDeleteContactSubrequest delete_contact_request = 4;
     TmaUploadSolutionSubrequest upload_solution_request = 5;
+    TmaDeleteBearingSubrequest delete_bearing_request = 6;
   }
 }
 
