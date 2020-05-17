@@ -19,7 +19,7 @@ class Vessel(val uniqueId: String,
 
     var position: Spatial.Position = if (spawnInfo.hasPosition()) spawnInfo.position else randomPositionWithinBounds(spawnInfo.bounds)
     val systems: List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
-    val positionBuffer = PositionBuffer(Duration.ofMinutes(30))
+    val positionBuffer = PositionBuffer(Duration.ofMinutes(10))
     var heading: Double = if (spawnInfo.hasHeadingBounds()) randomHeadingWithinBounds(spawnInfo.headingBounds) else spawnInfo.exactSpawnHeading.toDouble()
     var noiseLevel = 0.0
     private var lastPositionStoredInstant = Instant.now()
@@ -27,6 +27,23 @@ class Vessel(val uniqueId: String,
 
     init {
         systems.forEach { it.setupInitialState(spawnInfo) }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (super.equals(other)) {
+            return true
+        }
+        if (other === null) {
+            return false
+        }
+        if (other is Vessel) {
+            return other.uniqueId == uniqueId
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return uniqueId.hashCode()
     }
 
     fun step(dt: Duration) {
@@ -39,8 +56,9 @@ class Vessel(val uniqueId: String,
                 it.step(dt)
             }
         }
-        if (lastPositionStoredInstant.plusSeconds(1).isBefore(Instant.now())) {
+        if (Duration.between(lastPositionStoredInstant, Instant.now()).abs().seconds > 5) {
             // Add the position to the buffer for later use.
+            println("adding position to pos buffer ${Instant.now().toEpochMilli()}")
             positionBuffer.addPosition(position)
             lastPositionStoredInstant = Instant.now()
         }

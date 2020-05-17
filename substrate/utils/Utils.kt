@@ -60,3 +60,7 @@ class Utils {
         }
     }
 }
+
+fun Spatial.Position.format(): String {
+    return "(${lat}, ${lng})"
+}

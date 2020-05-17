@@ -8,16 +8,16 @@ import java.time.Instant.now
 import java.util.concurrent.ConcurrentHashMap
 
 class PositionBuffer(private val bufferDuration: Duration) {
-    private val positions = ConcurrentHashMap<Instant, Spatial.Position>()
+    private val positions = ConcurrentHashMap<Long, Spatial.Position>()
 
     fun addPosition(position: Spatial.Position) {
-        positions[now()] = position
+        positions[now().toEpochMilli()] = position
         prunePositions()
     }
 
     fun prunePositions() {
-        val cutoffTime = now().minus(bufferDuration)
-        positions.keys.filter { it.isBefore(cutoffTime) }.forEach {
+        val cutoffTime = now().minus(bufferDuration).toEpochMilli()
+        positions.keys.filter { it < cutoffTime }.forEach {
             positions.remove(it)
         }
     }
@@ -28,7 +28,8 @@ class PositionBuffer(private val bufferDuration: Duration) {
             throw NoPositionInBufferException(time)
         }
         val copy = positions.toList()
-        val closest = copy.minBy { Duration.between(it.first, time).abs().toNanos() } ?: throw NoPositionInBufferException(time)
+        val closest = copy.minBy { Duration.between(Instant.ofEpochMilli(it.first), time).abs().toNanos() }
+                ?: throw NoPositionInBufferException(time)
         return closest.second
     }
 }
