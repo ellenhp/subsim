@@ -1,7 +1,7 @@
 import React from "react";
 import Helm from "./helm/Helm";
 import Map from "./map/MapStation";
-import Radar from "./radar/Radar";
+import Tma from "./tma/TmaStation";
 import Sonar from "./sonar/Sonar";
 import Weapons from "./weapons/Weapons";
 
@@ -13,6 +13,8 @@ export type StationProps = {
   game: GameConnection;
   engines: Engines;
   latestUpdate: VesselUpdate.AsObject;
+  changeStation: (station: Station) => unknown;
+  setStationFocusData: (station: Station, focusData: string) => unknown;
 };
 
 export type StationComponent = React.Component<StationProps>;
@@ -20,7 +22,7 @@ export type StationComponent = React.Component<StationProps>;
 export enum Station {
   HELM = "helm",
   MAP = "map",
-  RADAR = "radar",
+  TMA = "tma",
   SONAR = "sonar",
   WEAPONS = "weapons",
 }
@@ -28,7 +30,7 @@ export enum Station {
 export const stationMapping: { [key in Station]: StationComponent } = {
   [Station.HELM]: Helm,
   [Station.MAP]: Map,
-  [Station.RADAR]: Radar,
+  [Station.TMA]: Tma,
   [Station.SONAR]: Sonar,
   [Station.WEAPONS]: Weapons,
 };
