@@ -30,7 +30,9 @@ class WeaponSystem(vessel: Vessel, private val descriptor: Systems.WeaponSystem)
         if ((counts[fireWeaponRequest.weapon.weaponVesselDescriptor] ?: 0) <= 0) {
             return
         }
-        counts[fireWeaponRequest.weapon.weaponVesselDescriptor] -= 1
+        counts[fireWeaponRequest.weapon.weaponVesselDescriptor]?.let {
+            counts[fireWeaponRequest.weapon.weaponVesselDescriptor] = it - 1
+        }
         val weapon = vessel.simWorldInterface.spawnVessel(fireWeaponRequest.weapon.weaponVesselDescriptor,
                 ScenarioOuterClass.SpawnedVessel.SpawnInformation.newBuilder()
                         .setExactSpawnHeading((vessel.heading.toInt() + 45) % 360)
