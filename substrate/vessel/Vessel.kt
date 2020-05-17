@@ -50,10 +50,9 @@ class Vessel(val uniqueId: String,
         action.systemRequestsList.forEach { processSystemRequest(it) }
     }
 
-    fun processSonarContact(otherContact: Vessel, powerLevel: Double) {
-        println("$uniqueId heard ${otherContact.uniqueId} at power level $powerLevel")
+    fun processSonarContact(propagationResult: SonarSystem.PropagationResult) {
         maybeGetSystem<SonarSystem>()?.let {
-            it.updateContact(otherContact, powerLevel)
+            it.updateContact(propagationResult.otherContact, propagationResult)
         }
     }
 
