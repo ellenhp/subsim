@@ -20,6 +20,7 @@ class WorldManager(bloopHost: String, bathyFile: String, private val bloopCallFr
     private val sonarClient = SonarClient(Bloop.getStub(bloopHost), Bathymetry(bathyFile))
 
     fun maybeAdd(worldId: String, scenario: ScenarioOuterClass.Scenario) {
+        println("Maybe adding world $worldId")
         worlds.getOrPut(worldId, { SimWorld(scenario, sonarClient, bloopCallFrequencySeconds) })
         lastAccessTimes[worldId] = Instant.now()
     }

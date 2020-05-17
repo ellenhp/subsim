@@ -68,6 +68,7 @@ class SimWorld(
                 sonarClient = sonarClient,
                 simWorldInterface = this)
         vessels.add(vessel)
+        println("spawned vessel $vessel")
         return vessel
     }
 

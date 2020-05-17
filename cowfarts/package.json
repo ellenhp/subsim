@@ -25,8 +25,8 @@
     "lodash.debounce": "^4.0.8",
     "lodash.throttle": "^4.1.1",
     "noisejs": "^2.1.0",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^16.9.34",
+    "react-dom": "^16.9.7",
     "uuid": "^8.0.0"
   }
 }

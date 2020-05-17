@@ -58,7 +58,6 @@ class Vessel(val uniqueId: String,
         }
         if (Duration.between(lastPositionStoredInstant, Instant.now()).abs().seconds > 5) {
             // Add the position to the buffer for later use.
-            println("adding position to pos buffer ${Instant.now().toEpochMilli()}")
             positionBuffer.addPosition(position)
             lastPositionStoredInstant = Instant.now()
         }
@@ -83,6 +82,7 @@ class Vessel(val uniqueId: String,
     }
 
     fun kill() {
+        println("$uniqueId died")
         isDead = true
     }
 
@@ -128,6 +128,7 @@ class Vessel(val uniqueId: String,
             request.hasPropulsionRequest() -> getSystem<PropulsionSystem>().processRequest(request)
             request.hasSteeringRequest() -> getSystem<SteeringSystem>().processRequest(request)
             request.hasTmaRequest() -> getSystem<TmaSystem>().processRequest(request)
+            request.hasWeaponRequest() -> getSystem<WeaponSystem>().processRequest(request)
         }
     }
 
@@ -141,6 +142,8 @@ class Vessel(val uniqueId: String,
             systemDescriptor.hasSonarSystem() -> SonarSystem(this, systemDescriptor.sonarSystem)
             systemDescriptor.hasTmaSystem() -> TmaSystem(this, systemDescriptor.tmaSystem)
             systemDescriptor.hasWeaponSystem() -> WeaponSystem(this, systemDescriptor.weaponSystem)
+            systemDescriptor.hasSelfDestructSystem() -> SelfDestructSystem(this, systemDescriptor.selfDestructSystem)
+            systemDescriptor.hasGuidanceSystem() -> GuidanceSystem(this, systemDescriptor.guidanceSystem)
             else -> throw VesselInstantiationException("No matching system for vessel descriptor ${vesselDescriptor.uniqueId}. Upgrade the server?")
         }
         return system
