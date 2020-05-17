@@ -74,6 +74,14 @@ type DragState =
       origin: TopLeft;
       initialLatLong: LatLong;
       latLong: LatLong;
+    }
+  | {
+      status: "dragging-head";
+      origin: TopLeft;
+      initialHeading: number;
+      initialSpeed: number;
+      heading: number;
+      speed: number;
     };
 
 const SolutionOverlay = ({
@@ -98,14 +106,34 @@ const SolutionOverlay = ({
       ? dragState.latLong
       : solution.position;
 
-  const speedKnots = solution.speedKnots;
-
-  const heading = solution.headingDegrees;
+  const speedKnots =
+    dragState.status === "dragging-head"
+      ? dragState.speed
+      : solution.speedKnots;
+  const heading =
+    dragState.status === "dragging-head"
+      ? dragState.heading
+      : solution.headingDegrees;
 
   const { top, left } = localToGlobal(
     latLongToMapTL(basePosition, mapData),
     viewport
   );
+
+  const startDragHead = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setDragState({
+      status: "dragging-head",
+      origin: {
+        top: e.clientY,
+        left: e.clientX,
+      },
+      initialHeading: heading,
+      initialSpeed: speedKnots,
+      heading,
+      speed: speedKnots,
+    });
+  };
 
   const startDrag = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -126,48 +154,98 @@ const SolutionOverlay = ({
     // in the top left
     if (dragState.status === "dropped") {
       return;
+    } else if (dragState.status === "dragging-base") {
+      const localOriginTl = globalToLocal(
+        {
+          top: dragState.origin.top,
+          left: dragState.origin.left,
+        },
+        viewport
+      );
+      const localClientTl = globalToLocal(
+        {
+          top: e.clientY,
+          left: e.clientX,
+        },
+        viewport
+      );
+
+      const pixelOffset = {
+        top: localClientTl.top - localOriginTl.top,
+        left: localClientTl.left - localOriginTl.left,
+      };
+      const oldMapTl = latLongToMapTL(dragState.initialLatLong, mapData);
+      const newMapTl = {
+        top: oldMapTl.top + pixelOffset.top,
+        left: oldMapTl.left + pixelOffset.left,
+      };
+
+      const newLatLong = mapTLToLatLong(newMapTl, mapData);
+
+      setDragState({
+        ...dragState,
+        latLong: newLatLong,
+      });
+    } else {
+      const oldHandleLength = garbageSpeedToHandleLength(
+        dragState.initialSpeed,
+        dragState.initialHeading,
+        latestBearingTime - earliestBearingTime,
+        viewport
+      );
+
+      const angleRads = (dragState.initialHeading * 2 * Math.PI) / 360;
+      const oldHandlePos = {
+        top: oldHandleLength * -Math.cos(angleRads),
+        left: oldHandleLength * Math.sin(angleRads),
+      };
+
+      const newHandlePos = {
+        top: oldHandlePos.top + e.clientY - dragState.origin.top,
+        left: oldHandlePos.left + e.clientX - dragState.origin.left,
+      };
+
+      const newHeading =
+        (360 * Math.atan2(newHandlePos.left, -newHandlePos.top)) /
+        (2 * Math.PI);
+
+      const newHandleLength = Math.sqrt(
+        newHandlePos.top ** 2 + newHandlePos.left ** 2
+      );
+      const newSpeed = garbageHandleLengthToSpeed(
+        newHandleLength,
+        newHeading,
+        latestBearingTime - earliestBearingTime,
+        viewport
+      );
+
+      setDragState({
+        ...dragState,
+        speed: newSpeed,
+        heading: newHeading,
+      });
     }
-    const localOriginTl = globalToLocal(
-      {
-        top: dragState.origin.top,
-        left: dragState.origin.left,
-      },
-      viewport
-    );
-    const localClientTl = globalToLocal(
-      {
-        top: e.clientY,
-        left: e.clientX,
-      },
-      viewport
-    );
-
-    const pixelOffset = {
-      top: localClientTl.top - localOriginTl.top,
-      left: localClientTl.left - localOriginTl.left,
-    };
-    const oldMapTl = latLongToMapTL(dragState.initialLatLong, mapData);
-    const newMapTl = {
-      top: oldMapTl.top + pixelOffset.top,
-      left: oldMapTl.left + pixelOffset.left,
-    };
-
-    const newLatLong = mapTLToLatLong(newMapTl, mapData);
-
-    setDragState({
-      ...dragState,
-      latLong: newLatLong,
-    });
   };
 
   const stopDrag = (e: React.MouseEvent) => {
-    if (dragState.status !== "dragging-base") {
+    if (dragState.status === "dropped") {
       return;
-    }
-    e.stopPropagation();
-    uploadTmaSolution(game, contact, dragState.latLong, 0, 10);
+    } else if (dragState.status === "dragging-base") {
+      e.stopPropagation();
+      uploadTmaSolution(game, contact, dragState.latLong, heading, speedKnots);
 
-    setDragState({ status: "dropped" });
+      setDragState({ status: "dropped" });
+    } else {
+      e.stopPropagation();
+      setDragState({ status: "dropped" });
+      uploadTmaSolution(
+        game,
+        contact,
+        basePosition,
+        Math.floor((dragState.heading + 360) % 360),
+        Math.floor(dragState.speed)
+      );
+    }
   };
 
   /*
@@ -204,7 +282,6 @@ const SolutionOverlay = ({
     latestBearingTime - earliestBearingTime,
     viewport
   );
-  debugger;
   const solutionBarStyle = {
     transform: `translate(${left}px, ${top}px) rotate(${
       (heading + 270) % 360
@@ -216,13 +293,10 @@ const SolutionOverlay = ({
   // handlers to the viewport tl. That would also work to
   // convert panTool to using overlayComponent.
   // This, however, is JAM code.
-  const dragHandleStyleHackWhileDragging =
-    dragState.status === "dragging-base"
-      ? {
-          height: "1000px",
-          width: "1000px",
-        }
-      : {};
+  const dragHandleStyleHackWhileDragging = {
+    height: "1000px",
+    width: "1000px",
+  };
 
   const bearingTicks = bearings.map((bearing) => {
     const { top, left } = localToGlobal(
@@ -250,10 +324,25 @@ const SolutionOverlay = ({
           onMouseMove={onDrag}
           onMouseUp={stopDrag}
           onMouseLeave={stopDrag}
-          style={dragHandleStyleHackWhileDragging}
+          style={
+            dragState.status === "dragging-base"
+              ? dragHandleStyleHackWhileDragging
+              : {}
+          }
         />
         <div className="tma-head-handle"></div>
-        <div className="tma-head-handle-clicktarget" />
+        <div
+          className="tma-head-handle-clicktarget"
+          onMouseDown={startDragHead}
+          onMouseMove={onDrag}
+          onMouseUp={stopDrag}
+          onMouseLeave={stopDrag}
+          style={
+            dragState.status === "dragging-head"
+              ? dragHandleStyleHackWhileDragging
+              : {}
+          }
+        />
       </div>
     </>
   );

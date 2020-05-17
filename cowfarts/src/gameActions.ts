@@ -146,6 +146,7 @@ export function uploadTmaSolution(
   heading: number,
   speed: number
 ) {
+  console.log(designation, position, heading, speed);
   const solPosition = new Position();
   solPosition.setLat(position.lat);
   solPosition.setLng(position.lng);
