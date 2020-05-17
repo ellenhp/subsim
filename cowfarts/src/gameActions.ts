@@ -116,7 +116,7 @@ export function mergeContacts(game: GameConnection, contacts: string[]) {
 export function takeBearingForContact(
   game: GameConnection,
   bearing: number,
-  time: epochMillis,
+  time: number,
   contact: string
 ) {
   if (bearing < 0 || bearing >= 360) {
