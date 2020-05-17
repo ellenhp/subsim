@@ -5,8 +5,8 @@ import java.util.concurrent.ConcurrentHashMap
 
 class WeaponSystem(vessel: Vessel, private val descriptor: Systems.WeaponSystem) : VesselSystem(vessel) {
     private val weapons = descriptor.armamentList.map { it.weapon }
-    private val counts = ConcurrentHashMap<Weapons.Weapon, Int>(descriptor.armamentList.map {
-        Pair<Weapons.Weapon, Int>(it.weapon, it.count) }.toMap())
+    private val counts = ConcurrentHashMap<String, Int>(descriptor.armamentList.map {
+        Pair(it.weapon.weaponVesselDescriptor, it.count) }.toMap())
 
     override fun getSystemUpdate(): Updates.SystemUpdate {
         return Updates.SystemUpdate.newBuilder().setWeaponUpdate(Updates.WeaponSystemUpdate.newBuilder()
@@ -14,7 +14,7 @@ class WeaponSystem(vessel: Vessel, private val descriptor: Systems.WeaponSystem)
                         weapons.map {
                             Weapons.Armament.newBuilder()
                                     .setWeapon(it)
-                                    .setCount(counts[it] ?: 0)
+                                    .setCount(counts[it.weaponVesselDescriptor] ?: 0)
                                     .build()
                         }
                 )).build()
@@ -27,6 +27,10 @@ class WeaponSystem(vessel: Vessel, private val descriptor: Systems.WeaponSystem)
     }
 
     private fun fireWeapon(fireWeaponRequest: Actions.WeaponSystemRequest.FireWeaponRequest) {
+        if ((counts[fireWeaponRequest.weapon.weaponVesselDescriptor] ?: 0) <= 0) {
+            return
+        }
+        counts[fireWeaponRequest.weapon.weaponVesselDescriptor] -= 1
         val weapon = vessel.simWorldInterface.spawnVessel(fireWeaponRequest.weapon.weaponVesselDescriptor,
                 ScenarioOuterClass.SpawnedVessel.SpawnInformation.newBuilder()
                         .setExactSpawnHeading((vessel.heading.toInt() + 45) % 360)
