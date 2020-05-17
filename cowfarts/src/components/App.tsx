@@ -49,6 +49,11 @@ class App extends React.Component<{}> {
     // Todo, promisify this.
     const game = joinGame(id);
 
+    setGameHash({
+      scenarioId: game.scenarioId,
+      vesselId: game.vesselId,
+    });
+
     this.setState(() => ({
       status: "inGame",
       activeGame: game,
