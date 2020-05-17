@@ -5,11 +5,10 @@ metadata:
   labels:
     app: substrate-be
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
   - name: grpc
     port: 50051
-    nodePort: 30037
     protocol: TCP
   selector:
     app: substrate-be
