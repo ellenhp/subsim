@@ -127,6 +127,17 @@ const SolutionOverlay = ({
     transform: `translate(${left}px, ${top}px)`,
   };
 
+  // If i were good, I'd figure out a clean way these
+  // handlers to the viewport tl. That would also work to
+  // convert panTool to using overlayComponent.
+  // This, however, is JAM code.
+  const dragHandleStyleHackWhileDragging =
+    dragState.status === "dragging"
+      ? {
+          height: "1000px",
+          width: "1000px",
+        }
+      : {};
   return (
     <div className="tma-solution-bar" style={solutionBarStyle}>
       <div className="tma-drag-handle" />
@@ -136,6 +147,7 @@ const SolutionOverlay = ({
         onMouseMove={onDrag}
         onMouseUp={stopDrag}
         onMouseLeave={stopDrag}
+        style={dragHandleStyleHackWhileDragging}
       />
     </div>
   );
