@@ -15,6 +15,8 @@ import {
   mapTLToLatLong,
   Viewport,
   TopLeft,
+  getFinalLatLong,
+  latLongDistance,
 } from "../helpers";
 import "./tmaTool.css";
 import { uploadTmaSolution } from "../../../gameActions";
@@ -23,6 +25,7 @@ import { TmaSystemUpdate } from "../../../__protogen__/mass/api/updates_pb";
 import { LatLong } from "../../../commonTypes";
 import { GameConnection } from "../../../game";
 import { TmaSystem } from "../../../__protogen__/mass/api/systems_pb";
+import { MAP_VIEWPORT_ID } from "../constants";
 
 /* Solution Overlay */
 interface SolutionOverlayProps {
@@ -35,12 +38,39 @@ interface SolutionOverlayProps {
   bearings: Array<TmaSystemUpdate.TmaContact.Bearing.AsObject>;
 }
 
+const pixelsAtEndOfTmaShaft = 10;
+const handleLengthMult = 1 / 30000;
+// because i don't have enough time to do proper math.
+const garbageSpeedToHandleLength = (
+  speedKnots: number,
+  heading: number,
+  timeScaleMs: number,
+  viewport: Viewport
+) => {
+  return (
+    handleLengthMult * speedKnots * timeScaleMs * viewport.zoom +
+    pixelsAtEndOfTmaShaft
+  );
+};
+
+const garbageHandleLengthToSpeed = (
+  length: number,
+  heading: number,
+  timeScaleMs: number,
+  viewport: Viewport
+) => {
+  return (
+    (length - pixelsAtEndOfTmaShaft) /
+    (handleLengthMult * timeScaleMs * viewport.zoom)
+  );
+};
+
 type DragState =
   | {
       status: "dropped";
     }
   | {
-      status: "dragging";
+      status: "dragging-base";
       origin: TopLeft;
       initialLatLong: LatLong;
       latLong: LatLong;
@@ -58,29 +88,35 @@ const SolutionOverlay = ({
     status: "dropped",
   });
 
-  const earliestBearingTime = bearings[bearings.length - 1].epochMillis;
-  const latestBearingTime = bearings[0].epochMillis;
+  const earliestBearing = bearings[bearings.length - 1];
+  const earliestBearingTime = earliestBearing.epochMillis;
+  const latestBearing = bearings[0];
+  const latestBearingTime = latestBearing.epochMillis;
 
-  const position =
-    dragState.status === "dragging" ? dragState.latLong : solution.position;
+  const basePosition =
+    dragState.status === "dragging-base"
+      ? dragState.latLong
+      : solution.position;
+
+  const speedKnots = solution.speedKnots;
 
   const heading = solution.headingDegrees;
 
   const { top, left } = localToGlobal(
-    latLongToMapTL(position, mapData),
+    latLongToMapTL(basePosition, mapData),
     viewport
   );
 
   const startDrag = (e: React.MouseEvent) => {
     e.stopPropagation();
     setDragState({
-      status: "dragging",
+      status: "dragging-base",
       origin: {
         top: e.clientY,
         left: e.clientX,
       },
-      initialLatLong: solution.position,
-      latLong: solution.position,
+      initialLatLong: basePosition,
+      latLong: basePosition,
     });
   };
 
@@ -88,7 +124,7 @@ const SolutionOverlay = ({
     // This time we actually do it in the react lifecycle!
     // This is because of the nasty stuff w.r.t. the accuracy indicator
     // in the top left
-    if (dragState.status !== "dragging") {
+    if (dragState.status === "dropped") {
       return;
     }
     const localOriginTl = globalToLocal(
@@ -125,7 +161,7 @@ const SolutionOverlay = ({
   };
 
   const stopDrag = (e: React.MouseEvent) => {
-    if (dragState.status !== "dragging") {
+    if (dragState.status !== "dragging-base") {
       return;
     }
     e.stopPropagation();
@@ -145,11 +181,35 @@ const SolutionOverlay = ({
     - This is a doozy
   */
 
+  // This is gonna be annoying
+  // due to lat-long to px
+
+  const bearingToEstLatLong = (
+    bearing: TmaSystemUpdate.TmaContact.Bearing.AsObject
+  ) => {
+    const distanceFromEarliestBearingTime =
+      (speedKnots * (bearing.epochMillis - earliestBearingTime)) /
+      (1000 * 3600);
+
+    return getFinalLatLong(
+      basePosition,
+      distanceFromEarliestBearingTime,
+      heading
+    );
+  };
+
+  const solutionBarWidth = garbageSpeedToHandleLength(
+    speedKnots,
+    heading,
+    latestBearingTime - earliestBearingTime,
+    viewport
+  );
+  debugger;
   const solutionBarStyle = {
     transform: `translate(${left}px, ${top}px) rotate(${
       (heading + 270) % 360
     }deg)`,
-    width: "100px",
+    width: `${solutionBarWidth}px`,
   };
 
   // If i were good, I'd figure out a clean way these
@@ -157,7 +217,7 @@ const SolutionOverlay = ({
   // convert panTool to using overlayComponent.
   // This, however, is JAM code.
   const dragHandleStyleHackWhileDragging =
-    dragState.status === "dragging"
+    dragState.status === "dragging-base"
       ? {
           height: "1000px",
           width: "1000px",
@@ -165,28 +225,37 @@ const SolutionOverlay = ({
       : {};
 
   const bearingTicks = bearings.map((bearing) => {
-    const percentage =
-      (100 * (bearing.epochMillis - earliestBearingTime)) /
-      (latestBearingTime - earliestBearingTime);
+    const { top, left } = localToGlobal(
+      latLongToMapTL(bearingToEstLatLong(bearing), mapData),
+      viewport
+    );
+
     return (
-      <div className="tma-bearing-tick" style={{ left: `${percentage}%` }} />
+      <div
+        className="tma-bearing-tick"
+        style={{
+          transform: `translate(${left}px, ${top}px) rotate(${heading}deg)`,
+        }}
+      />
     );
   });
   return (
-    <div className="tma-solution-bar" style={solutionBarStyle}>
-      {bearingTicks}
-      <div className="tma-drag-handle" />
-      <div
-        className="tma-drag-handle-clicktarget"
-        onMouseDown={startDrag}
-        onMouseMove={onDrag}
-        onMouseUp={stopDrag}
-        onMouseLeave={stopDrag}
-        style={dragHandleStyleHackWhileDragging}
-      />
-      <div className="tma-head-handle"></div>
-      <div className="tma-head-handle-clicktarget" />
-    </div>
+    <>
+      <div className="tma-bearing-tick-container">{bearingTicks}</div>
+      <div className="tma-solution-bar" style={solutionBarStyle}>
+        <div className="tma-drag-handle" />
+        <div
+          className="tma-drag-handle-clicktarget"
+          onMouseDown={startDrag}
+          onMouseMove={onDrag}
+          onMouseUp={stopDrag}
+          onMouseLeave={stopDrag}
+          style={dragHandleStyleHackWhileDragging}
+        />
+        <div className="tma-head-handle"></div>
+        <div className="tma-head-handle-clicktarget" />
+      </div>
+    </>
   );
 };
 

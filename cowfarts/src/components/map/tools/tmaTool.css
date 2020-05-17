@@ -21,7 +21,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  border-bottom: 1px cyan solid;
+  width: 0;
+  border: 1px cyan solid;
+  transform-origin: left center;
 }
 
 .tma-solution-bar::after {
@@ -57,7 +59,7 @@
   height: 8px;
   width: 8px;
   background-color: darkslategray;
-  border: 1px cyan solid;
+  border: 2px cyan solid;
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
@@ -73,9 +75,13 @@
 
 .tma-bearing-tick {
   position: absolute;
-  height: 12px;
-  top: -6px;
-  border-left: 1px cyan solid;
+  width: 24px;
+  left: -12px;
+  border-top: 1px cyan solid;
+}
+
+.tma-bearing-tick-container {
+  position: absolute;
 }
 
 /* clicktarget hack for the fact that I don't want to deal with adding a static
