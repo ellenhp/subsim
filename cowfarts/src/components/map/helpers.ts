@@ -60,6 +60,18 @@ export const latLongToMapTL = (latLong: LatLong, mapData: MapData): TopLeft => {
   };
 };
 
+export const mapTLToLatLong = (mapTL: TopLeft, mapData: MapData): LatLong => {
+  const { top, left } = mapTL;
+  return {
+    lat:
+      mapData.topLeft.lat +
+      ((mapData.bottomRight.lat - mapData.topLeft.lat) * top) / mapData.height,
+    lng:
+      mapData.topLeft.lng +
+      ((mapData.bottomRight.lng - mapData.topLeft.lng) * left) / mapData.width,
+  };
+};
+
 export const paneTransform = (viewport: Viewport) => {
   const { zoom, x, y } = viewport;
 

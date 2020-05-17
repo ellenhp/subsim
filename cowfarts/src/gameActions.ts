@@ -8,6 +8,8 @@ import {
   TmaSystemRequest,
 } from "./__protogen__/mass/api/actions_pb";
 import { GameConnection } from "./game";
+import { LatLong } from "./commonTypes";
+import { Position } from "./__protogen__/mass/api/spatial_pb";
 
 export function requestSpeed(game, speed: number) {
   const speedSystemsRequest = new PropulsionSystemRequest();
@@ -132,5 +134,37 @@ export function takeBearingForContact(
   doActionRequest.setVesselId(game.vesselId);
   doActionRequest.setSystemRequestsList([systemsRequest]);
 
+  game.performAction(doActionRequest);
+}
+
+export function uploadTmaSolution(
+  game: GameConnection,
+  designation: string,
+  position: LatLong,
+  heading: number,
+  speed: number
+) {
+  const solPosition = new Position();
+  solPosition.setLat(position.lat);
+  solPosition.setLng(position.lng);
+  const solution = new TmaSystemRequest.TmaUploadSolutionSubrequest.Solution();
+  solution.setPosition(solPosition);
+  solution.setHeadingDegrees(heading);
+  solution.setSpeedKnots(speed);
+
+  const uploadSolution = new TmaSystemRequest.TmaUploadSolutionSubrequest();
+  uploadSolution.setDesignation(designation);
+  uploadSolution.setSolution(solution);
+
+  const tmaSystemRequest = new TmaSystemRequest();
+  tmaSystemRequest.setUploadSolutionRequest(uploadSolution);
+
+  const systemsRequest = new SystemRequest();
+  systemsRequest.setTmaRequest(tmaSystemRequest);
+  const doActionRequest = new DoActionRequest();
+
+  doActionRequest.setScenarioId(game.scenarioId);
+  doActionRequest.setVesselId(game.vesselId);
+  doActionRequest.setSystemRequestsList([systemsRequest]);
   game.performAction(doActionRequest);
 }

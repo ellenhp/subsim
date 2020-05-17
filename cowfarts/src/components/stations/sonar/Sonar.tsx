@@ -7,7 +7,7 @@ import ContactManager from "./ContactManager";
 import { getContacts } from "../../../gettorz";
 
 const Sonar: StationComponent = (props: StationProps) => {
-  const [selectedContacts, setSelectedContacts] = useState<>(
+  const [selectedContacts, setSelectedContacts] = useState(
     getContacts(props.latestUpdate).map((contact) => contact.designation)
   );
 

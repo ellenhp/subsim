@@ -1,4 +1,7 @@
-import { VesselUpdate } from "./__protogen__/mass/api/updates_pb";
+import {
+  VesselUpdate,
+  TmaSystemUpdate,
+} from "./__protogen__/mass/api/updates_pb";
 import ContactManager from "./components/stations/sonar/ContactManager";
 
 export const getRequestedSpeed = (update: VesselUpdate.AsObject) => {
@@ -54,5 +57,20 @@ export const getBearingsForContact = (
       return contact.bearingsList || [];
     })
     .reduce((a, b) => a.concat(b), []);
+  return bearingsForContact;
+};
+
+export const getTmaSolutionForContact = (
+  update: VesselUpdate.AsObject,
+  targetDesignation: string
+): TmaSystemUpdate.TmaContact.Solution.AsObject | undefined => {
+  const bearingsForContact = update.systemUpdatesList
+    .filter((system) => system.tmaUpdate)[0]
+    .tmaUpdate.contactsList.filter(
+      (contact) => contact.designation === targetDesignation
+    )
+    .map((contact) => {
+      return contact.solution;
+    })[0];
   return bearingsForContact;
 };

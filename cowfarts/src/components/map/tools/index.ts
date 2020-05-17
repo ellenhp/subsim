@@ -14,6 +14,7 @@ export interface OverlayProps {
   game: GameConnection;
   mapData: MapData;
   viewport: Viewport;
+  tmaTarget?: string;
 }
 
 export type OverlayComponent = React.FunctionComponent<OverlayProps>;

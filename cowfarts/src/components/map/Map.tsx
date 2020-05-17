@@ -33,6 +33,9 @@ interface MapProps {
   game: GameConnection;
   latestUpdate: VesselUpdate.AsObject;
   forceTool?: keyof ToolList;
+  // I really don't like passing this down so deeply
+  // something something ask for banana, get jungle.
+  tmaTarget?: string;
 }
 
 // TODO: We really should compress this proto on entry
@@ -63,6 +66,7 @@ const Map = ({
   latestUpdate,
   forceTool,
   game,
+  tmaTarget,
 }: MapProps) => {
   // Thank god that this is just math
   const initialState = getViewportWithPlayerInCenter(
@@ -144,17 +148,6 @@ const Map = ({
     mapPaneStyle.filter = tool.backgroundFilter;
   }
 
-  /*let toolSwitcher;
-  if (!forceTool) {
-    // This should really be refactored
-    toolSwitcher = (
-      <div className="map-tool-switcher">
-        <button onClick={() => setTool(tools.pan)}>Pan</button>
-        <button onClick={() => setTool(tools.tma)}>TMA</button>
-      </div>
-    );
-  }*/
-
   const Overlay = tool.overlay;
 
   return (
@@ -178,6 +171,7 @@ const Map = ({
               latestUpdate={latestUpdate}
               mapData={mapEngine.data}
               viewport={viewport}
+              tmaTarget={tmaTarget}
             />
           )}
         </div>
