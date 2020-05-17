@@ -38,6 +38,25 @@ interface SolutionOverlayProps {
   bearings: Array<TmaSystemUpdate.TmaContact.Bearing.AsObject>;
 }
 
+function baseLatLongToTmaPos(
+  baseLatLong: LatLong,
+  heading: number,
+  speed: number,
+  td: number
+) {
+  const distNm = (speed * td) / (1000 * 3600);
+  return getFinalLatLong(baseLatLong, distNm, heading);
+}
+
+function tmaPosToBaseLatLong(
+  tmaPos: LatLong,
+  heading: number,
+  speed: number,
+  td: number
+) {
+  return baseLatLongToTmaPos(tmaPos, heading, speed, -td);
+}
+
 const pixelsAtEndOfTmaShaft = 10;
 const handleLengthMult = 1 / 30000;
 // because i don't have enough time to do proper math.
@@ -104,7 +123,12 @@ const SolutionOverlay = ({
   const basePosition =
     dragState.status === "dragging-base"
       ? dragState.latLong
-      : solution.position;
+      : tmaPosToBaseLatLong(
+          solution.position,
+          solution.headingDegrees,
+          solution.speedKnots,
+          solution.epochMillis - earliestBearingTime
+        );
 
   const speedKnots =
     dragState.status === "dragging-head"
@@ -232,18 +256,32 @@ const SolutionOverlay = ({
       return;
     } else if (dragState.status === "dragging-base") {
       e.stopPropagation();
-      uploadTmaSolution(game, contact, dragState.latLong, heading, speedKnots);
+      const newLatLong = baseLatLongToTmaPos(
+        basePosition,
+        heading,
+        speedKnots,
+        Date.now() - earliestBearingTime
+      );
+      uploadTmaSolution(game, contact, newLatLong, heading, speedKnots);
 
       setDragState({ status: "dropped" });
     } else {
       e.stopPropagation();
       setDragState({ status: "dropped" });
+      const newHeading = Math.floor((dragState.heading + 360) % 360);
+      const newSpeed = Math.floor(dragState.speed);
+
       uploadTmaSolution(
         game,
         contact,
-        basePosition,
-        Math.floor((dragState.heading + 360) % 360),
-        Math.floor(dragState.speed)
+        baseLatLongToTmaPos(
+          basePosition,
+          newHeading,
+          newSpeed,
+          Date.now() - earliestBearingTime
+        ),
+        newHeading,
+        newSpeed
       );
     }
   };
