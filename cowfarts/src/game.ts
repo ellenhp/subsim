@@ -9,8 +9,6 @@ import {
 } from "./__protogen__/mass/api/actions_pb";
 import { Pipe } from "./util/pipe";
 import { GameId } from "./commonTypes";
-import { Scenario } from "./__protogen__/mass/api/scenario_pb";
-
 import buildNewFeasibleScenario from "./builders/feasibleScenario";
 
 const client = new MassBackendClient(process.env.BACKEND || location.origin);
@@ -31,18 +29,17 @@ export function joinGame(id: GameId): GameConnection {
 export function createNewGame(): GameConnection {
   const gameId = {
     scenarioId: v4(),
-    vesselId: "user",
+    vesselId: "rebels", // TODO change me once we have pvp
   };
-  const scenario = buildNewFeasibleScenario(gameId.vesselId);
-  return connectToGame(gameId, scenario);
+  return connectToGame(gameId);
 }
 
-function connectToGame(id: GameId, scenario?: Scenario): GameConnection {
+function connectToGame(id: GameId): GameConnection {
   const { scenarioId, vesselId } = id;
   const connectionReq = new ConnectRequest();
   connectionReq.setVesselUniqueId(vesselId);
   connectionReq.setScenarioId(scenarioId);
-  connectionReq.setScenario(buildNewFeasibleScenario(vesselId));
+  connectionReq.setScenario(buildNewFeasibleScenario());
 
   const worldEvents = new Pipe<VesselUpdate.AsObject>();
 

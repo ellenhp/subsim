@@ -8,8 +8,9 @@ import java.time.temporal.TemporalAmount
 import kotlin.math.*
 
 class PropulsionSystem(vessel: Vessel, val descriptor: Systems.PropulsionSystem) : VesselSystem(vessel) {
-    private var requestedSpeedKnots = 0.0
+    var requestedSpeedKnots = 0.0
     private var actualSpeedKnots = 0.0
+    val maxSpeedKnots = descriptor.maxSpeedKnots.toDouble()
 
     override fun getSystemUpdate(): Updates.SystemUpdate {
         return Updates.SystemUpdate.newBuilder().setPropulsionUpdate(Updates.PropulsionSystemUpdate.newBuilder()

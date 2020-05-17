@@ -27,8 +27,14 @@ class Vessel(val uniqueId: String,
     }
 
     fun step(dt: Duration) {
-        if (!isDead) {
-            systems.forEach { it.step(dt) }
+        if (isDead)
+            return
+        // If a system kills the vessel, we want to IMMEDIATELY stop processing other systems, because we don't want
+        // state mutated post-death, e.g. by the propulsion system, setting noiseLevel to be non-zero.
+        systems.forEach {
+            if (!isDead) {
+                it.step(dt)
+            }
         }
     }
 
@@ -44,10 +50,9 @@ class Vessel(val uniqueId: String,
         action.systemRequestsList.forEach { processSystemRequest(it) }
     }
 
-    fun processSonarContact(otherContact: Vessel, powerLevel: Double) {
-        println("$uniqueId heard ${otherContact.uniqueId} at power level $powerLevel")
+    fun processSonarContact(propagationResult: SonarSystem.PropagationResult) {
         maybeGetSystem<SonarSystem>()?.let {
-            it.updateContact(otherContact, powerLevel)
+            it.updateContact(propagationResult.otherContact, propagationResult)
         }
     }
 

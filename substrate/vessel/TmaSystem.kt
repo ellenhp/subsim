@@ -32,6 +32,7 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
             tmaRequest.hasMergeContactRequest() -> mergeContact(tmaRequest.mergeContactRequest)
             tmaRequest.hasDeleteContactRequest() -> deleteContact(tmaRequest.deleteContactRequest)
             tmaRequest.hasUploadSolutionRequest() -> uploadSolution(tmaRequest.uploadSolutionRequest)
+            tmaRequest.hasDeleteBearingRequest() -> deleteBearing(tmaRequest.deleteBearingRequest)
         }
     }
 
@@ -55,7 +56,7 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
                     ?: throw NoSuchContactException("Expected to find contact with designation ${request.designation}")
             builder.addBearings(Updates.TmaSystemUpdate.TmaContact.Bearing.newBuilder()
                     .setBearingDegrees(request.bearingDegrees)
-                    .setEpochMillis(Instant.now().toEpochMilli())
+                    .setEpochMillis(request.epochMillis)
                     .setLocation(vessel.position))
             contacts[request.designation] = builder.build()
         }
@@ -95,6 +96,17 @@ class TmaSystem(vessel: Vessel, val descriptor: Systems.TmaSystem) : VesselSyste
                     .setHeadingDegrees(uploadSolutionRequest.solution.headingDegrees)
                     .setPosition(uploadSolutionRequest.solution.position)
                     .setSpeedKnots(uploadSolutionRequest.solution.speedKnots)).build()
+        }
+    }
+
+    private fun deleteBearing(deleteBearingRequest: Actions.TmaSystemRequest.TmaDeleteBearingSubrequest) {
+        synchronized(lock) {
+            val contact = contacts[deleteBearingRequest.designation]
+                    ?: throw NoSuchContactException("Expected contact with name ${deleteBearingRequest.designation}")
+            val bearingToDelete =
+                    contact.bearingsList.firstOrNull { it.epochMillis == deleteBearingRequest.epochMillis }
+            contacts[deleteBearingRequest.designation] =
+                    contact.toBuilder().removeBearings(contact.bearingsList.indexOf(bearingToDelete)).build()
         }
     }
 }

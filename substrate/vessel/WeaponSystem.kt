@@ -29,10 +29,15 @@ class WeaponSystem(vessel: Vessel, private val descriptor: Systems.WeaponSystem)
     private fun fireWeapon(fireWeaponRequest: Actions.WeaponSystemRequest.FireWeaponRequest) {
         val weapon = vessel.simWorldInterface.spawnVessel(fireWeaponRequest.weapon.weaponVesselDescriptor,
                 ScenarioOuterClass.SpawnedVessel.SpawnInformation.newBuilder()
-                        .setExactSpawnHeading(0)
+                        .setExactSpawnHeading((vessel.heading.toInt() + 45) % 360)
                         .setPosition(vessel.position)
                         .build())
-        weapon.getSystem<GuidanceSystem>().enableDistanceFeet = fireWeaponRequest.enableDistanceFeet
-//        weapon.getSystem<GuidanceSystem>().guidanceType = fireWeaponRequest.
+        weapon.maybeGetSystem<GuidanceSystem>()?.let {
+            it.enableDistanceFeet = fireWeaponRequest.enableDistanceFeet
+            it.guidanceType = fireWeaponRequest.guidanceMode
+        }
+        weapon.maybeGetSystem<PropulsionSystem>()?.let {
+            it.requestedSpeedKnots = it.maxSpeedKnots
+        }
     }
 }
