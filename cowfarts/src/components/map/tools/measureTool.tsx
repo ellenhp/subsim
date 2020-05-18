@@ -121,7 +121,7 @@ const MeasureOverlay = ({ viewport, mapData }: OverlayProps) => {
           ).toFixed(2)}
           nm
           <br />
-          {(((angle * 360) / (Math.PI * 2) + 270) % 360).toFixed(1)}°
+          {(((angle * 360) / (Math.PI * 2) + 270 + 180) % 360).toFixed(1)}°
         </div>
       </div>
     );
