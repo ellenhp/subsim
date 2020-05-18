@@ -56,3 +56,14 @@ export const getBearingsForContact = (
     .reduce((a, b) => a.concat(b), []);
   return bearingsForContact;
 };
+
+export const getWeaponCount = (
+  update: VesselUpdate.AsObject,
+  weaponId: string
+) => {
+  return update.systemUpdatesList
+    .filter((system) => system.weaponUpdate)[0]
+    .weaponUpdate.armamentList.filter(
+      (armarment) => armarment.weapon.weaponVesselDescriptor === weaponId
+    )[0].count;
+};

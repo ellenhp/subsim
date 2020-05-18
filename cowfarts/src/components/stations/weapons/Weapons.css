@@ -1,0 +1,30 @@
+.weapons-station {
+  display: grid;
+  grid-template-rows: 2fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 8px;
+  padding: 8px;
+}
+
+.weapons-configs label {
+  display: block;
+  padding: 2px;
+}
+
+.inv-fire-thingy {
+  display: flex;
+}
+
+.inv-fire-thingy span {
+  flex-grow: 1;
+}
+
+.weapons-torpedo {
+  grid-column: 1;
+}
+.weapons-noisemaker {
+  grid-column: 1;
+}
+.weapons-decoy {
+  grid-column: 1;
+}

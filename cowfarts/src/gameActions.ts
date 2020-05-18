@@ -6,8 +6,10 @@ import {
   HullSystemRequest,
   DivingSystemRequest,
   TmaSystemRequest,
+  WeaponSystemRequest,
 } from "./__protogen__/mass/api/actions_pb";
 import { GameConnection } from "./game";
+import { Weapon } from "./__protogen__/mass/api/weapons_pb";
 
 export function requestSpeed(game, speed: number) {
   const speedSystemsRequest = new PropulsionSystemRequest();
@@ -127,6 +129,75 @@ export function takeBearingForContact(
   tmaSystemRequest.setTakeBearingRequest(takeBearingRequest);
   const systemsRequest = new SystemRequest();
   systemsRequest.setTmaRequest(tmaSystemRequest);
+  const doActionRequest = new DoActionRequest();
+  doActionRequest.setScenarioId(game.scenarioId);
+  doActionRequest.setVesselId(game.vesselId);
+  doActionRequest.setSystemRequestsList([systemsRequest]);
+
+  game.performAction(doActionRequest);
+}
+
+export function fireTorpedo(
+  game: GameConnection,
+  heading: number,
+  speedKts: number,
+  enableDistanceFeet: number
+) {
+  const adcapWeapon = new Weapon();
+  adcapWeapon.setWeaponVesselDescriptor("adcap");
+
+  const fireRequest = new WeaponSystemRequest.FireWeaponRequest();
+
+  fireRequest.setWeapon(adcapWeapon);
+  fireRequest.setEnableDistanceFeet(enableDistanceFeet);
+  fireRequest.setGuidanceMode(
+    WeaponSystemRequest.FireWeaponRequest.GuidanceMode.ACTIVE
+  );
+  fireRequest.setSpeedKnots(speedKts);
+  fireRequest.setHeadingDegrees(heading);
+  const weaponSystemRequest = new WeaponSystemRequest();
+  weaponSystemRequest.setFireWeaponRequest(fireRequest);
+
+  const systemsRequest = new SystemRequest();
+  systemsRequest.setWeaponRequest(weaponSystemRequest);
+  const doActionRequest = new DoActionRequest();
+  doActionRequest.setScenarioId(game.scenarioId);
+  doActionRequest.setVesselId(game.vesselId);
+  doActionRequest.setSystemRequestsList([systemsRequest]);
+
+  game.performAction(doActionRequest);
+}
+
+export function fireDecoy(game: GameConnection) {
+  const decoyWeapon = new Weapon();
+  decoyWeapon.setWeaponVesselDescriptor("decoy");
+
+  const fireRequest = new WeaponSystemRequest.FireWeaponRequest();
+  fireRequest.setWeapon(decoyWeapon);
+  const weaponSystemRequest = new WeaponSystemRequest();
+  weaponSystemRequest.setFireWeaponRequest(fireRequest);
+
+  const systemsRequest = new SystemRequest();
+  systemsRequest.setWeaponRequest(weaponSystemRequest);
+  const doActionRequest = new DoActionRequest();
+  doActionRequest.setScenarioId(game.scenarioId);
+  doActionRequest.setVesselId(game.vesselId);
+  doActionRequest.setSystemRequestsList([systemsRequest]);
+
+  game.performAction(doActionRequest);
+}
+
+export function fireNoisemaker(game: GameConnection) {
+  const noisemakerWeapon = new Weapon();
+  noisemakerWeapon.setWeaponVesselDescriptor("noisemaker");
+
+  const fireRequest = new WeaponSystemRequest.FireWeaponRequest();
+  fireRequest.setWeapon(noisemakerWeapon);
+  const weaponSystemRequest = new WeaponSystemRequest();
+  weaponSystemRequest.setFireWeaponRequest(fireRequest);
+
+  const systemsRequest = new SystemRequest();
+  systemsRequest.setWeaponRequest(weaponSystemRequest);
   const doActionRequest = new DoActionRequest();
   doActionRequest.setScenarioId(game.scenarioId);
   doActionRequest.setVesselId(game.vesselId);
