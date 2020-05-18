@@ -17,3 +17,95 @@
   border: 1px solid greenyellow;
 }
 
+.tma-solution-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  border: 1px cyan solid;
+  transform-origin: left center;
+}
+
+.tma-solution-bar::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(100%, -50%);
+  color: cyan;
+}
+
+.tma-head-handle {
+  position: absolute;
+  right: 0px;
+  width: 8px;
+  height: 8px;
+  border: cyan solid;
+  border-width: 2px 2px 0 0;
+  transform: translate(50%, -50%) rotate(45deg);
+}
+
+.tma-head-handle-clicktarget {
+  position: absolute;
+  cursor: pointer;
+  height: 32px;
+  width: 32px;
+  right: 0;
+  border-radius: 50%;
+  transform: translate(50%, -50%);
+}
+
+.tma-drag-handle {
+  position: absolute;
+  height: 8px;
+  width: 8px;
+  background-color: darkslategray;
+  border: 2px cyan solid;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.tma-drag-handle-clicktarget {
+  position: absolute;
+  cursor: pointer;
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.tma-bearing-tick {
+  position: absolute;
+  width: 24px;
+  left: -12px;
+  border-top: 1px cyan solid;
+}
+
+.tma-bearing-tick-container {
+  position: absolute;
+}
+
+/* clicktarget hack for the fact that I don't want to deal with adding a static
+   overly layer. */
+
+.tma-initial-guess-clicktarget {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+}
+
+.tma-initial-guess-text {
+  font-size: 30px;
+  font-family: monospace;
+  text-align: center;
+  white-space: nowrap;
+  color: greenyellow;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  padding: 20px;
+  border: 1px dotted greenyellow;
+  background-color: rgba(0, 20, 0, 0.8);
+  transform: translate(-50%, 0);
+}

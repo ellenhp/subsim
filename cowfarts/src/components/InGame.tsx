@@ -86,7 +86,11 @@ class InGame extends React.Component<InGameProps> {
                   sonarEngine: this.sonarEngine,
                   mapEngine: this.mapEngine,
                 }}
-                changeStation={this.cha}
+                changeStation={this.changeStation}
+                stationFocusData={
+                  this.state.stationFocusData[this.state.currentStation]
+                }
+                setStationFocusData={this.changeStationFocusData}
                 latestUpdate={this.state.latestUpdate}
               />
             )
