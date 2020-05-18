@@ -11,6 +11,7 @@ import { Pipe } from "./util/pipe";
 import { GameId } from "./commonTypes";
 import buildNewFeasibleScenario from "./builders/feasibleScenario";
 import { Scenario } from "./__protogen__/mass/api/scenario_pb";
+import { ClientReadableStream } from "grpc-web";
 
 const client = new MassBackendClient(process.env.BACKEND || location.origin);
 
@@ -42,19 +43,24 @@ function connectToGame(id: GameId, scenario?: Scenario): GameConnection {
 
   const worldEvents = new Pipe<VesselUpdate.AsObject>();
 
-  var deadline = new Date();
-  deadline.setSeconds(deadline.getSeconds() + 600);
-
-  let stream;
+  let stream: ClientReadableStream<VesselUpdate>;
 
   const createStream = () => {
-    stream = client.connect(connectionReq, {
-      deadline: `${deadline.getTime()}`,
-    });
+    stream = client.connect(connectionReq);
+    stream.on("data", streamListener);
+  };
 
-    stream.on("data", (response) => {
-      worldEvents.fire(response.toObject());
-    });
+  let streamDeadmanSwitch: NodeJS.Timeout | undefined;
+  const streamListener = (response: VesselUpdate) => {
+    if (streamDeadmanSwitch) {
+      clearTimeout(streamDeadmanSwitch);
+    }
+    streamDeadmanSwitch = setTimeout(() => {
+      console.log("Reconnecting stream after 1s without messages");
+      stream.cancel();
+      createStream();
+    }, 1000);
+    worldEvents.fire(response.toObject());
   };
 
   createStream();
