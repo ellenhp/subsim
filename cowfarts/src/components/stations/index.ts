@@ -14,6 +14,7 @@ export type StationProps = {
   engines: Engines;
   latestUpdate: VesselUpdate.AsObject;
   changeStation: (station: Station) => unknown;
+  stationFocusData: string;
   setStationFocusData: (station: Station, focusData: string) => unknown;
 };
 

@@ -16,6 +16,7 @@ import TmaTool from "./tools/tmaTool";
 import { LatLong } from "../../commonTypes";
 import { MapData } from "../../engines/mapEngine/data";
 import { GameConnection } from "../../game";
+import { getMapContacts } from "../../gettorz";
 
 type ToolList = {
   pan: MapTool;
@@ -33,6 +34,9 @@ interface MapProps {
   game: GameConnection;
   latestUpdate: VesselUpdate.AsObject;
   forceTool?: keyof ToolList;
+  // I really don't like passing this down so deeply
+  // something something ask for banana, get jungle.
+  tmaTarget?: string;
 }
 
 // TODO: We really should compress this proto on entry
@@ -63,6 +67,7 @@ const Map = ({
   latestUpdate,
   forceTool,
   game,
+  tmaTarget,
 }: MapProps) => {
   // Thank god that this is just math
   const initialState = getViewportWithPlayerInCenter(
@@ -144,18 +149,32 @@ const Map = ({
     mapPaneStyle.filter = tool.backgroundFilter;
   }
 
-  /*let toolSwitcher;
-  if (!forceTool) {
-    // This should really be refactored
-    toolSwitcher = (
-      <div className="map-tool-switcher">
-        <button onClick={() => setTool(tools.pan)}>Pan</button>
-        <button onClick={() => setTool(tools.tma)}>TMA</button>
-      </div>
-    );
-  }*/
-
   const Overlay = tool.overlay;
+
+  const ContactIcons = () => (
+    <>
+      {getMapContacts(latestUpdate).map((mapContact) => {
+        const contactTL = localToGlobal(
+          latLongToMapTL(mapContact.position, mapEngine.data),
+          viewport
+        );
+        const mapContactStyle = {
+          transform: `translate(${contactTL.left}px, ${contactTL.top}px) rotate(${mapContact.headingDegrees}deg)`,
+        };
+        const mapContactLabelStyle = {
+          transform: `translate(${contactTL.left}px, ${contactTL.top}px)`,
+        };
+        return (
+          <div className="map-contact-wrapper">
+            <div className="map-contact-icon" style={mapContactStyle}></div>
+            <div className="map-contact-label" style={mapContactLabelStyle}>
+              {mapContact.designation}
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
 
   return (
     <div
@@ -171,6 +190,7 @@ const Map = ({
           <img src={mapEngine.mapImageEl.src} />
         </div>
         <div className="map-overlay" id={MAP_OVERLAY_ID}>
+          {!tool.hideContactIcons && <ContactIcons />}
           <div className="map-player-icon" style={playerIconStyle} />
           {Overlay && (
             <Overlay
@@ -178,6 +198,7 @@ const Map = ({
               latestUpdate={latestUpdate}
               mapData={mapEngine.data}
               viewport={viewport}
+              tmaTarget={tmaTarget}
             />
           )}
         </div>

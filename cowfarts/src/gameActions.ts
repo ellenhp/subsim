@@ -3,15 +3,16 @@ import {
   PropulsionSystemRequest,
   SystemRequest,
   SteeringSystemRequest,
-  HullSystemRequest,
   DivingSystemRequest,
   TmaSystemRequest,
   WeaponSystemRequest,
 } from "./__protogen__/mass/api/actions_pb";
 import { GameConnection } from "./game";
+import { LatLong } from "./commonTypes";
+import { Position } from "./__protogen__/mass/api/spatial_pb";
 import { Weapon } from "./__protogen__/mass/api/weapons_pb";
 
-export function requestSpeed(game, speed: number) {
+export function requestSpeed(game: GameConnection, speed: number) {
   const speedSystemsRequest = new PropulsionSystemRequest();
   speedSystemsRequest.setSpeedKnots(speed);
   const systemsRequest = new SystemRequest();
@@ -116,6 +117,7 @@ export function mergeContacts(game: GameConnection, contacts: string[]) {
 export function takeBearingForContact(
   game: GameConnection,
   bearing: number,
+  time: number,
   contact: string
 ) {
   if (bearing < 0 || bearing >= 360) {
@@ -124,6 +126,7 @@ export function takeBearingForContact(
   const takeBearingRequest = new TmaSystemRequest.TmaTakeBearingSubrequest();
   takeBearingRequest.setBearingDegrees(Math.floor(bearing));
   takeBearingRequest.setDesignation(contact);
+  takeBearingRequest.setEpochMillis(Math.round(time));
 
   const tmaSystemRequest = new TmaSystemRequest();
   tmaSystemRequest.setTakeBearingRequest(takeBearingRequest);
@@ -134,6 +137,39 @@ export function takeBearingForContact(
   doActionRequest.setVesselId(game.vesselId);
   doActionRequest.setSystemRequestsList([systemsRequest]);
 
+  game.performAction(doActionRequest);
+}
+
+export function uploadTmaSolution(
+  game: GameConnection,
+  designation: string,
+  position: LatLong,
+  heading: number,
+  speed: number
+) {
+  console.log(designation, position, heading, speed);
+  const solPosition = new Position();
+  solPosition.setLat(position.lat);
+  solPosition.setLng(position.lng);
+  const solution = new TmaSystemRequest.TmaUploadSolutionSubrequest.Solution();
+  solution.setPosition(solPosition);
+  solution.setHeadingDegrees(heading);
+  solution.setSpeedKnots(speed);
+
+  const uploadSolution = new TmaSystemRequest.TmaUploadSolutionSubrequest();
+  uploadSolution.setDesignation(designation);
+  uploadSolution.setSolution(solution);
+
+  const tmaSystemRequest = new TmaSystemRequest();
+  tmaSystemRequest.setUploadSolutionRequest(uploadSolution);
+
+  const systemsRequest = new SystemRequest();
+  systemsRequest.setTmaRequest(tmaSystemRequest);
+  const doActionRequest = new DoActionRequest();
+
+  doActionRequest.setScenarioId(game.scenarioId);
+  doActionRequest.setVesselId(game.vesselId);
+  doActionRequest.setSystemRequestsList([systemsRequest]);
   game.performAction(doActionRequest);
 }
 
