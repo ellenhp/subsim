@@ -58,6 +58,7 @@
   position: absolute;
   transform: translate(-50%, -2px);
   padding: 2px;
+  color: red;
   cursor: crosshair;
 }
 
@@ -67,6 +68,6 @@
   display: block;
   height: 4px;
   width: 4px;
-  border: 1px lightgreen solid;
+  border: 1px red solid;
   border-radius: 50%;
 }
