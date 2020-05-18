@@ -17,15 +17,18 @@ import { LatLong } from "../../commonTypes";
 import { MapData } from "../../engines/mapEngine/data";
 import { GameConnection } from "../../game";
 import { getMapContacts } from "../../gettorz";
+import MeasureTool from "./tools/measureTool";
 
 type ToolList = {
   pan: MapTool;
   tma: MapTool;
+  measure: MeasureTool;
 };
 
 const tools: ToolList = {
   pan: new PanTool(),
   tma: new TmaTool(),
+  measure: new MeasureTool(),
 };
 
 interface MapProps {
@@ -159,7 +162,7 @@ const Map = ({
           viewport
         );
         const mapContactStyle = {
-          transform: `translate(${contactTL.left}px, ${contactTL.top}px) rotate(${mapContact.headingDegrees}deg)`,
+          transform: `translate(${contactTL.left}px, ${contactTL.top}px) rotate(${mapContact.headingDegrees}rad)`,
         };
         const mapContactLabelStyle = {
           transform: `translate(${contactTL.left}px, ${contactTL.top}px)`,
@@ -175,6 +178,17 @@ const Map = ({
       })}
     </>
   );
+
+  let toolSwitcher;
+  if (!forceTool) {
+    // This should really be refactored
+    toolSwitcher = (
+      <div className="map-tool-switcher">
+        <button onClick={() => setTool(tools.pan)}>Pan</button>
+        <button onClick={() => setTool(tools.measure)}>Measure</button>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -204,7 +218,7 @@ const Map = ({
         </div>
       </div>
 
-      {/*toolSwitcher*/}
+      {toolSwitcher}
 
       <div className="map-zoom-buttons">
         {!isCenteredOnPlayer && (

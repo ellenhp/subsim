@@ -96,7 +96,7 @@ export const latLongDistance = (
     Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-  return earthRadiusMeters * c; // in metres... wheeee
+  return (earthRadiusMeters * c) / 1852;
 };
 
 // Taken with love from https://stackoverflow.com/questions/45234631/find-the-final-latitude-longitude-after-a-movement-on-the-globe
