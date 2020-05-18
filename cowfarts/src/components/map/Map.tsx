@@ -185,7 +185,7 @@ const Map = ({
     toolSwitcher = (
       <div className="map-tool-switcher">
         <button onClick={() => setTool(tools.pan)}>Pan</button>
-        <button onClick={() => setTool(tools.measure)}>Measure</button>
+        <button onClick={() => setTool(tools.measure)}>Dist</button>
       </div>
     );
   }

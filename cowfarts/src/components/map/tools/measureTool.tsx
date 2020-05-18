@@ -115,7 +115,13 @@ const MeasureOverlay = ({ viewport, mapData }: OverlayProps) => {
           className="measure-tool-text"
           style={{ transform: `rotate(${-angle}rad)` }}
         >
-          {latLongDistance(dragState.originalLatLong, dragState.currentLatLong).toFixed()}
+          {latLongDistance(
+            dragState.originalLatLong,
+            dragState.currentLatLong
+          ).toFixed(2)}
+          nm
+          <br />
+          {(((angle * 360) / (Math.PI * 2) + 270) % 360).toFixed(1)}°
         </div>
       </div>
     );
