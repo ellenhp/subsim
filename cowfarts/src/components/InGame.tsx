@@ -70,7 +70,6 @@ class InGame extends React.Component<InGameProps> {
 
     return (
       <div className="in-game">
-        <div></div>
         <div className="switcher-wrapper">
           <StationSwitcher
             currentStation={this.state.currentStation}
@@ -96,12 +95,9 @@ class InGame extends React.Component<InGameProps> {
             )
           }
         </div>
-        <span className="game-debug-info">
-          hover for debug
-          <div className="contents">
-            <pre>{JSON.stringify(this.state.latestUpdate, null, 2)}</pre>
-          </div>
-        </span>
+        {this.state.latestUpdate && this.state.latestUpdate.isDead && (
+          <div className="ded-indicator">Your submarine has been destroyed</div>
+        )}
       </div>
     );
   }
