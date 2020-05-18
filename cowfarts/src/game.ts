@@ -25,7 +25,7 @@ export interface GameConnection {
 }
 
 export function joinGame(id: GameId): GameConnection {
-  return connectToGame(id);
+  return connectToGame(id, buildNewFeasibleScenario());
 }
 
 export function createNewGame(id: GameId): GameConnection {
@@ -42,7 +42,6 @@ function connectToGame(id: GameId, scenario?: Scenario): GameConnection {
   }
 
   const worldEvents = new Pipe<VesselUpdate.AsObject>();
-
   let stream: ClientReadableStream<VesselUpdate>;
 
   const createStream = () => {
@@ -70,6 +69,12 @@ function connectToGame(id: GameId, scenario?: Scenario): GameConnection {
       return client.doAction(arg, {}, (result) => resolve(result));
     });
   }
+
+  // Start keepalives after 10 seconds
+  setTimeout(
+    () => setInterval(() => performAction(new DoActionRequest()), 10000),
+    10000
+  );
 
   return {
     scenarioId,
