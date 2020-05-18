@@ -110,7 +110,7 @@ const TitleScreen = ({ createGame, joinGame }: TitleScreenProps) => {
     <div className="title-screen">
       <header className="card">
         <h1>SUB SUB SUB SUB</h1>
-        <h2>The world's most expensive to run Submarine Simulator</h2>
+        <h2>An entry to the 2020 Dogpit <del>Devops Jam</del> Sim Jam</h2>
       </header>
       <article className="card">{articleInnards}</article>
     </div>
