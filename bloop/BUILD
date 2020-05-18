@@ -97,7 +97,7 @@ container_image(
     name = "python3_ubuntu2004_wrapper_with_bellhop",
     base = ":python3_ubuntu2004.tar",
     files = [
-        "//acoustics/bellhop:bellhop",
+        "//acoustics/bellhop",
     ],
     symlinks = {
         "/bin/bellhop.exe": "/bellhop.exe",
@@ -184,6 +184,32 @@ k8s_object(
 k8s_object(
     name = "dev-service",
     cluster = "mass-dev",
+    kind = "service",
+    template = ":service.yaml",
+)
+
+k8s_objects(
+    name = "jam",
+    objects = [
+        ":jam-deployment",
+        ":jam-service",
+    ],
+    visibility = ["//k8s:__subpackages__"],
+)
+
+k8s_object(
+    name = "jam-deployment",
+    cluster = "mass-prod",
+    images = {
+        "gcr.io/mass-276203/bloop:dev": "//bloop:image",
+    },
+    kind = "deployment",
+    template = ":deployment.yaml",
+)
+
+k8s_object(
+    name = "jam-service",
+    cluster = "mass-prod",
     kind = "service",
     template = ":service.yaml",
 )

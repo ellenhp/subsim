@@ -20,6 +20,14 @@ k8s_objects(
     ],
 )
 
+k8s_objects(
+    name = "jam",
+    objects = [
+        ":jam-deployment",
+        ":jam-service",
+    ],
+)
+
 k8s_object(
     name = "prod-deployment",
     cluster = "gke_mass-276203_us-central1-c_milky",
@@ -50,6 +58,23 @@ k8s_object(
 k8s_object(
     name = "dev-service",
     cluster = "mass-dev",
+    kind = "service",
+    template = ":service-dev.yaml",
+)
+
+k8s_object(
+    name = "jam-deployment",
+    cluster = "mass-prod",
+    images = {
+        "gcr.io/mass-276203/envoy:dev": "//envoy:image",
+    },
+    kind = "deployment",
+    template = ":deployment.yaml",
+)
+
+k8s_object(
+    name = "jam-service",
+    cluster = "mass-prod",
     kind = "service",
     template = ":service-dev.yaml",
 )

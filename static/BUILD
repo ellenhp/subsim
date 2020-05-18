@@ -54,6 +54,31 @@ k8s_object(
     template = ":service.yaml",
 )
 
+k8s_objects(
+    name = "jam",
+    objects = [
+        ":jam-deployment",
+        ":jam-service",
+    ],
+)
+
+k8s_object(
+    name = "jam-deployment",
+    cluster = "mass-prod",
+    images = {
+        "gcr.io/mass-276203/static:dev": "//static:image",
+    },
+    kind = "deployment",
+    template = ":deployment.yaml",
+)
+
+k8s_object(
+    name = "jam-service",
+    cluster = "mass-prod",
+    kind = "service",
+    template = ":service.yaml",
+)
+
 container_push(
     name = "publish",
     format = "Docker",

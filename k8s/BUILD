@@ -19,3 +19,13 @@ k8s_objects(
         "//bloop:dev",
     ],
 )
+
+k8s_objects(
+    name = "jam",
+    objects = [
+        "//envoy:jam",
+        "//substrate:jam",
+        "//static:jam",
+        "//bloop:jam",
+    ],
+)
