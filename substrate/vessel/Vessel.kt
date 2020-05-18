@@ -19,7 +19,7 @@ class Vessel(val uniqueId: String,
 
     var position: Spatial.Position = if (spawnInfo.hasPosition()) spawnInfo.position else randomPositionWithinBounds(spawnInfo.bounds)
     val systems: List<VesselSystem> = vesselDescriptor.systemsList.map(this::initializeSystem)
-    val positionBuffer = PositionBuffer(Duration.ofMinutes(30))
+    val positionBuffer = PositionBuffer(Duration.ofMinutes(10))
     var heading: Double = if (spawnInfo.hasHeadingBounds()) randomHeadingWithinBounds(spawnInfo.headingBounds) else spawnInfo.exactSpawnHeading.toDouble()
     var noiseLevel = 0.0
     private var lastPositionStoredInstant = Instant.now()
@@ -27,6 +27,23 @@ class Vessel(val uniqueId: String,
 
     init {
         systems.forEach { it.setupInitialState(spawnInfo) }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (super.equals(other)) {
+            return true
+        }
+        if (other === null) {
+            return false
+        }
+        if (other is Vessel) {
+            return other.uniqueId == uniqueId
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return uniqueId.hashCode()
     }
 
     fun step(dt: Duration) {
@@ -39,7 +56,7 @@ class Vessel(val uniqueId: String,
                 it.step(dt)
             }
         }
-        if (lastPositionStoredInstant.plusSeconds(1).isBefore(Instant.now())) {
+        if (Duration.between(lastPositionStoredInstant, Instant.now()).abs().seconds > 5) {
             // Add the position to the buffer for later use.
             positionBuffer.addPosition(position)
             lastPositionStoredInstant = Instant.now()
@@ -65,6 +82,7 @@ class Vessel(val uniqueId: String,
     }
 
     fun kill() {
+        println("$uniqueId died")
         isDead = true
     }
 
@@ -110,6 +128,7 @@ class Vessel(val uniqueId: String,
             request.hasPropulsionRequest() -> getSystem<PropulsionSystem>().processRequest(request)
             request.hasSteeringRequest() -> getSystem<SteeringSystem>().processRequest(request)
             request.hasTmaRequest() -> getSystem<TmaSystem>().processRequest(request)
+            request.hasWeaponRequest() -> getSystem<WeaponSystem>().processRequest(request)
         }
     }
 
@@ -123,6 +142,8 @@ class Vessel(val uniqueId: String,
             systemDescriptor.hasSonarSystem() -> SonarSystem(this, systemDescriptor.sonarSystem)
             systemDescriptor.hasTmaSystem() -> TmaSystem(this, systemDescriptor.tmaSystem)
             systemDescriptor.hasWeaponSystem() -> WeaponSystem(this, systemDescriptor.weaponSystem)
+            systemDescriptor.hasSelfDestructSystem() -> SelfDestructSystem(this, systemDescriptor.selfDestructSystem)
+            systemDescriptor.hasGuidanceSystem() -> GuidanceSystem(this, systemDescriptor.guidanceSystem)
             else -> throw VesselInstantiationException("No matching system for vessel descriptor ${vesselDescriptor.uniqueId}. Upgrade the server?")
         }
         return system
