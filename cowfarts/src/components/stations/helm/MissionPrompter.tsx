@@ -7,7 +7,7 @@ const cascadiaBriefing = `# MISSION BRIEFING
 US LOYALISTS HAVE MOVED INTO THE NORTHERN
 AREAS OF THE SOUND NEAR WHIDBEY ISLAND. A
 VIRGINIA CLASS SUBMARINE WAS SEEN PATROLLING
-NEAR USELESS BAY AT 0700 THIS MORNING.OTHER
+NEAR USELESS BAY AT 0700 THIS MORNING. OTHER
 FORCES MAY BE PRESENT, USE CAUTION. BREAK
 THE BLOCKADE BY ANY MEANS NECESSARY.`;
 
@@ -17,11 +17,12 @@ CONTINUE PATROLS AND BLOCKADE OF THE SOUND.
 INTEL SUGGESTS CASCADIAN REBELS HAVE SIEZED
 SSN-22, A SEAWOLF CLASS SUB, AND MAY BE
 ATTEMPTING TO BREAK THE BLOCKADE. CAUTIOUSLY
-INVESTIGATE ANY CONTACTS TO THE SOUTH.`;
+INVESTIGATE ANY CONTACTS TO THE SOUTH. YOU
+ARE CLEARED TO ENGAGE ANY HOSTILE TARGETS.`;
 
-const MissionPrompter = (game: GameConnection) => {
+const MissionPrompter = ({ game }: { game: GameConnection }) => {
   const briefing =
-    game.vesselId === "cascadia" ? cascadiaBriefing : blockersBriefing;
+    game.vesselId === "rebels" ? cascadiaBriefing : blockersBriefing;
   return (
     <div className="mission-briefing card">
       <pre>{briefing}</pre>

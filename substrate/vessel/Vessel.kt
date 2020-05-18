@@ -24,6 +24,7 @@ class Vessel(val uniqueId: String,
     var noiseLevel = 0.0
     private var lastPositionStoredInstant = Instant.now()
     private var isDead = false
+    private var explosionNoise: Double = 0.0
 
     init {
         systems.forEach { it.setupInitialState(spawnInfo) }
@@ -46,7 +47,8 @@ class Vessel(val uniqueId: String,
         return uniqueId.hashCode()
     }
 
-    fun step(dt: Duration) {
+    fun step(dt: Duration, explosionNoise: Double) {
+        this.explosionNoise = explosionNoise
         if (isDead)
             return
         // If a system kills the vessel, we want to IMMEDIATELY stop processing other systems, because we don't want
@@ -68,6 +70,7 @@ class Vessel(val uniqueId: String,
         systems.forEach { updateBuilder.addSystemUpdates(it.getSystemUpdate()) }
         updateBuilder.position = position
         updateBuilder.isDead = isDead
+        updateBuilder.explosionNoise = explosionNoise.toFloat()
         return updateBuilder.build()
     }
 
@@ -164,4 +167,5 @@ class Vessel(val uniqueId: String,
 interface SimWorldInterface {
     fun spawnVessel(vesselDescriptor: String, spawnInfo: ScenarioOuterClass.SpawnedVessel.SpawnInformation): Vessel
     fun getAllVessels(): List<Vessel>
+    fun setExplosionNoise(noise: Double)
 }

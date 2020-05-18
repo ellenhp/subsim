@@ -19,6 +19,7 @@ class SimWorld(
     private val vesselTypes : Map<String, ScenarioOuterClass.VesselDescriptor> = scenario.vesselDescriptorsList.map { it.uniqueId to it }.toMap()
     private val vessels: MutableList<Vessel>
     private val lastBloopCallTime: MutableMap<Pair<Vessel, Vessel>, Instant> = HashMap()
+    private var explosionNoise = 0.0
 
     init {
         vessels = scenario.vesselsList.map {
@@ -31,7 +32,8 @@ class SimWorld(
     }
 
     fun step(dt: Duration) {
-        vessels.forEach { it.step(dt) }
+        explosionNoise /= 1.07
+        vessels.forEach { it.step(dt, explosionNoise) }
         maybeCalculateSonarPropagation()
     }
 
@@ -74,6 +76,10 @@ class SimWorld(
 
     override fun getAllVessels(): List<Vessel> {
         return vessels.filter(Vessel::isAlive).toList()
+    }
+
+    override fun setExplosionNoise(noise: Double) {
+        explosionNoise += noise
     }
 
     private fun getMatchingVessel(vesselId: String): Vessel {

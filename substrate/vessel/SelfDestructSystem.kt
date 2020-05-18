@@ -2,7 +2,6 @@ package substrate.vessel
 
 import api.Systems
 import api.Updates
-import substrate.utils.Utils
 import java.time.Duration
 import java.time.Instant
 
@@ -52,6 +51,7 @@ class SelfDestructSystem(vessel: Vessel, val descriptor: Systems.SelfDestructSys
             val unluckyVessels = vessel.simWorldInterface.getAllVessels().filter {
                 vessel.distanceToFeet(it.position) < descriptor.triggerRadiusFeet
             }
+            vessel.simWorldInterface.setExplosionNoise(100.0)
             unluckyVessels.forEach(Vessel::kill)
             vessel.kill()
         }

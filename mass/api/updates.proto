@@ -34,6 +34,9 @@ message VesselUpdate {
 
   // Whether or not this vessel has been destroyed.
   bool is_dead = 4;
+
+  // How much boom is happening out in that there water.
+  float explosion_noise = 5;
 }
 
 message SystemUpdate {
