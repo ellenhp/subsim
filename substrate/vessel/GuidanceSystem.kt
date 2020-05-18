@@ -35,8 +35,9 @@ class GuidanceSystem(vessel: Vessel, val descriptor: Systems.GuidanceSystem) : V
             val contacts = vessel.getSystem<SonarSystem>().contacts
             val sortedContacts = contacts.map {
                 val bearing = vessel.bearingToDegrees(it.key.position)
-                val deltaHeading = min(bearing, 360 - bearing)
-                Pair(getSonarValueToSortByForMode(it.value) / (15 + deltaHeading), it.key)
+                val deltaHeading = abs(min(bearing, 360 - bearing))
+                val baffleScalar = if (deltaHeading > 150) 0 else 1
+                Pair(baffleScalar * getSonarValueToSortByForMode(it.value) / (15 + deltaHeading), it.key)
             }.filter { it.first > 0 }.sortedByDescending { it.first }
             val targetedContact = sortedContacts.firstOrNull()
             if (targetedContact !== null) {

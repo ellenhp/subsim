@@ -233,6 +233,7 @@ function getTorpedoHullSystem(): VesselSystem {
   // Draft is actually just minimum depth, and since torpedoes don't have diving
   // systems yet, let's set this to something more than it actually is.
   hull.setDraftFeet(15);
+  hull.setSonarReturn(0.1)
   const hullSystem = new VesselSystem();
   hullSystem.setHullSystem(hull);
   return hullSystem;
@@ -311,7 +312,7 @@ function getDecoySelfDestructSystem(): VesselSystem {
 function getDecoyHullSystem(): VesselSystem {
   const hull = new HullSystem();
   hull.setDraftFeet(15);
-  hull.setSonarReturn(1.5);
+  hull.setSonarReturn(1.1);
   const hullSystem = new VesselSystem();
   hullSystem.setHullSystem(hull);
   return hullSystem;
