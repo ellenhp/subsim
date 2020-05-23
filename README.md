@@ -4,7 +4,7 @@ MASS is a piece of software designed to enable players to cooperatively control 
 
 ## Basic Architecture
 
-MASS is composed of three main components, along with a reverse proxy (envoy) that helps glue everything together).
+MASS is composed of three main components, along with a reverse proxy (envoy) that helps glue everything together.
 
 ### Substrate
 
@@ -20,4 +20,4 @@ Cowfarts is the sweet frontend for all this, it's written in react, I think. I d
 
 ## Communication
 
-Everything communicates with gRPC which was an absolute nightmare to set up, but it's really nice once it works. We're probably going to write a postmortem eventually about the game jam, and we'll have some words to say about gRPC on the web.
+Everything communicates with gRPC which was an absolute nightmare to set up, but it's really nice once it works. gRPC is great for backend work but for web frontends it's still not quite there.
