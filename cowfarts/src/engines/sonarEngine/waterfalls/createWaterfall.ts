@@ -10,6 +10,8 @@ interface DisplaySettings {
 export interface BroadbandScreen {
   timeScopeInSeconds: number;
   leftBearing: number;
+  hRes: number;
+  vRes: number;
   data: Pipe<ImageData>;
 }
 
@@ -84,6 +86,8 @@ const createWaterfall = (
   return {
     timeScopeInSeconds: BASE_SCOPE_SECONDS * multiplier,
     leftBearing: LEFT_BEARING,
+    hRes: H_RES,
+    vRes: V_RES,
     data: pipe,
   };
 };

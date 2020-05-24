@@ -48,12 +48,7 @@ class SnapshotManager {
           return {
             bearing: contact.bearing,
             broadbandPowerLevel: contact.broadbandPowerLevel,
-            freqs: [
-              {
-                freq: 100,
-                volume: contact.broadbandPowerLevel,
-              },
-            ],
+            freqs: [],
           };
         }),
       };

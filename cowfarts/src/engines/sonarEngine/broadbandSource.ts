@@ -36,8 +36,6 @@ export default class BroadbandSource implements SonarSource {
     this.snapshotManager = snapshotManager;
   }
 
-  interval: NodeJS.Timeout;
-
   noiseSource: any;
   noiseAngleSource: any;
   explosionSource: any;

@@ -4,7 +4,7 @@ import {
   H_RES,
   V_RES,
   BroadbandScreen,
-} from "../../../engines/sonarEngine/waterfalls/broadbandWaterfalls";
+} from "../../../engines/sonarEngine/waterfalls/createWaterfall";
 import "./BroadbandWaterfall.css";
 import { GameConnection } from "../../../game";
 import { VesselUpdate } from "../../../__protogen__/mass/api/updates_pb";
