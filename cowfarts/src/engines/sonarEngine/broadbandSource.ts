@@ -1,37 +1,7 @@
-import { Pipe } from "../../util/pipe";
 import noise from "noisejs";
-import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
 import { normalDistribution } from "../../util/math";
-
-type PointSource = {
-  bearing: number;
-  freqs: Array<{
-    freq: number;
-    volume: number;
-  }>;
-};
-
-type SoundSnapshot = {
-  pointSources: Array<PointSource>;
-  noiseLevel: number;
-  explosionLevel: number;
-  bearing: number;
-  timestamp: number;
-};
-
-function memo(
-  func: (time: number) => SoundSnapshot
-): (time: number) => SoundSnapshot {
-  const map: { [key: number]: SoundSnapshot } = {};
-  return function memo(time) {
-    if (map[time]) {
-      return map[time];
-    }
-    const snapshot = func(time);
-    map[time] = snapshot;
-    return snapshot;
-  };
-}
+import SnapshotManager from "./snapshotManager";
+import SonarSource from "./sonarSource";
 
 const NOISE_SCALE_HORIZONTAL = 20;
 const NOISE_SCALE_VERTICAL = 1;
@@ -47,8 +17,6 @@ const POINT_SPREAD = 5;
 
 const WHERE_PERLIN_SEAM_IS = 180;
 
-const noiseLevel = 0.005;
-
 /*
  * If a signal is offset from sample pos by bearingOffset, what should be the
  * observed offset gain here? Area under this curve should be 1.
@@ -58,48 +26,14 @@ const offsetGain = (bearingOffset: number) => {
   return normalDistribution(bearingOffset / POINT_SPREAD) / POINT_SPREAD;
 };
 
-function getSonarUpdate(update: VesselUpdate.AsObject) {
-  return update.systemUpdatesList.filter((system) => system.sonarUpdate)[0]
-    .sonarUpdate.arrayUpdatesList[0];
-}
-
-export default class BroadbandSource {
-  constructor(worldStream: Pipe<VesselUpdate.AsObject>) {
+export default class BroadbandSource implements SonarSource {
+  constructor(snapshotManager: SnapshotManager) {
     this.noiseSource = new noise.Noise(Math.random());
     this.noiseAngleSource = new noise.Noise(Math.random());
     this.pointDistortion = new noise.Noise(Math.random());
     this.explosionSource = new noise.Noise(Math.random());
 
-    worldStream.listen((update) => {
-      const sonarUpdate = getSonarUpdate(update);
-      const newSnapshot = {
-        noiseLevel: noiseLevel,
-        explosionLevel: 0,
-        bearing: 0,
-        timestamp: -1, // lolol
-        pointSources: sonarUpdate.contactsList.map((contact) => {
-          return {
-            bearing: contact.bearing,
-            freqs: [
-              {
-                freq: 100,
-                volume: contact.broadbandPowerLevel,
-              },
-            ],
-          };
-        }),
-      };
-      if (
-        JSON.stringify(newSnapshot) ===
-        JSON.stringify(this.getCurrentSnapshot())
-      ) {
-        return;
-      }
-      // set the timestamp!
-      newSnapshot.timestamp = Date.now();
-
-      this.snapshots.push(newSnapshot);
-    });
+    this.snapshotManager = snapshotManager;
   }
 
   interval: NodeJS.Timeout;
@@ -109,34 +43,17 @@ export default class BroadbandSource {
   explosionSource: any;
   pointDistortion: any;
 
-  /* Shouldn't have a default here. */
-  snapshots: Array<SoundSnapshot> = [];
-
-  getCurrentSnapshot(): SoundSnapshot {
-    return this.snapshots[this.snapshots.length - 1];
-  }
-
-  getSnapshotAtTime = memo((time: number) => {
-    // lol O(n)
-    for (let i = this.snapshots.length - 1; i > 0; i--) {
-      const snapshot = this.snapshots[i];
-      if (snapshot.timestamp < time) {
-        return snapshot;
-      }
-    }
-    // default to earliest snapshot
-    return this.snapshots[0];
-  });
+  snapshotManager: SnapshotManager;
 
   // Bearing is always 0 - 360, sample is in ms since epoch
   sample(bearing: number, sampleTime?: number | undefined) {
-    if (!this.snapshots.length) {
+    if (!this.snapshotManager.hasSnapshot()) {
       return 0;
     }
     const snapshot =
       sampleTime === undefined
-        ? this.getCurrentSnapshot()
-        : this.getSnapshotAtTime(sampleTime);
+        ? this.snapshotManager.getCurrentSnapshot()
+        : this.snapshotManager.getSnapshotAtTime(sampleTime);
     const time = sampleTime === undefined ? Date.now() : sampleTime;
 
     // Workaround for perlin noise not being generated on a cylinder
@@ -157,10 +74,7 @@ export default class BroadbandSource {
         0.5) *
       snapshot.noiseLevel;
     const pointNoises = snapshot.pointSources.map(
-      ({ bearing: pointBearing, freqs }) => {
-        const avgFreqVolume =
-          freqs.reduce((acc, { volume }) => volume + acc, 0) / freqs.length;
-
+      ({ bearing: pointBearing, broadbandPowerLevel }) => {
         const bearingNoise =
           POINT_DISTORTION_MULTIPLIER *
           this.pointDistortion.perlin2(
@@ -175,7 +89,7 @@ export default class BroadbandSource {
           (bearingOne - bearingTwo + 360) % 360,
           (bearingTwo - bearingOne + 360) % 360
         );
-        return avgFreqVolume * offsetGain(bearingOffset);
+        return broadbandPowerLevel * offsetGain(bearingOffset);
       }
     );
     return backgroundNoise + pointNoises.reduce((a, b) => a + b, 0);

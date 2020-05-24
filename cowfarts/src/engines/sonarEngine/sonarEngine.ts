@@ -1,8 +1,10 @@
-import { ElemSingleton } from "../../util/elemSingleton";
 import { Pipe } from "../../util/pipe";
 import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
-import buildWaterfalls, { BroadbandScreen } from "./waterfalls/buildWaterfalls";
+import buildWaterfalls, {
+  BroadbandScreen,
+} from "./waterfalls/broadbandWaterfalls";
 import BroadbandSource from "./broadbandSource";
+import SnapshotManager from "./snapshotManager";
 
 export interface SonarEngine {
   broadbandSource: BroadbandSource;
@@ -15,7 +17,8 @@ export interface SonarEngine {
 }
 
 export const buildSonarEngine = (worldStream: Pipe<VesselUpdate.AsObject>) => {
-  const broadbandSource = new BroadbandSource(worldStream);
+  const snapshotManager = new SnapshotManager(worldStream);
+  const broadbandSource = new BroadbandSource(snapshotManager);
 
   return {
     broadbandSource,
