@@ -2047,6 +2047,11 @@ encodeurl@~1.0.2:
   resolved "https://registry.yarnpkg.com/encodeurl/-/encodeurl-1.0.2.tgz#ad3ff4c86ec2d029322f5a02c3a9a606c95b3f59"
   integrity sha1-rT/0yG7C0CkyL1oCw6mmBslbP1k=
 
+engines@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/engines/-/engines-0.4.0.tgz#aefd16e99762ea4f809c5c3aeac4c5b22f068a8c"
+  integrity sha1-rv0W6Zdi6k+AnFw66sTFsi8Giow=
+
 entities@^1.1.1, entities@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/entities/-/entities-1.1.2.tgz#bdfa735299664dfafd34529ed4f8522a275fea56"

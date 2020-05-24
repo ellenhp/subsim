@@ -89,3 +89,8 @@ export const getWeaponCount = (
       (armarment) => armarment.weapon.weaponVesselDescriptor === weaponId
     )[0].count;
 };
+
+export function getSonarUpdate(update: VesselUpdate.AsObject) {
+  return update.systemUpdatesList.filter((system) => system.sonarUpdate)[0]
+    .sonarUpdate.arrayUpdatesList[0];
+}

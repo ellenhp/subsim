@@ -19,6 +19,7 @@
     "@types/noisejs": "^0.0.28",
     "@types/react": "^16.9.34",
     "@types/react-dom": "^16.9.7",
+    "engines": "^0.4.0",
     "game": "^1.0.3",
     "google-protobuf": "^3.12.0-rc.1",
     "grpc-web": "^1.0.7",

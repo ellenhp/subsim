@@ -1,11 +1,5 @@
-// Idea: We want to be constantly updating this w/ the game state,
-// since these need to be canvases, and constantly updated.
-// In a certain sense, historical sonar data is captured solely in this interface.
-// SO SINGLETON THEN
-
-import { ElemSingleton, show, hide } from "../../../util/elemSingleton";
-import BroadbandSource from "../broadbandSource";
 import { Pipe } from "../../../util/pipe";
+import SonarSource from "../sonarSource";
 
 interface DisplaySettings {
   gain: number;
@@ -16,6 +10,8 @@ interface DisplaySettings {
 export interface BroadbandScreen {
   timeScopeInSeconds: number;
   leftBearing: number;
+  hRes: number;
+  vRes: number;
   data: Pipe<ImageData>;
 }
 
@@ -38,8 +34,8 @@ const sampleIdxToTime = (sample: number) => {
   return Math.floor(sample * UPDATE_INTERVAL_MS + gameEpoch);
 };
 
-const createBroadbandWaterfall = (
-  source: BroadbandSource,
+const createWaterfall = (
+  source: SonarSource,
   { multiplier, gain, contrast }: DisplaySettings
 ): BroadbandScreen => {
   const pipe = new Pipe<ImageData>();
@@ -90,26 +86,10 @@ const createBroadbandWaterfall = (
   return {
     timeScopeInSeconds: BASE_SCOPE_SECONDS * multiplier,
     leftBearing: LEFT_BEARING,
+    hRes: H_RES,
+    vRes: V_RES,
     data: pipe,
   };
 };
 
-const buildWaterfalls = (broadbandSource: BroadbandSource) => ({
-  broadbandShort: createBroadbandWaterfall(broadbandSource, {
-    multiplier: 4,
-    contrast: 1,
-    gain: 0.1,
-  }),
-  broadbandMedium: createBroadbandWaterfall(broadbandSource, {
-    multiplier: 16,
-    contrast: 2,
-    gain: 0.035,
-  }),
-  broadbandLong: createBroadbandWaterfall(broadbandSource, {
-    multiplier: 64,
-    contrast: 4,
-    gain: 0.004,
-  }),
-});
-
-export default buildWaterfalls;
+export default createWaterfall;
