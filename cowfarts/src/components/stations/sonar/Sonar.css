@@ -26,3 +26,8 @@
   grid-row: 1;
   grid-column: 3/5;
 }
+
+.narrowband-bay {
+  grid-row: 2/4;
+  grid-column: 3/5;
+}

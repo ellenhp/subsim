@@ -1,25 +1,50 @@
-import {v4} from 'uuid';
+import { v4 } from "uuid";
 
-import {DoActionRequest, DoActionResponse,} from '../__protogen__/mass/api/actions_pb';
-import {ConnectRequest} from '../__protogen__/mass/api/mass_pb';
-import {MassBackendClient} from '../__protogen__/mass/api/MassServiceClientPb';
-import {EndCondition, Faction, Scenario, SpawnedVessel, VesselDescriptor,} from '../__protogen__/mass/api/scenario_pb';
-import {Bounds, HeadingBounds, Position,} from '../__protogen__/mass/api/spatial_pb';
-import {DivingSystem, GuidanceSystem, HullSystem, MapSystem, PropulsionSystem, SelfDestructSystem, SonarSystem, SteeringSystem, TmaSystem, VesselSystem, WeaponSystem,} from '../__protogen__/mass/api/systems_pb';
-import {VesselUpdate} from '../__protogen__/mass/api/updates_pb';
-import {Armament, Weapon} from '../__protogen__/mass/api/weapons_pb';
-import {Pipe} from '../util/pipe';
+import {
+  DoActionRequest,
+  DoActionResponse,
+} from "../__protogen__/mass/api/actions_pb";
+import { ConnectRequest } from "../__protogen__/mass/api/mass_pb";
+import { MassBackendClient } from "../__protogen__/mass/api/MassServiceClientPb";
+import {
+  EndCondition,
+  Faction,
+  Scenario,
+  SpawnedVessel,
+  VesselDescriptor,
+} from "../__protogen__/mass/api/scenario_pb";
+import {
+  Bounds,
+  HeadingBounds,
+  Position,
+} from "../__protogen__/mass/api/spatial_pb";
+import {
+  DivingSystem,
+  GuidanceSystem,
+  HullSystem,
+  MapSystem,
+  PropulsionSystem,
+  SelfDestructSystem,
+  SonarSystem,
+  SteeringSystem,
+  TmaSystem,
+  VesselSystem,
+  WeaponSystem,
+} from "../__protogen__/mass/api/systems_pb";
+import { VesselUpdate } from "../__protogen__/mass/api/updates_pb";
+import { Armament, Weapon } from "../__protogen__/mass/api/weapons_pb";
+import { Pipe } from "../util/pipe";
 
 function buildNewFeasibleScenario(): Scenario {
-  const submarineDescriptorId = 'submarine';
+  const submarineDescriptorId = "submarine";
 
   const rebelFaction = new Faction();
   rebelFaction.setPlayerControlled(true);
-  rebelFaction.setName('Rebels');
+  rebelFaction.setName("Rebels");
 
   const blockaderFaction = new Faction();
   blockaderFaction.setPlayerControlled(true);
-  blockaderFaction.setName('Blockaders');
+  blockaderFaction.setName("Blockaders");
 
   const scenario = new Scenario();
   scenario.addVesselDescriptors(getSubmarineDescriptor(submarineDescriptorId));
@@ -27,15 +52,20 @@ function buildNewFeasibleScenario(): Scenario {
   scenario.addVesselDescriptors(getNoisemakerDescriptor());
   scenario.addVesselDescriptors(getDecoyDescriptor());
   scenario.addVessels(
-      getRebelVessel(rebelFaction, submarineDescriptorId, 'rebels'));
-  scenario.addVessels(getBlockaderVessel(
-      blockaderFaction, submarineDescriptorId, 'blockaders'));
+    getRebelVessel(rebelFaction, submarineDescriptorId, "rebels")
+  );
+  scenario.addVessels(
+    getBlockaderVessel(blockaderFaction, submarineDescriptorId, "blockaders")
+  );
 
   return scenario;
 }
 
 function getRebelVessel(
-    faction: Faction, submarineDescriptorId: string, vesselId: string) {
+  faction: Faction,
+  submarineDescriptorId: string,
+  vesselId: string
+) {
   const rebelSpawnPosition = new Position();
   rebelSpawnPosition.setLat(47.723117693);
   rebelSpawnPosition.setLng(-122.52533117);
@@ -54,10 +84,13 @@ function getRebelVessel(
 }
 
 function getBlockaderVessel(
-    faction: Faction, submarineDescriptorId: string, vesselId: string) {
+  faction: Faction,
+  submarineDescriptorId: string,
+  vesselId: string
+) {
   const blockaderPos = new Position();
-  blockaderPos.setLat(47.938689);
-  blockaderPos.setLng(-122.547806);
+  blockaderPos.setLat(47.726493);
+  blockaderPos.setLng(-122.446218);
 
   const blockaderSpawnInfo = new SpawnedVessel.SpawnInformation();
   blockaderSpawnInfo.setPosition(blockaderPos);
@@ -125,7 +158,7 @@ function getSubmarineHullSystem(): VesselSystem {
 
 function getSubmarineSonarSystem(): VesselSystem {
   const sonarArray = new SonarSystem.SonarArray();
-  sonarArray.setUniqueId('fore');
+  sonarArray.setUniqueId("fore");
   sonarArray.setNoiseFloor(0);
 
   const sonar = new SonarSystem();
@@ -136,12 +169,12 @@ function getSubmarineSonarSystem(): VesselSystem {
 }
 
 function getSubmarineWeaponSystem(): VesselSystem {
-  const torpoedoVesselDescriptorId = 'adcap';
-  const noisemakerVesselDescriptorId = 'noisemaker';
-  const decoyVesselDescriptorId = 'decoy';
+  const torpoedoVesselDescriptorId = "adcap";
+  const noisemakerVesselDescriptorId = "noisemaker";
+  const decoyVesselDescriptorId = "decoy";
 
   const torpedo = new Weapon();
-  torpedo.setName('ADCAP');
+  torpedo.setName("ADCAP");
   torpedo.setType(Weapon.AmmoType.TORPEDO);
   torpedo.setWeaponVesselDescriptor(torpoedoVesselDescriptorId);
 
@@ -150,7 +183,7 @@ function getSubmarineWeaponSystem(): VesselSystem {
   torpedoArmament.setCount(4);
 
   const noisemaker = new Weapon();
-  noisemaker.setName('Noisemaker');
+  noisemaker.setName("Noisemaker");
   noisemaker.setType(Weapon.AmmoType.COUNTERMEASURE);
   noisemaker.setWeaponVesselDescriptor(noisemakerVesselDescriptorId);
 
@@ -159,7 +192,7 @@ function getSubmarineWeaponSystem(): VesselSystem {
   noisemakerArmament.setCount(4);
 
   const decoy = new Weapon();
-  decoy.setName('Decoy');
+  decoy.setName("Decoy");
   decoy.setType(Weapon.AmmoType.COUNTERMEASURE);
   decoy.setWeaponVesselDescriptor(decoyVesselDescriptorId);
 
@@ -176,8 +209,9 @@ function getSubmarineWeaponSystem(): VesselSystem {
   return weaponSystem;
 }
 
-function getSubmarineDescriptor(submarineDescriptorId: string):
-    VesselDescriptor {
+function getSubmarineDescriptor(
+  submarineDescriptorId: string
+): VesselDescriptor {
   const submarine = new VesselDescriptor();
   submarine.setUniqueId(submarineDescriptorId);
   submarine.setType(2);
@@ -233,7 +267,7 @@ function getTorpedoHullSystem(): VesselSystem {
   // Draft is actually just minimum depth, and since torpedoes don't have diving
   // systems yet, let's set this to something more than it actually is.
   hull.setDraftFeet(15);
-  hull.setSonarReturn(0.1)
+  hull.setSonarReturn(0.1);
   const hullSystem = new VesselSystem();
   hullSystem.setHullSystem(hull);
   return hullSystem;
@@ -241,7 +275,7 @@ function getTorpedoHullSystem(): VesselSystem {
 
 function getTorpedoSonarSystem(): VesselSystem {
   const sonarArray = new SonarSystem.SonarArray();
-  sonarArray.setUniqueId('fore');
+  sonarArray.setUniqueId("fore");
   sonarArray.setNoiseFloor(0);
 
   const sonar = new SonarSystem();
@@ -253,7 +287,7 @@ function getTorpedoSonarSystem(): VesselSystem {
 
 function getTorpedoDescriptor() {
   const torpedo = new VesselDescriptor();
-  torpedo.setUniqueId('adcap');
+  torpedo.setUniqueId("adcap");
   torpedo.addSystems(getTorpedoPropulsionSystem());
   torpedo.addSystems(getTorpedoSteeringSystem());
   torpedo.addSystems(getTorpedoGuidanceSystem());
@@ -293,7 +327,7 @@ function getNoisemakerHullSystem(): VesselSystem {
 
 function getNoisemakerDescriptor() {
   const noisemaker = new VesselDescriptor();
-  noisemaker.setUniqueId('noisemaker');
+  noisemaker.setUniqueId("noisemaker");
   noisemaker.addSystems(getNoisemakerPropulsionSystem());
   noisemaker.addSystems(getNoisemakerSelfDestructSystem());
   noisemaker.addSystems(getNoisemakerHullSystem());
@@ -320,7 +354,7 @@ function getDecoyHullSystem(): VesselSystem {
 
 function getDecoyDescriptor() {
   const torpedo = new VesselDescriptor();
-  torpedo.setUniqueId('decoy');
+  torpedo.setUniqueId("decoy");
   torpedo.addSystems(getDecoySelfDestructSystem());
   torpedo.addSystems(getDecoyHullSystem());
   return torpedo;

@@ -1,5 +1,7 @@
 import { Pipe } from "../../../util/pipe";
-import SonarSource from "../sonarSource";
+import BroadbandSource from "../broadbandSource";
+import SnapshotManager from "../snapshotManager";
+import NarrowbandSource from "../narrowbandSource";
 
 interface DisplaySettings {
   gain: number;
@@ -7,21 +9,27 @@ interface DisplaySettings {
   multiplier: number;
 }
 
-export interface BroadbandScreen {
+export interface NarrowbandScreen {
   timeScopeInSeconds: number;
-  leftBearing: number;
+  leftFreq: number;
+  rightFreq: number;
   hRes: number;
   vRes: number;
+  updateBearing: (bearing: number) => void;
   data: Pipe<ImageData>;
 }
 
-export const H_RES = 500;
-export const V_RES = 300;
-const LEFT_BEARING = 180;
+export const H_RES = 150;
+export const V_RES = 200;
+const LEFT_FREQ = 10;
+const RIGHT_FREQ = 40000;
+const FREQ_RATIO = RIGHT_FREQ / LEFT_FREQ;
+const INPUT_MULTIPLIER = 1000;
+
+const leftIdxToFreq = (idx: number) => LEFT_FREQ * FREQ_RATIO ** (idx / H_RES);
 
 // What is the scope of a screen, under multiplier of 1?
-const BASE_SCOPE_SECONDS = 10;
-const INPUT_MULTIPLIER = 1000;
+const BASE_SCOPE_SECONDS = 20;
 const UPDATE_INTERVAL_MS = (BASE_SCOPE_SECONDS * 1000) / V_RES;
 
 const gameEpoch = Date.now(); // TODO<< FIX THIS SHIT.
@@ -34,15 +42,16 @@ const sampleIdxToTime = (sample: number) => {
   return Math.floor(sample * UPDATE_INTERVAL_MS + gameEpoch);
 };
 
-const createWaterfall = (
-  source: SonarSource,
-  { multiplier, gain, contrast }: DisplaySettings
-): BroadbandScreen => {
-  const pipe = new Pipe<ImageData>();
+const createNarrowbandWaterfall = (
+  narrowbandSource: NarrowbandSource,
 
+  { multiplier, gain, contrast }: DisplaySettings
+): NarrowbandScreen => {
+  const pipe = new Pipe<ImageData>();
+  let selectedBearing = 0;
   let prevSampleCount = 0;
 
-  const imageData = new ImageData(H_RES, V_RES);
+  let imageData = new ImageData(H_RES, V_RES);
   setInterval(drawWaterfall, UPDATE_INTERVAL_MS);
   let samples: number[] = Array(H_RES).fill(0);
 
@@ -54,9 +63,14 @@ const createWaterfall = (
     );
     while (prevSampleCount < timeToSampleIdx(Date.now())) {
       for (var i = 0; i < H_RES; i++) {
-        const bearing = ((i * 360) / H_RES + LEFT_BEARING) % 360;
+        const freq = leftIdxToFreq(i);
+        const timeForSample = sampleIdxToTime(prevSampleCount);
 
-        const sample = source.sample(bearing, sampleIdxToTime(prevSampleCount));
+        const sample = narrowbandSource.sample(
+          freq,
+          selectedBearing,
+          timeForSample
+        );
         const activation = Math.min(
           Math.pow(sample * INPUT_MULTIPLIER, contrast) * gain,
           1
@@ -83,13 +97,22 @@ const createWaterfall = (
     }
     pipe.fire(imageData);
   }
+
+  const updateBearing = (newBearing: number) => {
+    selectedBearing = newBearing;
+    prevSampleCount = 0;
+    imageData = new ImageData(H_RES, V_RES);
+  };
+
   return {
     timeScopeInSeconds: BASE_SCOPE_SECONDS * multiplier,
-    leftBearing: LEFT_BEARING,
+    leftFreq: LEFT_FREQ,
+    rightFreq: RIGHT_FREQ,
     hRes: H_RES,
     vRes: V_RES,
     data: pipe,
+    updateBearing,
   };
 };
 
-export default createWaterfall;
+export default createNarrowbandWaterfall;

@@ -5,6 +5,8 @@ import "./Sonar.css";
 import BroadbandSwitcher from "./BroadbandSwitcher";
 import ContactManager from "./ContactManager";
 import { getContacts } from "../../../gettorz";
+import NarrowbandWaterfall from "./NarrowbandWaterfall";
+import NarrowbandBay from "./NarrowbandBay";
 
 const Sonar: StationComponent = (props: StationProps) => {
   const [selectedContacts, setSelectedContacts] = useState(
@@ -31,6 +33,9 @@ const Sonar: StationComponent = (props: StationProps) => {
           latestUpdate={props.latestUpdate}
         />
       </div>
+        <NarrowbandBay
+          screen={props.engines.sonarEngine.waterfalls.narrowbandFreq}
+        />
       <ContactManager
         game={props.game}
         latestUpdate={props.latestUpdate}

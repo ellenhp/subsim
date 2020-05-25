@@ -5,10 +5,7 @@ import { getSonarUpdate } from "../../gettorz";
 export type PointSource = {
   bearing: number;
   broadbandPowerLevel: number;
-  freqs: Array<{
-    freq: number;
-    volume: number;
-  }>;
+  freqs: number[];
 };
 
 export type SoundSnapshot = {
@@ -48,7 +45,7 @@ class SnapshotManager {
           return {
             bearing: contact.bearing,
             broadbandPowerLevel: contact.broadbandPowerLevel,
-            freqs: [],
+            freqs: [20, 30, 80, 300],
           };
         }),
       };
