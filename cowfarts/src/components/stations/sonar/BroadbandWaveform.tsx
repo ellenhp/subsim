@@ -1,5 +1,6 @@
 import React from "react";
 import { Engines } from "../../../engines/engine";
+import "./BroadbandWaveform.css";
 interface BroadbandWaveformProps {
   engines: Engines;
 }
@@ -14,11 +15,12 @@ class BroadbandWaveform extends React.Component<BroadbandWaveformProps> {
   ctx?: CanvasRenderingContext2D;
   horizontalResolution = 100;
   width = 300;
-  height = 100;
+  height = 50;
   leftBearing = 180;
   interval: NodeJS.Timeout;
   contrast = 1;
   gain = 0.05;
+  sampleRate = 30; // ms
 
   componentDidMount = () => {
     this.ctx = this.canvas.current.getContext("2d");
@@ -43,7 +45,7 @@ class BroadbandWaveform extends React.Component<BroadbandWaveformProps> {
       }
       ctx.strokeStyle = "lightgreen";
       ctx.stroke();
-    }, 100);
+    }, this.sampleRate);
   };
 
   componentWillUnmount = () => {};
