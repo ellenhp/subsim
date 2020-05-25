@@ -1,0 +1,8 @@
+.narrowband-bay>* {
+  display: block;
+  width: 300px;
+}
+
+.broadband-waveform {
+  background-color: black;
+}
