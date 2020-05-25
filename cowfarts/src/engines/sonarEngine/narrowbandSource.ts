@@ -4,8 +4,10 @@ import SnapshotManager from "./snapshotManager";
 
 // aaa
 // ---
+const FREQ_DISTORTION_MULTIPLIER = 0.3;
 const FREQ_DISTORTION_HORIZ = 20;
-const FREQ_DISTORTION_VERT = 5;
+const FREQ_DISTORTION_VERT = 0.5;
+const FREQ_SPREAD = 0.05;
 
 const POINT_DISTORTION_VERT = 1;
 const POINT_DISTORTION_HORIZ = 20;
@@ -50,12 +52,19 @@ export default class NarrowbandSource {
 
     const pointNoises = snapshot.pointSources.map(
       ({ bearing: pointBearing, broadbandPowerLevel, freqs }) => {
-        const freqNoise = this.freqDistortion.perlin2(
-          (freq * FREQ_DISTORTION_HORIZ) / 360,
-          (time * FREQ_DISTORTION_VERT) / 1000
-        );
+        const freqNoise =
+          freq *
+          FREQ_DISTORTION_MULTIPLIER *
+          this.freqDistortion.perlin2(
+            (freq * FREQ_DISTORTION_HORIZ) / 360,
+            (time * FREQ_DISTORTION_VERT) / 1000
+          );
         const freqGain = freqs
-          .map((curFreq) => normalDistribution(curFreq - freq + freqNoise))
+          .map((curFreq) =>
+            normalDistribution(
+              (curFreq - freq + freqNoise) / (FREQ_SPREAD * freq)
+            )
+          )
           .reduce((acc, cur) => acc + cur, 0);
 
         const bearingNoise =

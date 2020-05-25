@@ -19,13 +19,12 @@ export interface NarrowbandScreen {
   data: Pipe<ImageData>;
 }
 
-export const H_RES = 200;
+export const H_RES = 100;
 export const V_RES = 300;
 const LEFT_FREQ = 10;
 const RIGHT_FREQ = 40000;
 const FREQ_RATIO = RIGHT_FREQ / LEFT_FREQ;
-
-const GAIN = 10;
+const INPUT_MULTIPLIER = 1000;
 
 const leftIdxToFreq = (idx: number) => LEFT_FREQ * FREQ_RATIO ** (idx / H_RES);
 
@@ -45,8 +44,8 @@ const sampleIdxToTime = (sample: number) => {
 
 const createNarrowbandWaterfall = (
   narrowbandSource: NarrowbandSource,
-  //snapshotManager: SnapshotManager,
-  multiplier: number
+
+  { multiplier, gain, contrast }: DisplaySettings
 ): NarrowbandScreen => {
   const pipe = new Pipe<ImageData>();
   let selectedBearing = 0;
@@ -67,12 +66,15 @@ const createNarrowbandWaterfall = (
         const freq = leftIdxToFreq(i);
         const timeForSample = sampleIdxToTime(prevSampleCount);
 
-        const power = narrowbandSource.sample(
+        const sample = narrowbandSource.sample(
           freq,
           selectedBearing,
           timeForSample
         );
-        const activation = Math.min(power * GAIN, 1);
+        const activation = Math.min(
+          Math.pow(sample * INPUT_MULTIPLIER, contrast) * gain,
+          1
+        );
         samples[i] += activation / multiplier;
       }
       prevSampleCount++;

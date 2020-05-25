@@ -22,7 +22,11 @@ const buildBroadbandWaterfalls = (
     contrast: 4,
     gain: 0.004,
   }),
-  narrowbandFreq: createNarrowbandWaterfall(narrowbandSource, 1),
+  narrowbandFreq: createNarrowbandWaterfall(narrowbandSource, {
+    multiplier: 1,
+    contrast: 4,
+    gain: 1,
+  }),
 });
 
 export default buildBroadbandWaterfalls;
