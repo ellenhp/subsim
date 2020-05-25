@@ -7,7 +7,7 @@ import SnapshotManager from "./snapshotManager";
 const FREQ_DISTORTION_MULTIPLIER = 0.3;
 const FREQ_DISTORTION_HORIZ = 20;
 const FREQ_DISTORTION_VERT = 0.5;
-const FREQ_SPREAD = 0.05;
+const FREQ_SPREAD = 0.03;
 
 const POINT_DISTORTION_VERT = 1;
 const POINT_DISTORTION_HORIZ = 20;

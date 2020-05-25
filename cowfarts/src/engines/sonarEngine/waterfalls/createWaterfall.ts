@@ -15,7 +15,7 @@ export interface BroadbandScreen {
   data: Pipe<ImageData>;
 }
 
-export const H_RES = 1000;
+export const H_RES = 500;
 export const V_RES = 300;
 const LEFT_BEARING = 180;
 

@@ -19,8 +19,8 @@ export interface NarrowbandScreen {
   data: Pipe<ImageData>;
 }
 
-export const H_RES = 100;
-export const V_RES = 300;
+export const H_RES = 150;
+export const V_RES = 200;
 const LEFT_FREQ = 10;
 const RIGHT_FREQ = 40000;
 const FREQ_RATIO = RIGHT_FREQ / LEFT_FREQ;
