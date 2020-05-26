@@ -51,13 +51,13 @@ export default class NarrowbandSource {
     const time = sampleTime === undefined ? Date.now() : sampleTime;
 
     const pointNoises = snapshot.pointSources.map(
-      ({ bearing: pointBearing, broadbandPowerLevel, freqs }) => {
+      ({ bearing: pointBearing, broadbandPowerLevel, freqs, salt }) => {
         const freqNoise =
           freq *
           FREQ_DISTORTION_MULTIPLIER *
           this.freqDistortion.perlin2(
             (freq * FREQ_DISTORTION_HORIZ) / 360,
-            (time * FREQ_DISTORTION_VERT) / 1000
+            (time * FREQ_DISTORTION_VERT) / 1000 + salt
           );
         const freqGain = freqs
           .map((curFreq) =>
@@ -71,7 +71,7 @@ export default class NarrowbandSource {
           POINT_DISTORTION_MULTIPLIER *
           this.pointDistortion.perlin2(
             (bearing * POINT_DISTORTION_HORIZ) / 360,
-            (time * POINT_DISTORTION_VERT) / 1000
+            (time * POINT_DISTORTION_VERT) / 1000 + salt
           );
 
         // Find shortest between bearings 1 and 2.
