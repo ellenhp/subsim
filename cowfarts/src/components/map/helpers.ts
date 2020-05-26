@@ -99,6 +99,21 @@ export const latLongDistance = (
   return (earthRadiusMeters * c) / 1852;
 };
 
+export const latLongBearing = (
+  { lat: lat1, lng: lon1 }: LatLong,
+  { lat: lat2, lng: lon2 }: LatLong
+) => {
+  const φ1 = (lat1 * Math.PI) / 180; // φ, λ in radians
+  const φ2 = (lat2 * Math.PI) / 180;
+  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+  const y = Math.sin(Δλ) * Math.cos(φ2);
+  const x =
+    Math.cos(φ1) * Math.sin(φ2) - Math.sin(φ1) * Math.cos(φ2) * Math.cos(Δλ);
+  const θ = Math.atan2(y, x);
+  const brng = ((θ * 180) / Math.PI + 360) % 360; // in degrees
+  return brng;
+};
+
 // Taken with love from https://stackoverflow.com/questions/45234631/find-the-final-latitude-longitude-after-a-movement-on-the-globe
 function deg2rad(deg: number): number {
   return deg * (Math.PI / 180.0);
