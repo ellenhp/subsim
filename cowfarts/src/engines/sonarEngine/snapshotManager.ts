@@ -1,8 +1,10 @@
 import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
 import { Pipe } from "../../util/pipe";
 import { getSonarUpdate } from "../../gettorz";
+import { simpleHash } from "../../util/math";
 
 export type PointSource = {
+  salt: number;
   bearing: number;
   broadbandPowerLevel: number;
   freqs: number[];
@@ -38,11 +40,12 @@ class SnapshotManager {
       const sonarUpdate = getSonarUpdate(update);
       const newSnapshot = {
         noiseLevel: noiseLevel,
-        explosionLevel: 0,
+        explosionLevel: update.explosionNoise,
         bearing: 0,
         timestamp: -1, // lolol
         pointSources: sonarUpdate.contactsList.map((contact) => {
           return {
+            salt: simpleHash(contact.vesselId),
             bearing: contact.bearing,
             broadbandPowerLevel: contact.broadbandPowerLevel,
             freqs: [20, 30, 80, 300],

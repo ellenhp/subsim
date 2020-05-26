@@ -4,7 +4,8 @@ import {
   V_RES,
   NarrowbandScreen,
 } from "../../../engines/sonarEngine/waterfalls/narrowbandWaterfalls";
-import "./BroadbandWaterfall.css";
+import "./NarrowbandWaterfall.css";
+
 interface NarrowbandWaterfallProps {
   screen: NarrowbandScreen;
   bearing: number;
@@ -36,7 +37,7 @@ class NarrowbandWaterfall extends React.Component<NarrowbandWaterfallProps> {
     return (
       <div className="broadband-waterfall-wrapper">
         <canvas
-          className="broadband-waterfall"
+          className="narrowband-waterfall"
           ref={this.canvas}
           height={V_RES}
           width={H_RES}

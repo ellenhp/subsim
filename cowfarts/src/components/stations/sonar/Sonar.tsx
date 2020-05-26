@@ -33,9 +33,7 @@ const Sonar: StationComponent = (props: StationProps) => {
           latestUpdate={props.latestUpdate}
         />
       </div>
-        <NarrowbandBay
-          screen={props.engines.sonarEngine.waterfalls.narrowbandFreq}
-        />
+      <NarrowbandBay engines={props.engines} />
       <ContactManager
         game={props.game}
         latestUpdate={props.latestUpdate}

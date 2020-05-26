@@ -25,7 +25,7 @@ const buildBroadbandWaterfalls = (
   narrowbandFreq: createNarrowbandWaterfall(narrowbandSource, {
     multiplier: 1,
     contrast: 4,
-    gain: 1,
+    gain: 0.2,
   }),
 });
 

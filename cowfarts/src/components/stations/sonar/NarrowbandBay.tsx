@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { NarrowbandScreen } from "../../../engines/sonarEngine/waterfalls/narrowbandWaterfalls";
 import NarrowbandWaterfall from "./NarrowbandWaterfall";
+import { Engines } from "../../../engines/engine";
+import BroadbandWaveform from "./BroadbandWaveform";
+import "./NarrowbandBay.css";
 
 interface NarrowbandBayProps {
-  screen: NarrowbandScreen;
+  engines: Engines;
 }
 
 const NarrowbandBay = (props: NarrowbandBayProps) => {
@@ -11,7 +14,9 @@ const NarrowbandBay = (props: NarrowbandBayProps) => {
 
   return (
     <div className="narrowband-bay card">
+      <BroadbandWaveform engines={props.engines} />
       <input
+        className="narrowband-bearing-slider"
         type="range"
         value={bearing}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,12 +25,17 @@ const NarrowbandBay = (props: NarrowbandBayProps) => {
             return;
           }
           setBearing(newBearing);
-          props.screen.updateBearing(newBearing);
+          props.engines.sonarEngine.waterfalls.narrowbandFreq.updateBearing(
+            (newBearing + 360) % 360
+          );
         }}
-        min={0}
-        max={360}
+        min={-180}
+        max={180}
       />
-      <NarrowbandWaterfall screen={props.screen} bearing={bearing} />
+      <NarrowbandWaterfall
+        screen={props.engines.sonarEngine.waterfalls.narrowbandFreq}
+        bearing={bearing}
+      />
     </div>
   );
 };

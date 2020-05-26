@@ -1,0 +1,14 @@
+.broadband-waterfall {
+  height: 300px;
+  width: 300px;
+  background-color: #001100;
+}
+
+.narrowband-bay {
+  display: flex;
+  flex-direction: column;
+}
+
+.broadband-waveform {
+  background-color: black;
+}

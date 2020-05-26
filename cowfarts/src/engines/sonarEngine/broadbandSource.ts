@@ -16,6 +16,10 @@ const POINT_SPREAD = 5;
 
 const WHERE_PERLIN_SEAM_IS = 180;
 
+const EXPLOSION_NOISE_MULTIPLIER = 0.02;
+const EXPLOSION_NOISE_HORIZONTAL = 20;
+const EXPLOSION_NOISE_VERTICAL = 0.3;
+
 /*
  * If a signal is offset from sample pos by bearingOffset, what should be the
  * observed offset gain here? Area under this curve should be 1.
@@ -89,6 +93,22 @@ export default class BroadbandSource {
         return broadbandPowerLevel * offsetGain(bearingOffset);
       }
     );
-    return backgroundNoise + pointNoises.reduce((a, b) => a + b, 0);
+    let explosionNoise = 0;
+    if (snapshot.explosionLevel > 0) {
+      explosionNoise =
+        ((snapshot.explosionLevel ** 0.05 *
+          (1 +
+            this.explosionSource.perlin2(
+              (((bearing + WHERE_PERLIN_SEAM_IS) % 360) *
+                EXPLOSION_NOISE_HORIZONTAL) /
+                360,
+              (time * EXPLOSION_NOISE_VERTICAL) / 1000
+            ))) /
+          2) *
+        EXPLOSION_NOISE_MULTIPLIER;
+    }
+    return (
+      backgroundNoise + pointNoises.reduce((a, b) => a + b, 0) + explosionNoise
+    );
   }
 }
