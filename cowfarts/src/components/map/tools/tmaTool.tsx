@@ -17,6 +17,7 @@ import {
   TopLeft,
   getFinalLatLong,
   latLongDistance,
+  latLongBearing,
 } from "../helpers";
 import "./tmaTool.css";
 import { uploadTmaSolution } from "../../../gameActions";
@@ -56,6 +57,69 @@ function tmaPosToBaseLatLong(
 ) {
   return baseLatLongToTmaPos(tmaPos, heading, speed, -td);
 }
+
+function calcBearingError(
+  bearing: TmaSystemUpdate.TmaContact.Bearing.AsObject,
+  estimate: LatLong
+) {
+  const estimateBearing = latLongBearing(bearing.location, estimate);
+  const relativeToMarked =
+    (estimateBearing - bearing.bearingDegrees + 360) % 360;
+  if (relativeToMarked < 180) {
+    return relativeToMarked;
+  } else {
+    return relativeToMarked - 360;
+  }
+}
+
+interface DataPanelProps {
+  contact: string;
+  heading: number;
+  speedKnots: number;
+  bearings: TmaSystemUpdate.TmaContact.Bearing.AsObject[];
+  bearingEsts: LatLong[];
+}
+
+const DataPanel = ({
+  heading,
+  speedKnots,
+  contact,
+  bearings,
+  bearingEsts,
+}: DataPanelProps) => {
+  const MAX_EPSILON = 5;
+  const bearingErrorIndicators = bearings.map((bearing, idx) => {
+    const bearingError = Math.min(
+      Math.max(calcBearingError(bearing, bearingEsts[idx]), -MAX_EPSILON),
+      MAX_EPSILON
+    );
+    const left = `${(0.5 + bearingError / (MAX_EPSILON * 2)) * 100}%`;
+    return (
+      <div>
+        <div className="tma-data-error-bar">
+          <div className="tma-data-error-left">-{MAX_EPSILON}</div>
+          <div className="tma-data-error-center">0</div>
+          <div className="tma-data-error-right">{MAX_EPSILON}</div>
+          <div className="tma-data-error-dot" style={{ left }} />
+        </div>
+      </div>
+    );
+  });
+  return (
+    <div className="tma-data-panel">
+      <div>
+        {contact}'s Speed: {Math.round(speedKnots)}kts
+      </div>
+      <div>
+        {contact}'s Course: {Math.round((heading + 360) % 360)}
+      </div>
+      <div>
+        Error (deg)
+        {bearingErrorIndicators}
+      </div>
+    </div>
+  );
+};
 
 const pixelsAtEndOfTmaShaft = 10;
 const handleLengthMult = 1 / 30000;
@@ -336,9 +400,11 @@ const SolutionOverlay = ({
     width: "1000px",
   };
 
-  const bearingTicks = bearings.map((bearing) => {
+  const bearingEstimates = bearings.map(bearingToEstLatLong);
+
+  const bearingTicks = bearingEstimates.map((estimate) => {
     const { top, left } = localToGlobal(
-      latLongToMapTL(bearingToEstLatLong(bearing), mapData),
+      latLongToMapTL(estimate, mapData),
       viewport
     );
 
@@ -382,6 +448,13 @@ const SolutionOverlay = ({
           }
         />
       </div>
+      <DataPanel
+        contact={contact}
+        heading={heading}
+        speedKnots={speedKnots}
+        bearings={bearings}
+        bearingEsts={bearingEstimates}
+      />
     </>
   );
 };
