@@ -1,6 +1,5 @@
 load("@rules_java//java:defs.bzl", "java_proto_library")
 load("@rules_proto//proto:defs.bzl", "proto_library")
-load("@npm_bazel_labs//:index.bzl", "ts_proto_library")
 load("@grpc_java//:java_grpc_library.bzl", "java_grpc_library")
 
 package(default_visibility = ["//visibility:public"])
@@ -20,11 +19,6 @@ java_proto_library(
     deps = [":actions_proto"],
 )
 
-ts_proto_library(
-    name = "ts_actions_proto",
-    proto = ":actions_proto",
-)
-
 proto_library(
     name = "chat_proto",
     srcs = ["chat.proto"],
@@ -33,11 +27,6 @@ proto_library(
 java_proto_library(
     name = "java_chat_proto",
     deps = [":chat_proto"],
-)
-
-ts_proto_library(
-    name = "ts_chat_proto",
-    proto = ":chat_proto",
 )
 
 proto_library(
@@ -63,11 +52,6 @@ java_grpc_library(
     ],
 )
 
-ts_proto_library(
-    name = "ts_mass_proto",
-    proto = ":mass_proto",
-)
-
 proto_library(
     name = "scenario_proto",
     srcs = ["scenario.proto"],
@@ -82,11 +66,6 @@ java_proto_library(
     deps = [":scenario_proto"],
 )
 
-ts_proto_library(
-    name = "ts_scenario_proto",
-    proto = ":scenario_proto",
-)
-
 proto_library(
     name = "spatial_proto",
     srcs = ["spatial.proto"],
@@ -95,11 +74,6 @@ proto_library(
 java_proto_library(
     name = "java_spatial_proto",
     deps = [":spatial_proto"],
-)
-
-ts_proto_library(
-    name = "ts_spatial_proto",
-    proto = ":spatial_proto",
 )
 
 proto_library(
@@ -113,11 +87,6 @@ proto_library(
 java_proto_library(
     name = "java_systems_proto",
     deps = [":systems_proto"],
-)
-
-ts_proto_library(
-    name = "ts_systems_proto",
-    proto = ":systems_proto",
 )
 
 proto_library(
@@ -135,11 +104,6 @@ java_proto_library(
     deps = [":updates_proto"],
 )
 
-ts_proto_library(
-    name = "ts_updates_proto",
-    proto = ":updates_proto",
-)
-
 proto_library(
     name = "weapons_proto",
     srcs = ["weapons.proto"],
@@ -149,9 +113,4 @@ proto_library(
 java_proto_library(
     name = "java_weapons_proto",
     deps = [":weapons_proto"],
-)
-
-ts_proto_library(
-    name = "ts_weapons_proto",
-    proto = ":weapons_proto",
 )
