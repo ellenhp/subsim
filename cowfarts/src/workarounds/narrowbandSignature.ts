@@ -10,31 +10,33 @@ export type SignatureTypesType = {
 };
 
 export const signatureTypes: SignatureTypesType = {
-  cargo: {
-    signature: [20, 80, 300],
-    description: "Cargo Ship",
-  },
   submarine: {
-    signature: [50, 100, 130, 300],
+    signature: [15, 28, 90, 340],
     description: "Submarine",
   },
-  adcap_or_noisemaker: {
-    description: "ADCAP or Noisemaker",
-    signature: defaultNarrowbandSig,
+  noisemaker: {
+    description: "Noisemaker",
+    signature: [15, 30, 90, 360],
   },
-};
-
-const registeredVesselIds: { [key: string]: SignatureEntry } = {
-  rebels: signatureTypes.submarine,
-  neutral1: signatureTypes.cargo,
-  neutral2: signatureTypes.cargo,
-  blockaders: signatureTypes.submarine,
+  adcap: {
+    description: "ADCAP Torpedo",
+    signature: [60, 140, 500, 1800],
+  },
+  cargo: {
+    signature: [20, 50, 4000],
+    description: "Cargo Ship",
+  },
 };
 
 export function getNarrowbandSignature(vesselId: string) {
-  const sig = registeredVesselIds[vesselId];
-  if (sig) {
-    return sig.signature;
+  if (vesselId.startsWith("submarine")) {
+    return signatureTypes.submarine.signature;
+  }
+  if (vesselId.startsWith("noisemaker")) {
+    return signatureTypes.noisemaker.signature;
+  }
+  if (vesselId.startsWith("adcap")) {
+    return signatureTypes.adcap.signature;
   }
   return defaultNarrowbandSig;
 }

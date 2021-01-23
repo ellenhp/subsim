@@ -28,8 +28,6 @@ const NarrowbandShipInfo = () => {
 
 
   const freqToLeft = (freq: number) => {
-
-
     return 100 * (Math.log(freq/ LEFT_FREQ)/ Math.log(FREQ_RATIO))
   }
 
