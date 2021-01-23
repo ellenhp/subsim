@@ -89,8 +89,8 @@ function getBlockaderVessel(
   vesselId: string
 ) {
   const blockaderPos = new Position();
-  blockaderPos.setLat(47.726493);
-  blockaderPos.setLng(-122.446218);
+  blockaderPos.setLat(47.938689);
+  blockaderPos.setLng(-122.547806);
 
   const blockaderSpawnInfo = new SpawnedVessel.SpawnInformation();
   blockaderSpawnInfo.setPosition(blockaderPos);
