@@ -17,5 +17,6 @@ spec:
       containers:
         - name: substrate-be
           image: "gcr.io/mass-276203/mass:dev"
+          imagePullPolicy: Always
           ports:
             - containerPort: 50051
