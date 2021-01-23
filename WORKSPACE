@@ -141,7 +141,7 @@ container_pull(
     name = "envoy_base",
     registry = "index.docker.io",
     repository = "envoyproxy/envoy-dev",
-    tag = "latest",
+    tag = "048f4231310fbbead0cbe03d43ffb4307fff0517",
 )
 
 container_pull(
