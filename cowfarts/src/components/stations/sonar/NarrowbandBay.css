@@ -12,3 +12,16 @@
 .broadband-waveform {
   background-color: black;
 }
+
+.narrowband-signature-display {
+  background-color: #001100;
+  height: 20px;
+  position: relative;
+}
+
+.narrowband-signature-display > .mark {
+  height: 16px;
+  border: 2px solid lime;
+  width: 0;
+  position: absolute;
+}

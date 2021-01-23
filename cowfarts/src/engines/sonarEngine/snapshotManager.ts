@@ -2,6 +2,7 @@ import { VesselUpdate } from "../../__protogen__/mass/api/updates_pb";
 import { Pipe } from "../../util/pipe";
 import { getSonarUpdate } from "../../gettorz";
 import { simpleHash } from "../../util/math";
+import { getNarrowbandSignature } from "../../workarounds/narrowbandSignature";
 
 export type PointSource = {
   salt: number;
@@ -48,7 +49,7 @@ class SnapshotManager {
             salt: simpleHash(contact.vesselId),
             bearing: contact.bearing,
             broadbandPowerLevel: contact.broadbandPowerLevel,
-            freqs: [20, 30, 80, 300],
+            freqs: getNarrowbandSignature(contact.vesselId),
           };
         }),
       };
