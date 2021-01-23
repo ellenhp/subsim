@@ -67,12 +67,12 @@ function getRebelVessel(
   vesselId: string
 ) {
   const rebelSpawnPosition = new Position();
-  rebelSpawnPosition.setLat(47.723117693);
-  rebelSpawnPosition.setLng(-122.52533117);
+  rebelSpawnPosition.setLat(47.60724);
+  rebelSpawnPosition.setLng(-122.37292);
 
   const rebelSpawnInfo = new SpawnedVessel.SpawnInformation();
   rebelSpawnInfo.setPosition(rebelSpawnPosition);
-  rebelSpawnInfo.setExactSpawnHeading(60);
+  rebelSpawnInfo.setExactSpawnHeading(277);
 
   const rebelVessel = new SpawnedVessel();
   rebelVessel.setVesselDescriptorId(submarineDescriptorId);
@@ -89,12 +89,12 @@ function getBlockaderVessel(
   vesselId: string
 ) {
   const blockaderPos = new Position();
-  blockaderPos.setLat(47.938689);
-  blockaderPos.setLng(-122.547806);
+  blockaderPos.setLat(47.688105);
+  blockaderPos.setLng(-122.432214);
 
   const blockaderSpawnInfo = new SpawnedVessel.SpawnInformation();
   blockaderSpawnInfo.setPosition(blockaderPos);
-  blockaderSpawnInfo.setExactSpawnHeading(100);
+  blockaderSpawnInfo.setExactSpawnHeading(210);
 
   const blockaderVessel = new SpawnedVessel();
   blockaderVessel.setVesselDescriptorId(submarineDescriptorId);

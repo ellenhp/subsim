@@ -13,7 +13,7 @@ import buildNewFeasibleScenario from "./builders/feasibleScenario";
 import { Scenario } from "./__protogen__/mass/api/scenario_pb";
 import { ClientReadableStream } from "grpc-web";
 
-const client = new MassBackendClient("https://subsim.ellenhp.me");
+const client = new MassBackendClient("http://subsim.ellenhp.me");
 
 export interface GameConnection {
   scenarioId: string;
