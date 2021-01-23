@@ -13,7 +13,7 @@ type WeaponsConfigState = {
 const initialState: WeaponsConfigState = {
   adcapHeading: 0,
   adcapSpeedKts: 45,
-  adcapEnableDistanceFeet: 4000,
+  adcapEnableDistanceFeet: 6000,
 };
 
 const Weapons: StationComponent = ({ latestUpdate, game }: StationProps) => {
@@ -108,7 +108,7 @@ const Weapons: StationComponent = ({ latestUpdate, game }: StationProps) => {
                 });
               }}
               min={2000}
-              max={10000}
+              max={30000}
             />
           </label>
         </div>

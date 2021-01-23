@@ -17,5 +17,6 @@ spec:
       containers:
         - name: bloop-be
           image: "gcr.io/mass-276203/bloop:dev"
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
