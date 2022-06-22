@@ -2,7 +2,7 @@ arlpy==1.7.0
 bokeh==2.0.2
 Jinja2==2.11.2
 MarkupSafe==1.1.1
-numpy==1.18.4
+numpy==1.22.0
 packaging==20.3
 pandas==1.0.3
 Pillow==7.1.2
